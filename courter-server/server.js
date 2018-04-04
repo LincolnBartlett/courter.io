@@ -21,38 +21,16 @@ app.use(methodOverride('_method'));
 const mongoose = require('mongoose');
 mongoose.connect(config.database);
 
-
-//PASSPORT
-
-const User          = require('./models/userSchema');
-const passport      = require('passport');
-const LocalStrategy = require('passport-local');
+//AUTH
+require('./services/authEvents')(app);
 
 
-app.use(require('express-session')({
-    secret: config.passport.secret,
-    resave: false,
-    saveUninitialized: false
-}));
-
-app.use(passport.initialize());
-app.use(passport.session());
-passport.use(new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
-
-app.use(function(req, res, next){
-    res.locals.currentUser = req.user;
-    next();
-});
-
-
-const routeMap = require('./routes/routeMap')
-routeMap(app);
+// ROUTES
+require('./routes/routeMap')(app);
 
 
 // SOCKET.IO
-const socketEvents = require('./socketEvents');  
+const socketEvents = require('./services/socketEvents');  
 const io = require('socket.io').listen(server);
 
 socketEvents(io);

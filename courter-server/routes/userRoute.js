@@ -5,14 +5,19 @@ const express     = require('express'),
       passport    = require('passport');
 
 
-router.get('/', (req, res)=> {
+router.get(
+    '/', 
+    (req, res)=> {
       res.render(`./user/userPage`);
 
 });
 
 //CREATE
-router.post('/register', (req, res)=>{
+router.post(
+    '/register',
+    (req, res)=>{
       let newUser = new User({username: req.body.username})
+
       User.register(newUser, req.body.password, function(err, user){
           if(err){
               return res.render('./user/register');
@@ -22,23 +27,29 @@ router.post('/register', (req, res)=>{
               });
           }
       });
-
-  });
+      
+});
 
 
 //LOGIN-LOGOUT
-router.get('/login',(req, res)=>{
+router.get(
+    '/login',
+    (req, res)=>{
       res.render('./user/login');
-  });
+});
   
-  router.post('/login', passport.authenticate('local',{
+router.post(
+    '/login', 
+    passport.authenticate('local', {
       successRedirect:'/',
       failureRedirect: '/user/login'
-  }) , (req, res)=>{});
+  }), 
+    (req, res)=>{}
+);
 
   router.get('/logout', (req, res)=>{
       req.logout();
       res.redirect('/user/login');
-  });
+});
   
 module.exports = router;

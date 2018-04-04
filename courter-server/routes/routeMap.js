@@ -1,15 +1,13 @@
-const express     = require('express'),
-      router      = express.Router();
-      
-
-const routeMap = (app) =>{
+module.exports = (app) =>{
       // ROUTES
       const   mainRoute = require('./mainRoute.js'),
-              userRoute = require('./userRoute.js');
+              userRoute = require('./userRoute.js'),
+              authRoute = require('./authRoute.js');
       
       app.use('/', mainRoute);
       app.use('/user', userRoute);
+      app.use('/auth', authRoute);
 }
 
-module.exports = routeMap;
+
  
