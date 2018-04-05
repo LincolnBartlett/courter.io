@@ -32,7 +32,7 @@
                     <h3>Online Users</h3>
                     <ul class="list-group" id="users">
                         <%if(currentUser){%>
-                            <li><%- currentUser.username %></li>
+                            <li><%- currentUser %></li>
                         <%}%>
                     </ul>
                 </div>
@@ -52,7 +52,11 @@
                 </div>
             </div>
         </div>
-        <a class="text-danger" href="/user/logout"><i class="fa fa-user-times"></i>  Logout</a>
+        <a class="text-danger" href="/auth/google"><i class="fa fa-user-times"></i>  Login With google</a>
+        </br>
+        <a class="text-danger" href="/auth/instagram"><i class="fa fa-user-times"></i>  Login With instagram</a>
+        </br>
+        <a class="text-danger" href="/auth/api/logout"><i class="fa fa-user-times"></i>  Logout</a>
     </div>
 
     <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->

@@ -2,17 +2,30 @@ const express = require('express'),
       router = express.Router(),
       passport = require('passport');
 
-router.get(
-    '/google',
+// GOOGLE
+router.get('/google',
      passport.authenticate('google', {
         scope : ['profile', 'email'],
         })
 );
 
-router.get(
-    '/google/callback',
-    passport.authenticate('google')
+router.get('/google/callback',
+    passport.authenticate('google'),
+    (req, res)=>{
+        res.redirect('/');
+    }
 );
+
+
+
+
+//API 
+router.get('/api/logout',(req, res)=>{
+    req.logout();
+    res.redirect('/');
+});
+
+
 
 
 module.exports = router;
