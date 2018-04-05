@@ -1,27 +1,25 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 
 class Header extends Component {
+    
     renderContent(){
         switch(this.props.auth){
             case null:
                 return;
             case false:
-                return <a className="nav-link" href="/auth/google">Sign In With Google </a>;
+                return <a className="nav-link" href="/auth/google" method="POST">Sign In With Google </a>;
             default:
         }       return <a className="nav-link" href="/auth/logout">Logout </a>;
     }
 
     render () {
-        console.log(this.props);
         return (
-            <div>
-               <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                    <a className="navbar-brand" >courter</a>
-                    <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                        <span className="navbar-toggler-icon"></span>
-                    </button>
-                    <div className="collapse navbar-collapse" id="navbarNav">
+            <nav className="navbar navbar-light bg-light">
+                <div className='container'>
+                    <Link to={'/'} className="navbar-brand" >courter</Link>
+                    <div>
                         <ul className="navbar-nav">
                         <li className="nav-item">
                             {this.renderContent()}
@@ -31,8 +29,8 @@ class Header extends Component {
                         </li>
                         </ul>
                     </div>
-                </nav>
-            </div>
+                </div>
+            </nav>
         );
     }
 }

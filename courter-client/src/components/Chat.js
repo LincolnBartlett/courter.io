@@ -1,13 +1,12 @@
-
-import React from "react";
+import React, { Component } from "react";
+import { connect } from 'react-redux';
 import io from "socket.io-client";
 
-class Chat extends React.Component{
+class Chat extends Component{
     constructor(props){
         super(props);
-
         this.state = {
-            username: '',
+            username: 'username',
             message: '',
             messages: []
         };
@@ -19,9 +18,7 @@ class Chat extends React.Component{
         });
 
         const addMessage = data => {
-            console.log(data);
             this.setState({messages: [...this.state.messages, data]});
-            console.log(this.state.messages);
         };
 
         this.sendMessage = ev => {
@@ -34,15 +31,16 @@ class Chat extends React.Component{
 
         }
     }
+    
     render(){
+
         return (
-            <div className="container">
+            <div>
                 <div className="row">
-                    <div className="col-4">
+                    <div className="col-5 offset-3">
                         <div className="card">
                             <div className="card-body">
                                 <div className="card-title">Global Chat</div>
-                                <hr/>
                                 <div className="messages">
                                     {this.state.messages.map(message => {
                                         return (
@@ -53,7 +51,8 @@ class Chat extends React.Component{
 
                             </div>
                             <div className="card-footer">
-                                <input type="text" placeholder="Username" value={this.state.username} onChange={ev => this.setState({username: ev.target.value})} className="form-control"/>
+                                    <div><p>{this.state.username}</p></div>
+                                
                                 <br/>
                                 <input type="text" placeholder="Message" className="form-control" value={this.state.message} onChange={ev => this.setState({message: ev.target.value})}/>
                                 <br/>
@@ -66,5 +65,6 @@ class Chat extends React.Component{
         );
     }
 }
+
 
 export default Chat;

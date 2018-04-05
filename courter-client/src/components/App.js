@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import { BrowserRouter, Route } from 'react-router-dom';
 import Chat from './Chat';
 import Header from './Header';
+import login from './login';
 import { connect } from 'react-redux';
 import * as actions from '../actions';
 
@@ -18,16 +19,16 @@ class App extends Component {
     
     render(){
       return (
-        <div className='container'>
+        <div >
           <BrowserRouter>
             <div>
               <Header/>
-              <Route exact path ="/" component = {Landing}/>
+              <Route exact path ="/" component = {login}/>
+              <Route exact path ="/chat" component = {Chat}/>
               <Route exact path ="/surveys" component = {Dashboard}/>
               <Route path ="/surveys/new" component = {SurveyNew}/>
             </div>
           </BrowserRouter>
-          <Chat/>
         </div>
       );
     };
