@@ -20,7 +20,7 @@ router.get('/google/callback',
 
 
 //API 
-router.get('/api/logout',(req, res)=>{
+router.get('/logout',(req, res)=>{
     req.logout();
     res.redirect('/');
 });
