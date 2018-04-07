@@ -7,22 +7,38 @@ const server = require('http').createServer(app);
 const morgan = require('morgan');
 
 // EXPRESS 
-app.use(express.static(`${__dirname}/public/`))
+
 app.set('view engine', 'ejs');
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
 app.use(methodOverride('_method'));
 
 // MONGO
 const mongoose = require('mongoose');
 require('./models/userSchema');
+require('./models/chatSchema');
+require('./models/messageSchema');
 mongoose.connect(config.database);
 
 // AUTH
 require('./services/authEvents')(app);
 
 
+
 // ROUTES
 require('./routes/routeMap')(app);
+
+if(config.SERVER_ENV === 'PROD'){
+
+    app.use(express.static(`${__dirname}/public/build/`));
+    const path = require('path');
+    app.get('*', (req, res)=>{
+        res.sendFile(path.resolve(__dirname,'public', 'build', 'index.html'));
+    });
+
+} else {
+    app.use(express.static(`${__dirname}/public/`));
+}
 
 
 // SOCKET.IO

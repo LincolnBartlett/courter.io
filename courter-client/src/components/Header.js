@@ -5,13 +5,17 @@ import { Link } from 'react-router-dom';
 class Header extends Component {
     
     renderContent(){
+        console.log('From Header.js\n',this.props.auth);
         switch(this.props.auth){
             case null:
                 return;
             case false:
                 return <a className="nav-link" href="/auth/google" method="POST">Sign In With Google </a>;
             default:
-        }       return <a className="nav-link" href="/auth/logout">Logout </a>;
+        }       return (<div>
+                            <p className="nav-item">{this.props.auth.googleId}</p> 
+                            <a className="nav-link" href="/auth/logout">Logout </a>
+                        </div>);
     }
 
     render () {
@@ -24,9 +28,7 @@ class Header extends Component {
                         <li className="nav-item">
                             {this.renderContent()}
                         </li>
-                        <li className="nav-item">
-                            
-                        </li>
+
                         </ul>
                     </div>
                 </div>

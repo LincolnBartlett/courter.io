@@ -1,0 +1,24 @@
+{
+  "name": "courter",
+  "version": "1.0.0",
+  "description": "",
+  "main": " ",
+  "scripts": {
+    "server": "nodemon server.js --prefix courter-server",
+    "client": "npm run start --prefix courter-client",
+    "dev": "concurrently \"npm run server\" \"npm run client\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/LincolnBartlett/courter.git"
+  },
+  "author": "Lincoln W Bartlett",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/LincolnBartlett/courter/issues"
+  },
+  "homepage": "https://github.com/LincolnBartlett/courter#readme",
+  "dependencies": {
+    "concurrently": "^3.5.1"
+  }
+}

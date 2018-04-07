@@ -1,3 +1,4 @@
 config.js
+/node_modules
 courter-server/node_modules
 courter-client/node_modules
