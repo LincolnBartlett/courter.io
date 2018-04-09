@@ -35,12 +35,13 @@ const authEvents = (app) =>{
             callbackURL : '/auth/google/callback'
         }, 
         async (accessToken, refreshToken, profile, done) => {
+      
            const existingUser = await User.findOne({googleId: profile.id });
 
             if(existingUser){
                 done(null, existingUser);   
             } else {
-                const user = await new User({googleId: profile.id}).save()
+                const user = await new User({googleId: profile.id, givenName: profile.name.givenName, familyName: profile.name.familyName}).save()
                 done(null, user);
             }               
               

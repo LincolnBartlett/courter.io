@@ -13,8 +13,8 @@ class Header extends Component {
                 return <a className="nav-link" href="/auth/google" method="POST">Sign In With Google </a>;
             default:
         }       return (<div>
-                            <p className="nav-item">{this.props.auth.googleId}</p> 
-                            <a className="nav-link" href="/auth/logout">Logout </a>
+                            <p className="nav-item">{this.props.auth.givenName} {this.props.auth.familyName} <a href="/auth/logout">Logout </a> </p> 
+                            
                         </div>);
     }
 

@@ -8,7 +8,7 @@ module.exports = (app) =>{
       app.use('/', mainRoute);
       app.use('/user', userRoute);
       app.use('/auth', authRoute);
-      app.use('/chat', authRoute);
+      app.use('/chat', chatRoute);
 }
 
 

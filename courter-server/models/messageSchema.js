@@ -3,7 +3,7 @@ const {Schema} = mongoose;
 
 
 var messageSchema = new Schema({
-    author: {type: Schema.Types.ObjectId, ref :'User'},
+    author: {type: Schema.Types.ObjectId, ref :'users'},
     chat: {type: Schema.Types.ObjectId, ref :'Chat'},
     message: String,
     timeStamp: { type : Date, default: Date.now }
