@@ -5,7 +5,7 @@ const methodOverride   = require('method-override');
 const config = require('./config.js');
 const server = require('http').createServer(app);
 const morgan = require('morgan');
-
+app.use(morgan('dev'));
 // EXPRESS 
 
 app.set('view engine', 'ejs');
@@ -50,5 +50,5 @@ socketEvents(io);
 // SERVER 
 server.listen(process.env.port || config.PORT);
 console.log(`Server Listening...  \nPORT: ${config.PORT}`);
-app.use(morgan('dev'));
+
 

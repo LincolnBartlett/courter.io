@@ -1,6 +1,9 @@
 const express     = require('express'),
       router      = express.Router();
 
+const mongoose = require('mongoose');
+const {Schema} = mongoose;
+const User = require('../models/userSchema');
 
 router.get( '/', 
     (req, res)=> {
@@ -13,6 +16,14 @@ router.get('/current_user' ,
      res.send(req.user);   
     }
 );
+
+
+
+router.post('/all',
+      async (req, res)=>{
+           const users = await User.find({});
+                  res.send(users);      
+      });
 
 // //CREATE
 // router.post( '/register',

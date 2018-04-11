@@ -9,7 +9,7 @@ const login =()=> {
                         <div className="card">
                             <div className="card-body">
                                 <ul>
-                                <li><a href="/auth/google" method="POST">Sign In With Google </a></li>
+                                <li><a href="/api/auth/google" method="POST">Sign In With Google </a></li>
                                 </ul>  
                             </div>
                         </div>

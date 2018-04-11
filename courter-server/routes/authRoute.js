@@ -12,17 +12,14 @@ router.get('/google',
 router.get('/google/callback',
     passport.authenticate('google'),
     (req, res)=>{
-        res.redirect('/court');
-    }
-);
-
-
-
+        res.redirect('/chat');
+});
 
 //API 
-router.get('/logout',(req, res)=>{
-    req.logout();
-    res.redirect('/');
+router.get('/logout',
+    (req, res)=>{
+        req.logout();
+        res.redirect('/');
 });
 
 

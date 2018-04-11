@@ -5,15 +5,14 @@ import { Link } from 'react-router-dom';
 class Header extends Component {
     
     renderContent(){
-        console.log('From Header.js\n',this.props.auth);
         switch(this.props.auth){
             case null:
                 return;
             case false:
-                return <a className="nav-link" href="/auth/google" method="POST">Sign In With Google </a>;
+                return <a className="nav-link" href="/api/auth/google" method="POST">Sign In With Google </a>;
             default:
         }       return (<div>
-                            <p className="nav-item">{this.props.auth.givenName} {this.props.auth.familyName} <a href="/auth/logout">Logout </a> </p> 
+                            <p className="nav-item">{this.props.auth.givenName} {this.props.auth.familyName} <a href="/api/auth/logout">Logout </a> </p> 
                             
                         </div>);
     }

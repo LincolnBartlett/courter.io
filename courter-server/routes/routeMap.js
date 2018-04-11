@@ -6,9 +6,9 @@ module.exports = (app) =>{
               chatRoute = require('./chatRoute.js');
       
       app.use('/', mainRoute);
-      app.use('/user', userRoute);
-      app.use('/auth', authRoute);
-      app.use('/chat', chatRoute);
+      app.use('/api/user', userRoute);
+      app.use('/api/auth', authRoute);
+      app.use('/api/chat', chatRoute);
 }
 
 

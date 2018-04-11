@@ -8,6 +8,11 @@ const socketEvents = (io) =>{
     connections.push(socket);
     console.log(`Connected Sockets: ${connections.length}`);
     
+
+    socket.on('room', (room) => {
+        socket.join(room);
+    });
+
     //disconnect
     socket.on('disconnect',(data) => {
         connections.splice(connections.indexOf(socket), 1);
@@ -18,10 +23,15 @@ const socketEvents = (io) =>{
     socket.on('SEND_MESSAGE', function(data){
          new Message({
             message: data.message,
-            author: data.user
-        }).save()
+            author: data.user,
+            chat: data.chat
+        }).save((err,product)=>{
+            data._id = product._id;
+            io.sockets.in(data.chat).emit('RECEIVE_MESSAGE', data);
+        })
 
-        io.emit('RECEIVE_MESSAGE', data);
+        
+        
     });
 
 });

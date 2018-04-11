@@ -32,7 +32,7 @@ const authEvents = (app) =>{
     passport.use(new GoogleStrategy({
             clientID : config.passport.google.clientID,
             clientSecret : config.passport.google.clientSecret,
-            callbackURL : '/auth/google/callback'
+            callbackURL : '/api/auth/google/callback'
         }, 
         async (accessToken, refreshToken, profile, done) => {
       
@@ -47,22 +47,6 @@ const authEvents = (app) =>{
               
         }
     ));
-
-
-
-
-    // //LOCAL
-    // app.use(require('express-session')({
-    //     secret: config.passport.secret,
-    //     resave: false,
-    //     saveUninitialized: false
-    // }));
-
-    // app.use(passport.initialize());
-    // app.use(passport.session());
-    // passport.use(new LocalStrategy(User.authenticate()));
-    // passport.serializeUser(User.serializeUser());
-    // passport.deserializeUser(User.deserializeUser());
 
     app.use(function(req, res, next){
         res.locals.currentUser = req.user;
