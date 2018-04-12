@@ -14,7 +14,6 @@ const SurveyNew = ()=> <h2> SurveyNew</h2>
 class App extends Component {
     componentDidMount(){
      this.props.fetchUser();
-     this.props.fetchChat();
      this.props.fetchAllUsers();
     }
     
@@ -28,7 +27,7 @@ class App extends Component {
               <div className="container">
               <div className="row">
                 <Route exact path ="/" component = {login}/>
-                <Route path ="/chat/:chatId" component = {Chat}/>
+                <Route path ="/chat/" component = {Chat}/>
                 <Route exact path ="/surveys" component = {Dashboard}/>
                 <Route path ="/surveys/new" component = {SurveyNew}/>
                 <UserList />

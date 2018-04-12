@@ -1,88 +1,64 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import axios from 'axios';
+import { fetchChat, setChatData, fetchChatList } from '../actions/index';
+import { bindActionCreators } from 'redux';
 
 class UserList extends Component {
 
-    constructor(props){
-        super(props);    
-        this.state = {
-            chats: [],
-            loaded: false
-        };
+    updateChat(room) {
+        this.props.fetchChat(room);
+        this.props.setChatData(room);
+    }
 
-    }  
-    
-    renderList(){
-        switch(this.props.users){
+    renderChats() {
+        switch (this.props.chatList) {
             case null:
+                if (!this.props.auth) {
+                    return;
+                }
+                this.props.fetchChatList(this.props.auth._id);
                 return;
             case false:
-                return ;
+                return;
             default:
-               return (
+                return (
                     <ul>
-                        {this.props.users.map(user => {
-                            return <li key={user._id}><p>{user.givenName}{user.familyName}</p></li>
-                        })} 
+                        {this.props.chatList.map(chat => {
+                            return (
+                                <a key={chat._id} className="list-group-item list-group-item-action" onClick={() => this.updateChat(chat._id)}>
+                                    {chat.recipients.map(recipient => {
+                                        if (recipient._id !== this.props.auth._id) {
+                                            return recipient.givenName;
+                                        }
+                                        return null;
+                                    })}
+                                </a>);
+                        })}
                     </ul>
                 );
         }
     }
 
-    renderChats(){
-        switch(this.props.auth){
-            case null:
-                return;
-            case false:
-                return ;
-            default:
-                if(!this.state.loaded){
-                    axios.post(`/api/chat/chatlist/${this.props.auth._id}`).then(res => {
-                            res.data.forEach(chat => {
-                                this.setState({chats: [...this.state.chats, {_id: chat._id}]});
-                            });
-                            
-                        });
-                    this.setState({loaded:true });    
-                    }
-                    return (
-                        <ul>
-                            {this.state.chats.map(chat => {
-                                return <div><a href ={`/chat/${chat._id}`}>{chat._id}</a></div>
-                            })}
-                        </ul>
-                    ); 
-        }
-    }
-
-    render () {
+    render() {
         return (
             <div className="col-md-4">
-                <div className="card">
-                    <div className="card-header text-center">
-                        <h3>User List</h3>
-                    </div>
-                    <div className="card-body">
-                        {this.renderList()}
-                    </div>
-                </div>
-                <div className="card">
-                    <div className="card-header text-center">
-                        <h3>Chat List</h3>
-                    </div>
-                    <div className="card-body">
-                        {this.renderChats()}
-                    </div>
+                <div className="list-group">
+                    {this.renderChats()}
                 </div>
             </div>
         );
     }
 }
 
-function mapStateToProps(state){
-    return { users: state.users,
-            auth: state.auth };
+function mapStateToProps(state) {
+    return {
+        auth: state.auth,
+        chatList: state.chatList
+    };
 }
 
-export default connect(mapStateToProps)(UserList);
+function mapDispatchToProps(dispatch) {
+    return bindActionCreators({ fetchChat: fetchChat, fetchChatList: fetchChatList, setChatData: setChatData }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(UserList);

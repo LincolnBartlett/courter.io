@@ -1,7 +1,7 @@
 const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
-const methodOverride   = require('method-override');
+const methodOverride = require('method-override');
 const config = require('./config.js');
 const server = require('http').createServer(app);
 const morgan = require('morgan');
@@ -9,7 +9,7 @@ app.use(morgan('dev'));
 // EXPRESS 
 
 app.set('view engine', 'ejs');
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(methodOverride('_method'));
 
@@ -28,12 +28,12 @@ require('./services/authEvents')(app);
 // ROUTES
 require('./routes/routeMap')(app);
 
-if(config.SERVER_ENV === 'PROD'){
+if (config.SERVER_ENV === 'PROD') {
 
     app.use(express.static(`${__dirname}/public/build/`));
     const path = require('path');
-    app.get('*', (req, res)=>{
-        res.sendFile(path.resolve(__dirname,'public', 'build', 'index.html'));
+    app.get('*', (req, res) => {
+        res.sendFile(path.resolve(__dirname, 'public', 'build', 'index.html'));
     });
 
 } else {
@@ -42,7 +42,7 @@ if(config.SERVER_ENV === 'PROD'){
 
 
 // SOCKET.IO
-const socketEvents = require('./services/socketEvents');  
+const socketEvents = require('./services/socketEvents');
 const io = require('socket.io').listen(server);
 socketEvents(io);
 
