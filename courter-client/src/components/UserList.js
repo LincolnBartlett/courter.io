@@ -1,64 +1,68 @@
-import React, { Component } from 'react';
-import { connect } from 'react-redux';
-import { fetchChat, setChatData, fetchChatList } from '../actions/index';
-import { bindActionCreators } from 'redux';
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { startChat } from "../actions/index";
+import { bindActionCreators } from "redux";
 
 class UserList extends Component {
-
-    updateChat(room) {
-        this.props.fetchChat(room);
-        this.props.setChatData(room);
-    }
-
-    renderChats() {
-        switch (this.props.chatList) {
-            case null:
-                if (!this.props.auth) {
-                    return;
-                }
-                this.props.fetchChatList(this.props.auth._id);
-                return;
-            case false:
-                return;
-            default:
-                return (
-                    <ul>
-                        {this.props.chatList.map(chat => {
-                            return (
-                                <a key={chat._id} className="list-group-item list-group-item-action" onClick={() => this.updateChat(chat._id)}>
-                                    {chat.recipients.map(recipient => {
-                                        if (recipient._id !== this.props.auth._id) {
-                                            return recipient.givenName;
-                                        }
-                                        return null;
-                                    })}
-                                </a>);
-                        })}
-                    </ul>
-                );
-        }
-    }
-
-    render() {
+  renderUsers() {
+    switch (this.props.users) {
+      case null:
+        return;
+      case false:
+        return;
+      default:
         return (
-            <div className="col-md-4">
-                <div className="list-group">
-                    {this.renderChats()}
-                </div>
-            </div>
+          <div>
+            {this.props.users.map(user => {
+              switch (this.props.auth) {
+                case null:
+                  return;
+                default:
+                  if (user._id === this.props.auth._id) {
+                    return;
+                  }
+              }
+              return (
+                <a
+                  key={user._id}
+                  className="list-group-item list-group-item-action"
+                  onClick={() =>
+                    this.props.startChat(this.props.auth._id, user._id)
+                  }
+                >
+                  {user.givenName}
+                </a>
+              );
+            })}
+          </div>
         );
     }
+  }
+
+  render() {
+    return (
+      <div className="col-md-4">
+        <div className="card">
+          <div className="card-body">
+            <h5>User List:</h5>
+            <hr />
+            <div className="list-group">{this.renderUsers()}</div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 }
 
 function mapStateToProps(state) {
-    return {
-        auth: state.auth,
-        chatList: state.chatList
-    };
+  return {
+    auth: state.auth,
+    users: state.users
+  };
 }
 
 function mapDispatchToProps(dispatch) {
-    return bindActionCreators({ fetchChat: fetchChat, fetchChatList: fetchChatList, setChatData: setChatData }, dispatch);
+  return bindActionCreators({ startChat: startChat }, dispatch);
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(UserList);

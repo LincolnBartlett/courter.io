@@ -1,16 +1,8 @@
 const express = require('express'),
-      router = express.Router();
-const mongoose = require('mongoose');
-const { Schema } = mongoose;
-const Message = require('../models/messageSchema');
-const User = require('../models/userSchema');
-const Chat = require('../models/chatSchema');
-
-// router.post('/load',
-//       async (req, res) => {
-//             const messages = await Message.find({}).populate('author');
-//             res.send(messages);
-//       });
+      router = express.Router(), 
+      User = require('../models/userSchema'),
+      Message = require('../models/messageSchema'), 
+      Chat = require('../models/chatSchema');
 
 router.post('/load/:room',
       async (req, res) => {
@@ -24,11 +16,6 @@ router.post('/chatlist/:id',
             res.send(userChats);
       });
 
-router.post('/new',
-      (req, res) => {
-            new Chat({ recipients: [req.body.userId] }).save();
-            res.send('yo');
-      });
 
 router.post('/addtochat',
       (req, res) => {
@@ -37,7 +24,27 @@ router.post('/addtochat',
                   chat.save();
                   console.log(chat);
             });
-            res.send('good job');
+            res.send('Success');
+      });
+
+router.post('/startchat',
+      async (req, res) => {
+            const user = await User.findById(req.body.user_id).populate('chats');
+            const chat = await Chat.find({
+                  $and : [
+                        {recipients : {$eq: req.body.user_id}},
+                        {recipients : {$eq: req.body.recipient_id}}
+                  ]
+            });
+            if(chat.length > 0){
+                  console.log('Chat found');
+            }else{
+                  console.log('Making new chat');
+                  new Chat({ recipients: [req.body.user_id, req.body.recipient_id] }).save();
+            }
+                  
+
+            res.send('');
       });
 
 module.exports = router;

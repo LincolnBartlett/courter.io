@@ -1,162 +1,194 @@
 import React, { Component } from "react";
-import { connect } from 'react-redux';
-import * as ReactDOM from 'react-dom';
+import { connect } from "react-redux";
+import * as ReactDOM from "react-dom";
 import io from "socket.io-client";
-import Moment from 'react-moment';
-import '../style/court.css';
-
-import { fetchChat } from '../actions/index';
-import { bindActionCreators } from 'redux';
+import Moment from "react-moment";
+import "../style/chat.css";
+import ChatList from "./ChatList";
 
 class Chat extends Component {
-
-    constructor(props) {
-        super(props);
-        this.state = {
-            message: '',
-            messages: []
-        };
-
-
-        this.socket = io.connect();
-
-        this.socket.on('RECEIVE_MESSAGE', function (data) {
-            addMessage(data);
-        });
-
-
-
-        const addMessage = data => {
-            this.setState({ messages: [...this.state.messages, { message: data.message, user: data.givenName, userId: data.user, _id: data._id }] });
-        };
-
-        this.onEnterPress = (e) => {
-            if (e.keyCode === 13 && e.shiftKey === false) {
-                this.sendMessage(e);
-            }
-        }
-
-        this.sendMessage = ev => {
-            ev.preventDefault();
-            this.socket.emit('SEND_MESSAGE', {
-                message: this.state.message,
-                user: this.props.auth._id,
-                givenName: this.props.auth.givenName,
-                chat: this.props.chatData
-            });
-            this.setState({ message: '' });
-
-        }
+  componentWillReceiveProps(nextProps) {
+    this.setState({ messages: [] });
+    switch (this.props.chatData) {
+      case null:
+        return;
+      default:
+        this.socket.emit("room", this.props.chatData.chat_id);
+        return;
     }
+  }
 
-    componentWillReceiveProps(nextProps){
-        this.setState({messages: []});
-        this.socket.emit('room', this.props.chatData);
-    }
+  componentDidUpdate() {
+    this.scrollToBottom();
+  }
 
-    componentDidUpdate() {
-        this.scrollToBottom();
-    }
+  constructor(props) {
+    super(props);
 
-    scrollToBottom = () => {
-        const { messageList } = this.refs;
-        const scrollHeight = messageList.scrollHeight;
-        const height = messageList.clientHeight;
-        const maxScrollTop = scrollHeight - height;
-        ReactDOM.findDOMNode(messageList).scrollTop = maxScrollTop > 0 ? maxScrollTop : 0;
-    }
+    this.state = {
+      message: "",
+      messages: []
+    };
 
-    renderHistory() {
-        switch (this.props.chat) {
-            case null:
-            return <p>Select a Chat...</p>;
-            case false:
-            return <p>Error</p>;
-            default:
-                return (
-                    <div>
-                        {this.props.chat.map(message => {
-                            if (message.author._id === this.props.auth._id) {
-                                return (
-                                    <div key={message._id} className="float-right text-left  w-75">
-                                        <div className="alert alert-primary">
-                                            <p><b>{message.author.givenName}:</b> {message.message}</p>
-                                            <p className="text-right"><Moment format="ddd, hh:mma">{Date.now()}</Moment></p>
-                                        </div>
-                                    </div>
-                                );
-                            }
-                            return (
-                                <div key={message._id} className="float-left text-left alert alert-secondary w-75">
-                                    <p><b>{message.author.givenName}:</b> {message.message}</p>
-                                    <p className="text-right"><Moment format="ddd, hh:mma">{Date.now()}</Moment></p>
-                                </div>
-                            );
-                        })}
-                    </div>);
-        }
-    }
+    this.socket = io.connect();
+    this.socket.on("RECEIVE_MESSAGE", function(data) {
+      addMessage(data);
+    });
 
-    renderSocketMessages(){
-        return(
-                <div>
-                {this.state.messages.map(message => {
-                    
-                    if(message.userId === this.props.auth._id){
-                        return (
-                            <div key={message._id} className="float-right text-left  w-75">
-                                <div className="alert alert-primary">
-                                    <p><b>{message.user}:</b> {message.message}</p>
-                                    <p className="text-right"><Moment format="ddd, hh:mma">{Date.now()}</Moment></p>
-                                </div>    
-                            </div>
-                        );
-                    }
-                    return (
-                        <div key={message._id} className="float-left text-left alert alert-secondary w-75">
-                            <p><b>{message.user}:</b> {message.message}</p>
-                            <p className="text-right"><Moment format="ddd, hh:mma">{Date.now()}</Moment></p>                                 
-                        </div>
-                    );
-                })}
-                </div>);
-       
-    }
+    const addMessage = data => {
+      console.log(data);
+      this.setState({
+        messages: [
+          ...this.state.messages,
+          {
+            message: data.message,
+            user: data.givenName,
+            userId: data.user,
+            _id: data._id,
+            timeStamp: data.timeStamp
+          }
+        ]
+      });
+    };
 
-    render() {
+    this.onEnterPress = ev => {
+      if (ev.keyCode === 13 && ev.shiftKey === false) {
+        this.sendMessage(ev);
+      }
+    };
 
+    this.sendMessage = ev => {
+      ev.preventDefault();
+      this.socket.emit("SEND_MESSAGE", {
+        message: this.state.message,
+        user: this.props.auth._id,
+        givenName: this.props.auth.givenName,
+        chat: this.props.chatData.chat_id
+      });
+      this.setState({ message: "" });
+    };
+  }
+
+  scrollToBottom = () => {
+    const { messageList } = this.refs;
+    const scrollHeight = messageList.scrollHeight;
+    const height = messageList.clientHeight;
+    const maxScrollTop = scrollHeight - height;
+    ReactDOM.findDOMNode(messageList).scrollTop =
+      maxScrollTop > 0 ? maxScrollTop : 0;
+  };
+
+  renderChat() {
+    switch (this.props.chat) {
+      case null:
+        return <ChatList ref="messageList" />;
+      case false:
+        return <p>Error</p>;
+      default:
         return (
-            <div className="col-md-8">
-                <div className="card">
-                    <div className="card-header">
-                        <div className="container-fluid chat-window" ref="messageList">
-                            {this.renderHistory()}
-                            {this.renderSocketMessages()}
-                        </div>
-                    </div>
-                    <div className="container-fluid card-body">
-                        <form onSubmit={this.sendMessage}>
-                            <textarea
-                                type="text"
-                                className="form-control"
-                                value={this.state.message}
-                                onKeyDown={this.onEnterPress}
-                                onChange={ev => this.setState({ message: ev.target.value })} />
-                            <button type="submit" className="btn btn-sm btn-primary float-right bump">Send</button>
-                        </form>
-                    </div>
-                </div>
+          <div className="card">
+            <div className="card-header">
+              <h3 className="text-center">{this.props.chatData.givenName}</h3>
             </div>
+            <div className="card-body">
+              <div className="container-fluid chat-window" ref="messageList">
+                {this.renderHistory()}
+                {this.renderSocket()}
+              </div>
+            </div>
+            {this.renderInput()}
+          </div>
         );
     }
+  }
+  renderInput() {
+    return (
+      <div className="container-fluid card-footer">
+        <form onSubmit={this.sendMessage}>
+          <textarea
+            type="text"
+            className="form-control"
+            value={this.state.message}
+            onKeyDown={this.onEnterPress}
+            onChange={ev => this.setState({ message: ev.target.value })}
+          />
+          <button
+            type="submit"
+            className="btn btn-sm btn-primary float-right bump"
+          >
+            Send
+          </button>
+        </form>
+      </div>
+    );
+  }
+
+  renderMessageRight(message) {
+    return (
+      <div key={message._id} className="float-right text-right  w-75">
+        <div className="alert alert-primary">
+          <p>{message.message}</p>
+          <p className="text-right small mb-0">
+            <Moment format="ddd, hh:mma">{message.timeStamp}</Moment>
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  renderMessageLeft(message) {
+    return (
+      <div key={message._id} className="float-left text-left w-75">
+        <div className="alert alert-success">
+          <p>{message.message}</p>
+          <p className="text-left small mb-0">
+            <Moment format="ddd, hh:mma">{message.timeStamp}</Moment>
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  renderHistory() {
+    switch (this.props.chat) {
+      case null:
+        return;
+      case false:
+        return <p>Error</p>;
+      default:
+        return (
+          <div>
+            {this.props.chat.map(message => {
+              if (message.author._id === this.props.auth._id) {
+                return this.renderMessageRight(message);
+              }
+              return this.renderMessageLeft(message);
+            })}
+          </div>
+        );
+    }
+  }
+
+  renderSocket() {
+    return (
+      <div>
+        {this.state.messages.map(message => {
+          if (message.userId === this.props.auth._id) {
+            return this.renderMessageRight(message);
+          }
+          return this.renderMessageLeft(message);
+        })}
+      </div>
+    );
+  }
+
+  render() {
+    return <div className="col-md-8">{this.renderChat()}</div>;
+  }
 }
 
 function mapStateToProps(state) {
-    return { chat: state.chat, auth: state.auth, chatData: state.chatData };
+  return { chat: state.chat, auth: state.auth, chatData: state.chatData };
 }
 
-function mapDispatchToProps(dispatch){
-    return bindActionCreators({ fetchChat : fetchChat }, dispatch);
-}
-
-export default connect(mapStateToProps, mapDispatchToProps)(Chat);
+export default connect(mapStateToProps)(Chat);

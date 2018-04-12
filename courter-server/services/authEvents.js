@@ -1,57 +1,55 @@
-const mongoose = require('mongoose');
-const User = mongoose.model('users');
-const passport = require('passport');
-const LocalStrategy = require('passport-local');
-const GoogleStrategy = require('passport-google-oauth20').Strategy;
-const config = require('../config');
-const cookieSession = require('cookie-session');
+const mongoose = require("mongoose"),
+      User = mongoose.model("users"),
+      passport = require("passport"),
+      GoogleStrategy = require("passport-google-oauth20").Strategy,
+      config = require("../config"),
+      cookieSession = require("cookie-session");
 
-const authEvents = (app) =>{
+const authEvents = app => {
+  app.use(
+    cookieSession({
+      maxAge: 30 * 24 * 60 * 60 * 1000,
+      keys: [config.coookieSessionKey]
+    })
+  );
+  app.use(passport.initialize());
+  app.use(passport.session());
 
-    app.use(
-        cookieSession({
-            maxAge: 30 * 24 * 60 * 60 * 1000,
-            keys: [config.coookieSessionKey]
-        })
-    );
-    app.use(passport.initialize());
-    app.use(passport.session());
+  passport.serializeUser((user, done) => {
+    done(null, user.id);
+  });
 
-    passport.serializeUser((user, done)=>{
-        done(null, user.id);
+  passport.deserializeUser((id, done) => {
+    User.findById(id).then(user => {
+      done(null, user);
     });
+  });
 
-    passport.deserializeUser((id, done)=>{
-        User.findById(id)
-        .then(user => {
-            done(null, user);
-        })
-     });
+  //GOOGLE
+  passport.use(
+    new GoogleStrategy(
+      {
+        clientID: config.passport.google.clientID,
+        clientSecret: config.passport.google.clientSecret,
+        callbackURL: "/api/auth/google/callback"
+      },
+      async (accessToken, refreshToken, profile, done) => {
+        const existingUser = await User.findOne({ googleId: profile.id });
 
-    //GOOGLE
-    passport.use(new GoogleStrategy({
-            clientID : config.passport.google.clientID,
-            clientSecret : config.passport.google.clientSecret,
-            callbackURL : '/api/auth/google/callback'
-        }, 
-        async (accessToken, refreshToken, profile, done) => {
-      
-           const existingUser = await User.findOne({googleId: profile.id });
-
-            if(existingUser){
-                done(null, existingUser);   
-            } else {
-                const user = await new User({googleId: profile.id, givenName: profile.name.givenName, familyName: profile.name.familyName}).save()
-                done(null, user);
-            }               
-              
+        if (existingUser) {
+          done(null, existingUser);
+        } else {
+          const user = await new User({
+            googleId: profile.id,
+            givenName: profile.name.givenName,
+            familyName: profile.name.familyName
+          }).save();
+          done(null, user);
         }
-    ));
+      }
+    )
+  );
 
-    app.use(function(req, res, next){
-        res.locals.currentUser = req.user;
-        next();
-    });
-    
 };
+
 module.exports = authEvents;
