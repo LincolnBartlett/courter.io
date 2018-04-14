@@ -16,20 +16,8 @@ router.post('/chatlist/:id',
             res.send(userChats);
       });
 
-
-router.post('/addtochat',
-      (req, res) => {
-            Chat.findById(req.body.chatId, (err, chat) => {
-                  chat.recipients.push(req.body.recipient);
-                  chat.save();
-                  console.log(chat);
-            });
-            res.send('Success');
-      });
-
 router.post('/startchat',
       async (req, res) => {
-            const user = await User.findById(req.body.user_id).populate('chats');
             const chat = await Chat.find({
                   $and : [
                         {recipients : {$eq: req.body.user_id}},
