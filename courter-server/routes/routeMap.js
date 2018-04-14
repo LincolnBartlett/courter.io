@@ -5,10 +5,11 @@ module.exports = (app) =>{
               authRoute = require('./authRoute.js'),
               chatRoute = require('./chatRoute.js');
       
-      app.use('/', mainRoute);
+      
       app.use('/api/user', userRoute);
       app.use('/api/auth', authRoute);
       app.use('/api/chat', chatRoute);
+      app.use('/', mainRoute);
 }
 
 
