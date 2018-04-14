@@ -7,7 +7,7 @@ router.get( '/',
     }
 );
 
-router.get( '/chat', 
+router.get( '/chat/*', 
     (req, res)=> {
         res.sendFile(`./index.html`);
     }
