@@ -7,4 +7,11 @@ router.get( '/',
     }
 );
 
+router.get( '/chat', 
+    (req, res)=> {
+        res.sendFile(`./index.html`);
+    }
+);
+
+
 module.exports = router;
