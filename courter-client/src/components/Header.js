@@ -4,32 +4,43 @@ import { Link } from 'react-router-dom';
 
 class Header extends Component {
 
-    renderContent() {
+    renderHeader() {
         switch (this.props.auth) {
             case null:
                 return;
             case false:
-                return <a className="nav-link" href="/api/auth/google" method="POST">Sign In With Google </a>;
+                return (<li className="nav-item">
+                            <a className="nav-link" href="/api/auth/google" method="POST">Sign In With Google </a>
+                        </li>);
             default:
-        }       return (<div>
-            <p className="nav-item">{this.props.auth.givenName} {this.props.auth.familyName} <a href="/api/auth/logout">Logout </a> </p>
+               return (<li className="nav-item">     
+                             <a className="nav-link" href="/api/auth/logout">Logout </a>  
+                        </li>);
+        }
+    }
 
-        </div>);
+    renderUser() {
+        switch (this.props.auth) {
+            case null:
+                return;
+            case false:
+                return;
+            default:
+               return (<li className="nav-item">
+                            <a className="nav-link">{this.props.auth.givenName} {this.props.auth.familyName}</a>
+                        </li>);
+        }
     }
 
     render() {
         return (
-            <nav className="navbar navbar-light bg-light">
+            <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <div className='container'>
-                    <Link to={'/'} className="navbar-brand" >courter</Link>
-                    <div>
-                        <ul className="navbar-nav">
-                            <li className="nav-item">
-                                {this.renderContent()}
-                            </li>
-
-                        </ul>
-                    </div>
+                    <Link to={'/'} className="navbar-brand" ><img src="favicon.ico"/>ourter.io</Link>             
+                    <ul className="navbar-nav">
+                        {this.renderUser()}
+                        {this.renderHeader()}
+                    </ul>
                 </div>
             </nav>
         );

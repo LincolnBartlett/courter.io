@@ -47,7 +47,6 @@ class ChatList extends Component {
 
   render() {
     return (
-      <div className="col-md-4">
         <div className="card">
           <div className="card-body">
             <h5>Chat List:</h5>
@@ -55,7 +54,6 @@ class ChatList extends Component {
             <div className="list-group">{this.renderChatList()}</div>
           </div>
         </div>
-      </div>
     );
   }
 }

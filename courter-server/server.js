@@ -35,7 +35,5 @@ const io = require('socket.io').listen(server);
 socketEvents(io);
 
 // SERVER 
-server.listen(process.env.port || config.PORT);
-console.log(`Server Listening...  \nPORT: ${process.env.port || config.PORT}`);
-
-
+server.listen(config.PORT);
+console.log(`Server Listening...  \nPORT: ${config.PORT}`);

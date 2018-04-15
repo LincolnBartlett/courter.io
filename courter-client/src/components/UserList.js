@@ -41,7 +41,6 @@ class UserList extends Component {
 
   render() {
     return (
-      <div className="col-md-4">
         <div className="card">
           <div className="card-body">
             <h5>User List:</h5>
@@ -49,7 +48,6 @@ class UserList extends Component {
             <div className="list-group">{this.renderUsers()}</div>
           </div>
         </div>
-      </div>
     );
   }
 }

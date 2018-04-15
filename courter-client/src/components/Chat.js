@@ -5,6 +5,7 @@ import io from "socket.io-client";
 import Moment from "react-moment";
 import "../style/chat.css";
 import ChatList from "./ChatList";
+import UserList from "./UserList";
 
 class Chat extends Component {
   componentWillReceiveProps(nextProps) {
@@ -36,7 +37,6 @@ class Chat extends Component {
     });
 
     const addMessage = data => {
-      console.log(data);
       this.setState({
         messages: [
           ...this.state.messages,
@@ -81,16 +81,24 @@ class Chat extends Component {
   renderChat() {
     switch (this.props.chat) {
       case null:
-        return <ChatList ref="messageList" />;
+        return (<div className="card">
+                  <div className="card-body">
+                    <div className="container-fluid chat-window" ref="messageList">
+                     <h3>courter.io</h3>
+                     <hr/>
+                     
+                    </div>
+                  </div>
+               
+                </div>);
       case false:
         return <p>Error</p>;
       default:
         return (
           <div className="card">
-            <div className="card-header">
-              <h3 className="text-center">{this.props.chatData.givenName}</h3>
-            </div>
             <div className="card-body">
+            <h3>{this.props.chatData.givenName}</h3>
+            <hr/>
               <div className="container-fluid chat-window" ref="messageList">
                 {this.renderHistory()}
                 {this.renderSocket()}
@@ -183,7 +191,18 @@ class Chat extends Component {
   }
 
   render() {
-    return <div className="col-md-8">{this.renderChat()}</div>;
+    return (<div className="container"> 
+              <div className="row">
+                <div className="col-md-8">
+                  {this.renderChat()}
+                </div>
+                <div className="col-md-4">
+                  <ChatList/>
+                  <br/>
+                  <UserList/>
+                </div>
+              </div>
+            </div>);
   }
 }
 
