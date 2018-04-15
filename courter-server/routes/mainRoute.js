@@ -4,7 +4,7 @@ const express = require('express'),
 
 router.get( '*', 
     (req, res)=> {
-        res.sendFile(path.resolve(__dirname,'public', 'build', './index.html'));
+        res.sendFile(path.resolve(`../${__dirname}`,'public', 'build', './index.html'));
     }
 );
 
