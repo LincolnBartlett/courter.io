@@ -1,9 +1,10 @@
 const express = require('express'),
-      router = express.Router();
+      router = express.Router(),
+      path = require('path');
 
-router.get( '/*', 
+router.get( '*', 
     (req, res)=> {
-        res.sendFile(`./index.html`);
+        res.sendFile(path.resolve(__dirname,'public', 'build', './index.html'));
     }
 );
 
