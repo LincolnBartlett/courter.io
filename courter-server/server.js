@@ -3,7 +3,8 @@ const   express = require('express'),
         bodyParser = require('body-parser'),
         config = require('./config.js'),
         server = require('http').createServer(app),
-        morgan = require('morgan');
+        morgan = require('morgan'),
+        path   = require('path');
 
 app.use(morgan('dev'));
 
@@ -22,6 +23,11 @@ require('./services/authEvents')(app);
 // ROUTES
 app.use(express.static(`${__dirname}/public/build`));
 require('./routes/routeMap')(app);
+app.get( '*', 
+    (req, res)=> {
+        res.sendFile(path.resolve(`${__dirname}`,'public', 'build', './index.html'));
+    }
+);
 
 // SOCKET.IO
 const socketEvents = require('./services/socketEvents');
