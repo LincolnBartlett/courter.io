@@ -2,7 +2,8 @@ const express = require('express'),
       router = express.Router(), 
       User = require('../models/userSchema'),
       Message = require('../models/messageSchema'), 
-      Chat = require('../models/chatSchema');
+      Chat = require('../models/chatSchema'),
+      IceBreaker = require('../models/iceBreakerSchema');
 
 router.post('/load/:room',
       async (req, res) => {
@@ -24,15 +25,10 @@ router.post('/startchat',
                         {recipients : {$eq: req.body.recipient_id}}
                   ]
             });
-            if(chat.length > 0){
-                  console.log('Chat found');
-            }else{
-                  console.log('Making new chat');
+            if(chat.length < 0){
                   new Chat({ recipients: [req.body.user_id, req.body.recipient_id] }).save();
             }
-                  
-
-            res.send('');
+            res.send('success');
       });
 
 module.exports = router;

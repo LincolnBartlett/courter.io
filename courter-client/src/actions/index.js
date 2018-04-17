@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { FETCH_USER, FETCH_CHAT, FETCH_ALL_USERS, FETCH_CHAT_LIST, SET_CHAT, START_CHAT } from './types';
+import { FETCH_USER, FETCH_CHAT, FETCH_ALL_USERS, FETCH_CHAT_LIST, SET_CHAT, START_CHAT, FETCH_CATEGORIES, FETCH_TOPICS } from './types';
 
 export const fetchUser = () => async dispatch => {
     const res = await axios.get('/api/user/current_user');
@@ -31,6 +31,16 @@ export const startChat = (user_id, recipient_id) => async dispatch => {
         recipient_id : recipient_id
     });
     dispatch({ type: START_CHAT, payload: res.data });
+};
+
+export const fetchCategories = () => async dispatch => {
+    const res = await axios.post(`/api/court/category/getall`);
+    dispatch({ type: FETCH_CATEGORIES, payload: res.data });
+};
+
+export const fetchTopics = (category_id) => async dispatch => {
+    const res = await axios.post(`/api/court/topic/get`,{category_id});
+    dispatch({ type: FETCH_TOPICS, payload: res.data });
 };
 
 // export const example = (argument) => async dispatch => {

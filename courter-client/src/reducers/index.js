@@ -5,6 +5,8 @@ import userListReducer from './userListReducer';
 import chatListReducer from './chatListReducer';
 import chatDataReducer from './chatDataReducer';
 import startChatReducer from './startChatReducer';
+import categoryReducer from './categoryReducer';
+import topicReducer from './topicReducer';
 
 export default combineReducers({
     auth: authReducer,
@@ -12,5 +14,7 @@ export default combineReducers({
     users: userListReducer,
     chatList: chatListReducer,
     chatData: chatDataReducer,
-    startChat: startChatReducer
+    startChat: startChatReducer,
+    categories: categoryReducer,
+    topics: topicReducer
 });

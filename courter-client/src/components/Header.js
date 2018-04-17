@@ -27,7 +27,7 @@ class Header extends Component {
                 return;
             default:
                return (<li className="nav-item">
-                            <a className="nav-link">{this.props.auth.givenName} {this.props.auth.familyName}</a>
+                            <Link to={'/chat'} className="nav-link">{this.props.auth.givenName} {this.props.auth.familyName}</Link>
                         </li>);
         }
     }
@@ -36,7 +36,7 @@ class Header extends Component {
         return (
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <div className='container'>
-                    <Link to={'/'} className="navbar-brand" ><img src="favicon.ico"/>ourter.io</Link>             
+                    <Link to={'/'} className="navbar-brand" ><img src="favicon.ico" alt=""/>courter.io</Link>             
                     <ul className="navbar-nav">
                         {this.renderUser()}
                         {this.renderHeader()}

@@ -31,7 +31,7 @@ class Chat extends Component {
       messages: []
     };
 
-    this.socket = io.connect();
+    this.socket = io.connect('',{secure: true});
     this.socket.on("RECEIVE_MESSAGE", function(data) {
       addMessage(data);
     });

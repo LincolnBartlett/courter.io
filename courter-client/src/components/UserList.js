@@ -16,10 +16,10 @@ class UserList extends Component {
             {this.props.users.map(user => {
               switch (this.props.auth) {
                 case null:
-                  return;
+                  return<div/>;
                 default:
                   if (user._id === this.props.auth._id) {
-                    return;
+                    return<div/>;
                   }
               }
               return (
