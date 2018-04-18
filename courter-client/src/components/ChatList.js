@@ -2,6 +2,7 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { fetchChat, setChatData, fetchChatList } from "../actions/index";
 import { bindActionCreators } from "redux";
+import { Link } from 'react-router-dom';
 
 class ChatList extends Component {
   updateChat(room, name) {
@@ -25,7 +26,7 @@ class ChatList extends Component {
             {this.props.chatList.map(chat => {
               let test;
               return (
-                <a
+                <Link to={'/chat'}
                   key={chat._id}
                   className="list-group-item list-group-item-action"
                   onClick={() => this.updateChat(chat._id, test)}
@@ -37,7 +38,7 @@ class ChatList extends Component {
                     }
                     return null;
                   })}
-                </a>
+                </Link>
               );
             })}
           </div>
@@ -48,10 +49,12 @@ class ChatList extends Component {
   render() {
     return (
         <div className="card">
+          <div className="card-header text-center">
+            <h3>Chat List</h3>
+          </div >
           <div className="card-body">
-            <h5>Chat List:</h5>
-            <hr />
-            <div className="list-group">{this.renderChatList()}</div>
+            
+            <div className="list-group list-group-flush">{this.renderChatList()}</div>
           </div>
         </div>
     );

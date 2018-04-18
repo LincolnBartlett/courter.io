@@ -11,9 +11,10 @@ const express = require('express'),
 //ICE BREAKERS
 router.post('/icebreaker/new',
       (req, res) => {
+          console.log(req.body); 
          new IceBreaker({ 
-             author: req.body.user_id,
-             item: req.body.item_id,
+             author: req.body.author_id,
+             topic: req.body.topic_id,
              message: req.body.message
              }).save();    
          res.send('success');
@@ -31,7 +32,6 @@ router.post('/category/new',
 router.post('/category/getall',
       async (req, res) => {
          const categories = await Category.find({});  
-            console.log(categories);
          res.send(categories);
       }); 
 
@@ -41,7 +41,6 @@ router.post('/topic/get',
          const topics = await Topic.find({
              category : req.body.category_id
          });  
-            console.log(topics);
          res.send(topics);
       });   
     
@@ -56,6 +55,15 @@ router.post('/topic/new',
 
 
 //ITEMS
+router.post('/item/get',
+      async (req, res) => {
+         const items = await Item.find({
+             category : req.body.topic_id
+         });  
+            console.log(items);
+         res.send(items);
+      }); 
+
 router.post('/item/new',
       (req, res) => {
          new Item({ 

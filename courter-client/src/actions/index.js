@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { FETCH_USER, FETCH_CHAT, FETCH_ALL_USERS, FETCH_CHAT_LIST, SET_CHAT, START_CHAT, FETCH_CATEGORIES, FETCH_TOPICS } from './types';
+import { FETCH_USER, FETCH_CHAT, FETCH_ALL_USERS, FETCH_CHAT_LIST, SET_CHAT, START_CHAT, FETCH_CATEGORIES, FETCH_TOPICS, NEW_ICE_BREAKER } from './types';
 
 export const fetchUser = () => async dispatch => {
     const res = await axios.get('/api/user/current_user');
@@ -38,9 +38,14 @@ export const fetchCategories = () => async dispatch => {
     dispatch({ type: FETCH_CATEGORIES, payload: res.data });
 };
 
-export const fetchTopics = (category_id) => async dispatch => {
+export const fetchTopics = (category_id = "5ad518960f536e5d7170edcb") => async dispatch => {
     const res = await axios.post(`/api/court/topic/get`,{category_id});
     dispatch({ type: FETCH_TOPICS, payload: res.data });
+};
+
+export const newIceBreaker = (icebreaker) => async dispatch => {
+    const res = await axios.post(`/api/court/icebreaker/new`, icebreaker);
+    dispatch({ type: NEW_ICE_BREAKER, payload: res.data });
 };
 
 // export const example = (argument) => async dispatch => {

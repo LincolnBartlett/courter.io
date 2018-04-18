@@ -7,6 +7,7 @@ import chatDataReducer from './chatDataReducer';
 import startChatReducer from './startChatReducer';
 import categoryReducer from './categoryReducer';
 import topicReducer from './topicReducer';
+import iceBreakerReducer from './iceBreakerReducer';
 
 export default combineReducers({
     auth: authReducer,
@@ -16,5 +17,6 @@ export default combineReducers({
     chatData: chatDataReducer,
     startChat: startChatReducer,
     categories: categoryReducer,
-    topics: topicReducer
+    topics: topicReducer,
+    icebreaker: iceBreakerReducer
 });

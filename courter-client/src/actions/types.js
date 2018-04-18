@@ -6,3 +6,5 @@ export const SET_CHAT = 'set_chat';
 export const START_CHAT = 'start_chat';
 export const FETCH_CATEGORIES = 'fetch_categories';
 export const FETCH_TOPICS = 'fetch_topics';
+export const FETCH_ITEMS = 'fetch_items';
+export const NEW_ICE_BREAKER = 'new_ice_breaker';

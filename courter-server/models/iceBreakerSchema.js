@@ -4,7 +4,7 @@ const {Schema} = mongoose;
 
 var iceBreakerSchema = new Schema({
     author: {type: Schema.Types.ObjectId, ref :'users'},
-    item: {type: Schema.Types.ObjectId, ref :'items'},
+    topic: {type: Schema.Types.ObjectId, ref :'topics'},
     message: String,
     timeStamp: { type : Date, default: Date.now }
 });
