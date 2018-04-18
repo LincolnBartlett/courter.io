@@ -1,24 +1,28 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { fetchCategories, fetchTopics, newIceBreaker,fetchIceBreakersByCat } from "../actions/index";
+import { fetchCategories, fetchTopics, newIceBreaker,fetchIceBreakersByCat, startChat } from "../actions/index";
 import { bindActionCreators } from "redux";
 import ChatList from "./ChatList";
 import "../style/court.css";
+import Moment from "react-moment";
 class Court extends Component {
   constructor(props) {
     super(props);
-
+    this.listenIncrement = this.listenIncrement.bind(this);
+    this.listenDecrement = this.listenDecrement.bind(this);
     this.state = {
     category:"",
       topic: "",
       message: "",
       topic_id: "",
-      courtstate: "compose",
-      category_id: ""
+      courtstate: "listen",
+      category_id: "",
+      listenstate: 0
     };
   }
 
   renderCategories() {
+    //refactor onClick
     switch (this.props.categories) {
       case null:
         return <div />;
@@ -64,7 +68,7 @@ class Court extends Component {
                     className="list-group-item list-group-item-action"
                     key={topic._id}
                     onClick={ev =>
-                      this.setState({ topic_id: topic._id, topic: topic.title })
+                      this.setState({ topic_id: topic._id, topic: topic.title, listenstate: 0 })
                     }
                   >
                     {topic.title}
@@ -91,7 +95,7 @@ class Court extends Component {
               type="text"
               className="form-control"
               value={this.state.message}
-              onKeyDown={this.onEnterPress}
+              onKeyDown={this.onSendEnterPress}
               onChange={ev => this.setState({ message: ev.target.value })}
               rows="5"
               required
@@ -105,11 +109,20 @@ class Court extends Component {
     }
   }
 
-  onEnterPress(ev){
+
+
+  onSendEnterPress(ev){
     if (ev.keyCode === 13 && ev.shiftKey === false) {
-      if (this.state.message.length < 1) {
+
         this.newIceBreaker(this.state.message, ev);
-      }
+  
+    }
+  };
+  onReplyEnterPress(ev){
+    if (ev.keyCode === 13 && ev.shiftKey === false) {
+
+        this.replyIceBreaker(this.state.message, ev);
+    
     }
   };
 
@@ -124,6 +137,18 @@ class Court extends Component {
     this.props.newIceBreaker(icebreakerdata);
   }
 
+  replyIceBreaker(reply, ev) {
+    ev.preventDefault();
+    const replydata = {
+      message: reply,
+      user_id: this.props.auth._id,
+      recipient_id: this.props.icebreakers[this.state.listenstate].author._id,
+      topic_id: this.props.icebreakers[this.state.listenstate].topic._id,
+      category_id: this.state.category_id,
+      icebreaker_id:this.props.icebreakers[this.state.listenstate]._id
+    };
+    this.props.startChat(replydata);
+  }
   renderCompose(){
       return(<div>
         <div className="topic-text">
@@ -140,20 +165,85 @@ class Court extends Component {
       </div>);
   }
 
+  listenIncrement(){
+    let newstate = this.state.listenstate;
+    newstate = newstate + 1;
+    if(newstate == this.props.icebreakers.length){
+      this.setState({listenstate : 0});
+    }else{
+      this.setState({listenstate : newstate});
+    }
+    
+  }
+
+  listenDecrement(){
+    let newstate = this.state.listenstate;
+    newstate = newstate - 1;
+    if (newstate == -1){
+      this.setState({listenstate : this.props.icebreakers.length - 1});
+    }else{
+      this.setState({listenstate : newstate});
+    }
+
+  }
+
   renderListen(){
       switch(this.props.icebreakers){
           case null:
           return <div>null</div>;
           default:
           return(<div>
-            <div className="row card-body">
-            {this.props.icebreakers.map(icebreaker => {
-              return (<div key={icebreaker._id}>
-                        <h3>{icebreaker.topic.title}</h3>
-                        <p>{icebreaker.author.givenName}: {icebreaker.message}</p>
-                    </div>);
-            })}
+            <div className="form-row">
+            <div className="col-md-6">
+              <button className="form-control btn btn-danger" onClick={ev=>this.listenDecrement()}>Last</button>
+              </div>
+              <div className="col-md-6">  
+              <button className="form-control btn btn-danger" onClick={ev=>this.listenIncrement()}>Next</button>
+              </div>
+
             </div>
+            <h1 className="text-right display-4">{this.props.icebreakers[this.state.listenstate].topic.title}</h1>
+            <h3>{this.props.icebreakers[this.state.listenstate].author.givenName}</h3>
+            <hr/>
+    
+            <div className="row card-body">
+            
+      <div className="float-left text-left w-75">
+        <div className="alert alert-success">
+          <p>{this.props.icebreakers[this.state.listenstate].topic.title} {this.props.icebreakers[this.state.listenstate].message}</p>
+          <p className="text-left small mb-0">
+            <Moment format="MMM DD, YYYY hh:mma">{this.props.icebreakers[this.state.listenstate].timeStamp}</Moment>
+          </p>
+        </div>
+      </div>
+
+            <div className="float-right text-right  w-75">
+        <div className="alert alert-primary">
+          <p>{this.state.message}</p>
+          <p className="text-right small mb-0">
+            <Moment format="MMM DD, YYYY hh:mma">{Date.now()}</Moment>
+          </p>
+        </div>
+      </div>
+
+            </div>
+            <form onSubmit={ev => this.replyIceBreaker(this.state.message, ev)}>
+          <div className="form-group">
+            <textarea
+              type="text"
+              className="form-control"
+              value={this.state.message}
+              onKeyDown={this.onReplyEnterPress}
+              onChange={ev => this.setState({ message: ev.target.value })}
+              rows="5"
+              required
+            />
+            <button type="submit" className="btn btn-primary form-control bump">
+              Reply Ice Breaker
+            </button>
+            </div>
+          </form>
+
           </div>);
       }
 
@@ -171,7 +261,8 @@ class Court extends Component {
         }
     }
 
-  render() {
+  
+    render() {
     return (
       <div className="container">
         <div className="row">
@@ -194,7 +285,7 @@ class Court extends Component {
         </div>
         <hr/>
         <nav className="navbar navbar-expand">
-                {this.renderCategories()}
+          {this.renderCategories()}
         </nav>
         {this.renderCourt()}
         </div>
@@ -225,7 +316,8 @@ function mapDispatchToProps(dispatch) {
       fetchCategories: fetchCategories,
       fetchTopics: fetchTopics,
       newIceBreaker: newIceBreaker,
-      fetchIceBreakersByCat: fetchIceBreakersByCat
+      fetchIceBreakersByCat: fetchIceBreakersByCat,
+      startChat : startChat
     },
     dispatch
   );

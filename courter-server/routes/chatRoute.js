@@ -19,16 +19,66 @@ router.post('/chatlist/:id',
 
 router.post('/startchat',
       async (req, res) => {
+
+            console.log(req.body);
+
+            const iceBreaker = await IceBreaker.findById(req.body.icebreaker_id);
+
+            console.log(iceBreaker);
+
             const chat = await Chat.find({
                   $and : [
                         {recipients : {$eq: req.body.user_id}},
                         {recipients : {$eq: req.body.recipient_id}}
                   ]
             });
-            if(chat.length < 0){
-                  new Chat({ recipients: [req.body.user_id, req.body.recipient_id] }).save();
+
+            console.log(chat);
+            
+            if(chat.length === 0){
+           
+                  new Chat({ recipients: [req.body.user_id, req.body.recipient_id] }).save(function(err, chatdata){
+                        new Message({
+                              author: req.body.recipient_id,
+                              chat: chatdata._id,
+                              message: iceBreaker.message,
+                              topic: req.body.topic_id
+            
+                        }).save();
+                       
+                        
+                        
+                        new Message({
+                              author: req.body.user_id,
+                              chat: chatdata._id,
+                              message: req.body.message
+                        }).save();
+                        res.send('success');
+                   
+                  });
+            }else{
+                  new Message({
+                        author: req.body.recipient_id,
+                        chat: chat[0]._id,
+                        message: iceBreaker.message,
+                        topic: req.body.topic_id
+      
+                  }).save(function(err){
+
+                        new Message({
+                              author: req.body.user_id,
+                              chat: chat[0]._id,
+                              message: req.body.message
+            
+                        }).save();
+
+                  });
+
+
+                  res.send('success');
             }
-            res.send('success');
+
+
       });
 
 module.exports = router;

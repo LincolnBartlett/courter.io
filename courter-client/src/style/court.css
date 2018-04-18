@@ -2,6 +2,9 @@
     height: 75vh;
 }
 
+.message-window{
+    height: 50vh;
+}
 .topic-text{
     height: 50px;
 }

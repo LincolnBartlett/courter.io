@@ -137,7 +137,7 @@ class Chat extends Component {
         <div className="alert alert-primary">
           <p>{message.message}</p>
           <p className="text-right small mb-0">
-            <Moment format="ddd, hh:mma">{message.timeStamp}</Moment>
+            <Moment format="MMM DD, YYYY hh:mma">{message.timeStamp}</Moment>
           </p>
         </div>
       </div>
@@ -150,7 +150,7 @@ class Chat extends Component {
         <div className="alert alert-success">
           <p>{message.message}</p>
           <p className="text-left small mb-0">
-            <Moment format="ddd, hh:mma">{message.timeStamp}</Moment>
+            <Moment format="MMM DD, YYYY hh:mma">{message.timeStamp}</Moment>
           </p>
         </div>
       </div>
@@ -198,8 +198,6 @@ class Chat extends Component {
                 </div>
                 <div className="col-md-4">
                   <ChatList/>
-                  <br/>
-                  <UserList/>
                 </div>
               </div>
             </div>);

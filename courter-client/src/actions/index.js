@@ -36,11 +36,8 @@ export const fetchAllUsers = () => async dispatch => {
     dispatch({ type: FETCH_ALL_USERS, payload: res.data });
 };
 
-export const startChat = (user_id, recipient_id) => async dispatch => {
-    const res = await axios.post(`/api/chat/startchat`,{
-        user_id : user_id,
-        recipient_id : recipient_id
-    });
+export const startChat = (message) => async dispatch => {
+    const res = await axios.post(`/api/chat/startchat`,message);
     dispatch({ type: START_CHAT, payload: res.data });
 };
 
