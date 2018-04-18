@@ -49,12 +49,10 @@ class ChatList extends Component {
   render() {
     return (
         <div className="card">
-          <div className="card-header text-center">
-            <h3>Chat List</h3>
-          </div >
           <div className="card-body">
-            
-            <div className="list-group list-group-flush">{this.renderChatList()}</div>
+          <h3>Chat List</h3>
+          <hr/>
+            <div className="list-group">{this.renderChatList()}</div>
           </div>
         </div>
     );

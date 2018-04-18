@@ -8,3 +8,4 @@ export const FETCH_CATEGORIES = 'fetch_categories';
 export const FETCH_TOPICS = 'fetch_topics';
 export const FETCH_ITEMS = 'fetch_items';
 export const NEW_ICE_BREAKER = 'new_ice_breaker';
+export const FETCH_IB_CAT = 'fetch_ib_cat';

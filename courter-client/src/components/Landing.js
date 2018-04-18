@@ -43,6 +43,17 @@ class Landing extends Component {
                       </p>
                     </div>
                     </div>
+
+                    <br/>
+                    <div className="card">
+                    <div className="card-body"> 
+         
+                      <p> 
+                        This project is currently in development and the site is a snapshot of the most recent development build. 
+                      </p>
+
+                    </div>
+                    </div>
                   </div>
                 </div>);
       default:

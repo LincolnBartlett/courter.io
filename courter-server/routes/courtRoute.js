@@ -15,10 +15,21 @@ router.post('/icebreaker/new',
          new IceBreaker({ 
              author: req.body.author_id,
              topic: req.body.topic_id,
-             message: req.body.message
+             message: req.body.message,
+             category: req.body.category_id
              }).save();    
          res.send('success');
       });
+
+
+router.post('/icebreaker/getbycategory',
+      async (req, res) => {
+            const category = await Category.findById(req.body.category_id);
+            const icebreakers = await IceBreaker.find({category: category._id}).populate('author').populate('topic');
+            console.log(icebreakers);
+            res.send(icebreakers);
+      });
+
 
 //CATEGORIES
 router.post('/category/new',
