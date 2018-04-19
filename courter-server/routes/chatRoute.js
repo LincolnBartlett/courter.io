@@ -7,7 +7,7 @@ const express = require('express'),
 
 router.post('/load/:room',
       async (req, res) => {
-            const messages = await Message.find({ chat: req.params.room }).populate('author');          
+            const messages = await Message.find({ chat: req.params.room }).populate('author').populate('topic');          
             res.send(messages);
       });
 

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
+
 
 class Header extends Component {
 
@@ -27,7 +27,7 @@ class Header extends Component {
                 return;
             default:
                return (<li className="nav-item">
-                            <Link to={'/chat'} className="nav-link">{this.props.auth.givenName} {this.props.auth.familyName}</Link>
+                            <a className="nav-link">{this.props.auth.givenName} {this.props.auth.familyName}</a>
                         </li>);
         }
     }
@@ -36,7 +36,7 @@ class Header extends Component {
         return (
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
                 <div className='container'>
-                    <Link to={'/'} className="navbar-brand" ><img src="favicon.ico" alt=""/>courter.io</Link>             
+                   <img src="favicon.ico" className="navbar-brand" alt=""/>             
                     <ul className="navbar-nav">
                         {this.renderUser()}
                         {this.renderHeader()}

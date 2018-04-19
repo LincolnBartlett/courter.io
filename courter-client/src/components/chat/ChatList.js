@@ -1,6 +1,6 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { fetchChat, setChatData, fetchChatList } from "../actions/index";
+import { fetchChat, setChatData, fetchChatList,setViewState } from "../../actions/index";
 import { bindActionCreators } from "redux";
 import { Link } from 'react-router-dom';
 
@@ -10,6 +10,7 @@ class ChatList extends Component {
   updateChat(room, name) {
     this.props.fetchChat(room);
     this.props.setChatData(room, name);
+    this.props.setViewState('chat');
   }
 
   renderChatList() {
@@ -28,8 +29,7 @@ class ChatList extends Component {
             {this.props.chatList.map(chat => {
              let name
               return (
-                <Link
-                  to ={'/chat'}
+                <a
                   key={chat._id}
                   className="list-group-item list-group-item-action"
                   onClick={() => this.updateChat(chat._id, name)}
@@ -41,7 +41,7 @@ class ChatList extends Component {
                     }
                     return null;
                   })}
-                </Link>
+                </a>
               );
             })}
           </div>
@@ -74,7 +74,8 @@ function mapDispatchToProps(dispatch) {
     {
       fetchChat: fetchChat,
       fetchChatList: fetchChatList,
-      setChatData: setChatData
+      setChatData: setChatData,
+      setViewState: setViewState
     },
     dispatch
   );

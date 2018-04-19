@@ -1,9 +1,9 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { fetchCategories, fetchTopics, newIceBreaker,fetchIceBreakersByCat, startChat, fetchChatList } from "../actions/index";
+import { fetchCategories, fetchTopics, newIceBreaker,fetchIceBreakersByCat, startChat, fetchChatList } from "../../actions/index";
 import { bindActionCreators } from "redux";
-import ChatList from "./ChatList";
-import "../style/court.css";
+import ChatList from "../chat/ChatList";
+import "../../style/court.css";
 import Moment from "react-moment";
 
 class Court extends Component {
@@ -38,7 +38,7 @@ class Court extends Component {
                   <li key={category._id} className="nav-item">
                     <button
                       className="btn btn-lg btn-link"
-                      onClick={() => {this.props.fetchTopics(category._id);this.props.fetchIceBreakersByCat(category._id);this.setState({ category: category.title, category_id : category._id, message: ""})}}
+                      onClick={() => {this.props.fetchTopics(category._id);this.props.fetchIceBreakersByCat(category._id);this.setState({ category: category.title, category_id : category._id, message: "",listenstate: 0})}}
                     >
                       {category.title}
                     </button>
@@ -54,9 +54,7 @@ class Court extends Component {
   renderTopics() {
     switch (this.props.topics) {
       case null:
-        return (<div>
-            Choose a Category to get started!
-        </div>);
+        return (<div/>);
       case false:
         return <div />;
       default:
@@ -183,9 +181,9 @@ class Court extends Component {
     let newstate = this.state.listenstate;
     newstate = newstate - 1;
     if (newstate === -1){
-      this.setState({listenstate : this.props.icebreakers.length - 1});
+      this.setState({listenstate : this.props.icebreakers.length - 1, message: ""});
     }else{
-      this.setState({listenstate : newstate});
+      this.setState({listenstate : newstate, message: ""});
     }
 
   }

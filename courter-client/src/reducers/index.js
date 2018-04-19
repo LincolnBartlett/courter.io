@@ -9,6 +9,7 @@ import categoryReducer from './categoryReducer';
 import topicReducer from './topicReducer';
 import iceBreakerReducer from './iceBreakerReducer';
 import iceBreakerCatFetchReducer from './iceBreakerCatFetchReducer';
+import viewReducer from './viewReducer';
 
 export default combineReducers({
     auth: authReducer,
@@ -20,5 +21,6 @@ export default combineReducers({
     categories: categoryReducer,
     topics: topicReducer,
     icebreaker: iceBreakerReducer,
-    icebreakers: iceBreakerCatFetchReducer
+    icebreakers: iceBreakerCatFetchReducer,
+    viewState : viewReducer
 });

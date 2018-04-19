@@ -9,7 +9,8 @@ import {
     FETCH_CATEGORIES, 
     FETCH_TOPICS, 
     NEW_ICE_BREAKER,
-    FETCH_IB_CAT 
+    FETCH_IB_CAT,
+    SET_VIEW 
         } from './types';
 
 export const fetchUser = () => async dispatch => {
@@ -61,6 +62,9 @@ export const newIceBreaker = (icebreaker) => async dispatch => {
     dispatch({ type: NEW_ICE_BREAKER, payload: res.data });
 };
 
+export const setViewState = (viewState) => dispatch => {
+    dispatch({ type: SET_VIEW, payload:  viewState});
+};
 // export const example = (argument) => async dispatch => {
 //     const res = await axios.post('')
 //     dispatch({type : EXAMPLE, payload : res.data});

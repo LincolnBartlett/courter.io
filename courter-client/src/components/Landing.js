@@ -2,10 +2,31 @@ import React, { Component } from "react";
 import { connect } from "react-redux";
 import { fetchChat, setChatData, fetchChatList } from "../actions/index";
 import { bindActionCreators } from "redux";
-import Court from "./Court";
+import Court from "./court/Court";
+import Chat from "./chat/Chat";
 
 class Landing extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      viewState: ''
+    };
+  }
 
+  mainView(){
+    console.log('called');
+    console.log(this.props.viewState);
+    switch(this.props.viewState){
+      case "court":
+      return <Court/>;
+      case "chat":
+      return <Chat/>;
+      default:
+      return <Court/>;
+
+        
+    }
+  }
   renderLanding() {
     switch (this.props.auth) {
       case null:
@@ -57,7 +78,7 @@ class Landing extends Component {
                   </div>
                 </div>);
       default:
-        return <Court/>;
+        return (<div>{this.mainView()}</div>);
     }
   }
 
@@ -72,7 +93,8 @@ class Landing extends Component {
 
 function mapStateToProps(state) {
   return {
-    auth: state.auth
+    auth: state.auth,
+    viewState : state.viewState
   };
 }
 

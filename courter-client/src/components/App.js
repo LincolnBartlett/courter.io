@@ -1,9 +1,8 @@
 import React, { Component } from "react";
 import { BrowserRouter, Route } from "react-router-dom";
-import Chat from "./Chat";
-import Header from "./Header";
 import { connect } from "react-redux";
 import * as actions from "../actions";
+import Header from "./Header";
 import Landing from "./Landing";
 
 class App extends Component {
@@ -20,8 +19,7 @@ class App extends Component {
           <div>
               <Header/>
               <br/>
-              <Route exact path="/" component={Landing}/>
-              <Route path="/chat" component={Chat}/>
+              <Route path="/" component={Landing}/>
           </div>
         </BrowserRouter>
       </div>

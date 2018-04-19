@@ -3,8 +3,10 @@ import { connect } from "react-redux";
 import * as ReactDOM from "react-dom";
 import io from "socket.io-client";
 import Moment from "react-moment";
-import "../style/chat.css";
+import "../../style/chat.css";
 import ChatList from "./ChatList";
+import { bindActionCreators } from "redux";
+import { setViewState } from "../../actions/index";
 
 class Chat extends Component {
   componentWillReceiveProps(nextProps) {
@@ -44,7 +46,8 @@ class Chat extends Component {
             user: data.givenName,
             userId: data.user,
             _id: data._id,
-            timeStamp: data.timeStamp
+            timeStamp: data.timeStamp,
+            topic: data.topic
           }
         ]
       });
@@ -82,6 +85,9 @@ class Chat extends Component {
       case null:
         return (<div className="card">
                   <div className="card-body">
+                  <button 
+              className="float-right btn btn-danger"
+              onClick={()=> this.props.setViewState('court')}>Back to Ice Breakers</button>
                     <div className="container-fluid chat-window" ref="messageList">
                      <h3>courter.io</h3>
                      <hr/>
@@ -96,6 +102,9 @@ class Chat extends Component {
         return (
           <div className="card">
             <div className="card-body">
+              <button 
+              className="float-right btn btn-danger"
+              onClick={()=> this.props.setViewState('court')}>Back to Ice Breakers</button>
             <h3>{this.props.chatData.givenName}</h3>
             <hr/>
               <div className="container-fluid chat-window" ref="messageList">
@@ -131,6 +140,19 @@ class Chat extends Component {
   }
 
   renderMessageRight(message) {
+    if(message.topic){
+      return (
+        <div key={message._id} className="float-right text-right  w-75">
+          <div className="alert alert-primary">
+            <p>{message.topic.title}</p>
+            <p>{message.message}</p>
+            <p className="text-right small mb-0">
+              <Moment format="MMM DD, YYYY hh:mma">{message.timeStamp}</Moment>
+            </p>
+          </div>
+        </div>
+      );
+    }
     return (
       <div key={message._id} className="float-right text-right  w-75">
         <div className="alert alert-primary">
@@ -144,6 +166,19 @@ class Chat extends Component {
   }
 
   renderMessageLeft(message) {
+  if(message.topic){
+    return (
+      <div key={message._id} className="float-left text-left w-75">
+        <div className="alert alert-success">
+          <p>{message.topic.title}</p>
+          <p>{message.message}</p>
+          <p className="text-left small mb-0">
+            <Moment format="MMM DD, YYYY hh:mma">{message.timeStamp}</Moment>
+          </p>
+        </div>
+      </div>
+    );
+  }
     return (
       <div key={message._id} className="float-left text-left w-75">
         <div className="alert alert-success">
@@ -207,4 +242,12 @@ function mapStateToProps(state) {
   return { chat: state.chat, auth: state.auth, chatData: state.chatData };
 }
 
-export default connect(mapStateToProps)(Chat);
+function mapDispatchToProps(dispatch) {
+  return bindActionCreators(
+    {
+      setViewState: setViewState
+    },
+    dispatch
+  );
+}
+export default connect(mapStateToProps, mapDispatchToProps)(Chat);
