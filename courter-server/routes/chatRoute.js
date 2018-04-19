@@ -19,21 +19,13 @@ router.post('/chatlist/:id',
 
 router.post('/startchat',
       async (req, res) => {
-
-            console.log(req.body);
-
             const iceBreaker = await IceBreaker.findById(req.body.icebreaker_id);
-
-            console.log(iceBreaker);
-
             const chat = await Chat.find({
                   $and : [
                         {recipients : {$eq: req.body.user_id}},
                         {recipients : {$eq: req.body.recipient_id}}
                   ]
             });
-
-            console.log(chat);
             
             if(chat.length === 0){
            
@@ -56,7 +48,9 @@ router.post('/startchat',
                         res.send('success');
                    
                   });
+                  
             }else{
+
                   new Message({
                         author: req.body.recipient_id,
                         chat: chat[0]._id,
@@ -74,11 +68,8 @@ router.post('/startchat',
 
                   });
 
-
                   res.send('success');
             }
-
-
       });
 
 module.exports = router;

@@ -26,7 +26,6 @@ router.post('/icebreaker/getbycategory',
       async (req, res) => {
             const category = await Category.findById(req.body.category_id);
             const icebreakers = await IceBreaker.find({category: category._id}).populate('author').populate('topic');
-            console.log(icebreakers);
             res.send(icebreakers);
       });
 

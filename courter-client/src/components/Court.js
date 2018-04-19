@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { fetchCategories, fetchTopics, newIceBreaker,fetchIceBreakersByCat, startChat } from "../actions/index";
+import { fetchCategories, fetchTopics, newIceBreaker,fetchIceBreakersByCat, startChat, fetchChatList } from "../actions/index";
 import { bindActionCreators } from "redux";
 import ChatList from "./ChatList";
 import "../style/court.css";
 import Moment from "react-moment";
+
 class Court extends Component {
   constructor(props) {
     super(props);
@@ -12,7 +13,7 @@ class Court extends Component {
     this.listenDecrement = this.listenDecrement.bind(this);
     this.state = {
     category:"",
-      topic: "",
+      topic: "select a category....",
       message: "",
       topic_id: "",
       courtstate: "listen",
@@ -37,7 +38,7 @@ class Court extends Component {
                   <li key={category._id} className="nav-item">
                     <button
                       className="btn btn-lg btn-link"
-                      onClick={() => {this.props.fetchTopics(category._id);this.props.fetchIceBreakersByCat(category._id);this.setState({ category: category.title, category_id : category._id})}}
+                      onClick={() => {this.props.fetchTopics(category._id);this.props.fetchIceBreakersByCat(category._id);this.setState({ category: category.title, category_id : category._id, message: ""})}}
                     >
                       {category.title}
                     </button>
@@ -68,7 +69,7 @@ class Court extends Component {
                     className="list-group-item list-group-item-action"
                     key={topic._id}
                     onClick={ev =>
-                      this.setState({ topic_id: topic._id, topic: topic.title, listenstate: 0 })
+                      this.setState({ topic_id: topic._id, topic: topic.title, listenstate: 0 , message: ""})
                     }
                   >
                     {topic.title}
@@ -82,7 +83,7 @@ class Court extends Component {
   }
 
   renderIceBreakerForm() {
-    switch (this.state.topic) {
+    switch (this.state.topic_id) {
       case null:
         return <div />;
       case "":
@@ -109,8 +110,6 @@ class Court extends Component {
     }
   }
 
-
-
   onSendEnterPress(ev){
     if (ev.keyCode === 13 && ev.shiftKey === false) {
 
@@ -118,6 +117,7 @@ class Court extends Component {
   
     }
   };
+
   onReplyEnterPress(ev){
     if (ev.keyCode === 13 && ev.shiftKey === false) {
 
@@ -148,7 +148,10 @@ class Court extends Component {
       icebreaker_id:this.props.icebreakers[this.state.listenstate]._id
     };
     this.props.startChat(replydata);
+    this.props.fetchChatList(this.props.auth._id);
+
   }
+
   renderCompose(){
       return(<div>
         <div className="topic-text">
@@ -168,10 +171,10 @@ class Court extends Component {
   listenIncrement(){
     let newstate = this.state.listenstate;
     newstate = newstate + 1;
-    if(newstate == this.props.icebreakers.length){
-      this.setState({listenstate : 0});
+    if(newstate === this.props.icebreakers.length){
+      this.setState({listenstate : 0, message: ""});
     }else{
-      this.setState({listenstate : newstate});
+      this.setState({listenstate : newstate, message: ""});
     }
     
   }
@@ -179,7 +182,7 @@ class Court extends Component {
   listenDecrement(){
     let newstate = this.state.listenstate;
     newstate = newstate - 1;
-    if (newstate == -1){
+    if (newstate === -1){
       this.setState({listenstate : this.props.icebreakers.length - 1});
     }else{
       this.setState({listenstate : newstate});
@@ -187,64 +190,65 @@ class Court extends Component {
 
   }
 
+  renderIceBreakerReplyMessage(){
+    switch(this.state.message){
+      case "":
+        return <div/>;
+      default:
+        return (<div className="float-right text-right  w-75">
+                  <div className="alert alert-primary">
+                    <p>{this.state.message}</p>
+                    <p className="text-right small mb-0">
+                    <Moment format="MMM DD, YYYY hh:mma">{Date.now()}</Moment>
+                    </p>
+                  </div>
+                </div>);
+    }
+  }
   renderListen(){
       switch(this.props.icebreakers){
           case null:
-          return <div>null</div>;
+          return  <h1 className="text-right display-4">select a category....</h1>;
           default:
           return(<div>
-            <div className="form-row">
-            <div className="col-md-6">
-              <button className="form-control btn btn-danger" onClick={ev=>this.listenDecrement()}>Last</button>
-              </div>
-              <div className="col-md-6">  
-              <button className="form-control btn btn-danger" onClick={ev=>this.listenIncrement()}>Next</button>
-              </div>
+                    <div className="form-row">
+                      <div className="col-md-6">
+                        <button className="form-control btn btn-danger" onClick={ev=>this.listenDecrement()}>Last</button>
+                      </div>
+                      <div className="col-md-6">  
+                        <button className="form-control btn btn-danger" onClick={ev=>this.listenIncrement()}>Next</button>
+                      </div>
+                    </div>
+                      <h1 className="text-right display-4">{this.props.icebreakers[this.state.listenstate].topic.title}</h1>
+                      <h3>{this.props.icebreakers[this.state.listenstate].author.givenName}</h3>
+                      <hr/>
+                    <div className="float-left text-left w-75">
+                      <div className="alert alert-success">
+                        <p>{this.props.icebreakers[this.state.listenstate].topic.title} {this.props.icebreakers[this.state.listenstate].message}</p>
+                        <p className="text-left small mb-0">
+                        <Moment format="MMM DD, YYYY hh:mma">{this.props.icebreakers[this.state.listenstate].timeStamp}</Moment>
+                        </p>
+                      </div>
+                    </div>
+                    {this.renderIceBreakerReplyMessage()}
+                    <form onSubmit={ev => this.replyIceBreaker(this.state.message, ev)}>
+                      <div className="form-group">
+                        <textarea
+                        type="text"
+                        className="form-control"
+                        value={this.state.message}
+                        onKeyDown={this.onReplyEnterPress}
+                        onChange={ev => this.setState({ message: ev.target.value })}
+                        rows="5"
+                        required
+                        />
 
-            </div>
-            <h1 className="text-right display-4">{this.props.icebreakers[this.state.listenstate].topic.title}</h1>
-            <h3>{this.props.icebreakers[this.state.listenstate].author.givenName}</h3>
-            <hr/>
-    
-            <div className="row card-body">
-            
-      <div className="float-left text-left w-75">
-        <div className="alert alert-success">
-          <p>{this.props.icebreakers[this.state.listenstate].topic.title} {this.props.icebreakers[this.state.listenstate].message}</p>
-          <p className="text-left small mb-0">
-            <Moment format="MMM DD, YYYY hh:mma">{this.props.icebreakers[this.state.listenstate].timeStamp}</Moment>
-          </p>
-        </div>
-      </div>
-
-            <div className="float-right text-right  w-75">
-        <div className="alert alert-primary">
-          <p>{this.state.message}</p>
-          <p className="text-right small mb-0">
-            <Moment format="MMM DD, YYYY hh:mma">{Date.now()}</Moment>
-          </p>
-        </div>
-      </div>
-
-            </div>
-            <form onSubmit={ev => this.replyIceBreaker(this.state.message, ev)}>
-          <div className="form-group">
-            <textarea
-              type="text"
-              className="form-control"
-              value={this.state.message}
-              onKeyDown={this.onReplyEnterPress}
-              onChange={ev => this.setState({ message: ev.target.value })}
-              rows="5"
-              required
-            />
-            <button type="submit" className="btn btn-primary form-control bump">
-              Reply Ice Breaker
-            </button>
-            </div>
-          </form>
-
-          </div>);
+                        <button type="submit" className="btn btn-primary form-control bump">
+                        Reply Ice Breaker
+                        </button>
+                      </div>
+                    </form>
+               </div>);
       }
 
     }
@@ -267,20 +271,20 @@ class Court extends Component {
       <div className="container">
         <div className="row">
           <div className="col-md-8">
-          <div className="card court-window">
+          <div className="card">
         <div className="card-body">
         <div className="form-row">
             <div className="col-md-4 offset-4">
                     <button
                         className="btn btn-primary form-control"
-                        onClick={(ev)=>{this.setState({courtstate: "listen"})}}
-                    >Listen</button>
+                        onClick={(ev)=>{this.setState({courtstate: "listen", message: ""})}}
+                    >Read Ice Breakers</button>
             </div>
             <div className="col-md-4">
                     <button
                         className="btn btn-primary form-control"
-                        onClick={(ev)=>{this.setState({courtstate: "compose"})}}
-                    >Compose</button>
+                        onClick={(ev)=>{this.setState({courtstate: "compose", message: ""})}}
+                    >Create Ice Breakers</button>
             </div>
         </div>
         <hr/>
@@ -317,7 +321,8 @@ function mapDispatchToProps(dispatch) {
       fetchTopics: fetchTopics,
       newIceBreaker: newIceBreaker,
       fetchIceBreakersByCat: fetchIceBreakersByCat,
-      startChat : startChat
+      startChat : startChat,
+      fetchChatList :fetchChatList
     },
     dispatch
   );

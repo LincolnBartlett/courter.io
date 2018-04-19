@@ -5,7 +5,6 @@ import io from "socket.io-client";
 import Moment from "react-moment";
 import "../style/chat.css";
 import ChatList from "./ChatList";
-import UserList from "./UserList";
 
 class Chat extends Component {
   componentWillReceiveProps(nextProps) {

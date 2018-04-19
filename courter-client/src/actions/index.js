@@ -46,7 +46,7 @@ export const fetchCategories = () => async dispatch => {
     dispatch({ type: FETCH_CATEGORIES, payload: res.data });
 };
 
-export const fetchTopics = (category_id = "5ad518960f536e5d7170edcb") => async dispatch => {
+export const fetchTopics = (category_id) => async dispatch => {
     const res = await axios.post(`/api/court/topic/get`,{category_id});
     dispatch({ type: FETCH_TOPICS, payload: res.data });
 };

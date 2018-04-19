@@ -5,6 +5,8 @@ import { bindActionCreators } from "redux";
 import { Link } from 'react-router-dom';
 
 class ChatList extends Component {
+
+
   updateChat(room, name) {
     this.props.fetchChat(room);
     this.props.setChatData(room, name);
@@ -24,17 +26,18 @@ class ChatList extends Component {
         return (
           <div>
             {this.props.chatList.map(chat => {
-              let test;
+             let name
               return (
-                <Link to={'/chat'}
+                <Link
+                  to ={'/chat'}
                   key={chat._id}
                   className="list-group-item list-group-item-action"
-                  onClick={() => this.updateChat(chat._id, test)}
+                  onClick={() => this.updateChat(chat._id, name)}
                 >
                   {chat.recipients.map(recipient => {
                     if (recipient._id !== this.props.auth._id) {
-                      test = recipient.givenName;
-                      return recipient.givenName;
+                        name = recipient.givenName;
+                        return recipient.givenName;
                     }
                     return null;
                   })}
