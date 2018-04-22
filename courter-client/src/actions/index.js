@@ -10,7 +10,9 @@ import {
     FETCH_TOPICS, 
     NEW_ICE_BREAKER,
     FETCH_IB_CAT,
-    SET_VIEW 
+    SET_VIEW,
+    REJECT_ICE_BREAKER,
+    ACCEPT_ICE_BREAKER
         } from './types';
 
 export const fetchUser = () => async dispatch => {
@@ -27,8 +29,8 @@ export const setChatData = (chat_id = 'chat', givenName = 'name') => dispatch =>
     dispatch({ type: SET_CHAT, payload: {chat_id : chat_id, givenName : givenName}});
 };
 
-export const fetchChatList = (user_id = '') => async dispatch => {
-    const res = await axios.post(`/api/chat/chatlist/${user_id}`);
+export const fetchChatList = (user_id) => async dispatch => {
+    const res = await axios.post(`/api/chat/chatlist`, {user_id: user_id});
     dispatch({ type: FETCH_CHAT_LIST, payload: res.data });
 };
 
@@ -52,8 +54,8 @@ export const fetchTopics = (category_id) => async dispatch => {
     dispatch({ type: FETCH_TOPICS, payload: res.data });
 };
 
-export const fetchIceBreakersByCat = (category_id) => async dispatch => {
-    const res = await axios.post(`/api/court/icebreaker/getbycategory`, {category_id: category_id});
+export const fetchIceBreakersByCat = (category_id, user_id) => async dispatch => {
+    const res = await axios.post(`/api/court/icebreaker/getbycategory`, {category_id: category_id, user_id: user_id});
     dispatch({ type: FETCH_IB_CAT, payload: res.data });
 };
 
@@ -64,6 +66,16 @@ export const newIceBreaker = (icebreaker) => async dispatch => {
 
 export const setViewState = (viewState) => dispatch => {
     dispatch({ type: SET_VIEW, payload:  viewState});
+};
+
+export const rejectIceBreaker = (user_id, ice_id) => async dispatch => {
+    const res = await axios.post(`/api/court/icebreaker/reject`, {user_id: user_id, ice_id : ice_id});
+    dispatch({ type: REJECT_ICE_BREAKER, payload:  res.data});
+};
+
+export const acceptIceBreaker = (user_id, ice_id) => async dispatch => {
+    const res = await axios.post(`/api/court/icebreaker/accept`, {user_id: user_id, ice_id : ice_id});
+    dispatch({ type: ACCEPT_ICE_BREAKER, payload:  res.data});
 };
 // export const example = (argument) => async dispatch => {
 //     const res = await axios.post('')

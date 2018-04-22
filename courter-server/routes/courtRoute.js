@@ -25,10 +25,25 @@ router.post('/icebreaker/new',
 router.post('/icebreaker/getbycategory',
       async (req, res) => {
             const category = await Category.findById(req.body.category_id);
-            const icebreakers = await IceBreaker.find({category: category._id}).populate('author').populate('topic');
+            const icebreakers = await IceBreaker.find()
+                  .where('category').equals(category._id)
+                  .where('author').ne(req.body.user_id)
+                  .where('rejections').nin([req.body.user_id])
+                  .where('replies').nin([req.body.user_id])
+                  .populate('author')
+                  .populate('topic');        
             res.send(icebreakers);
       });
 
+router.post('/icebreaker/reject',
+      async (req, res) => {
+            const icebreaker = await IceBreaker.findByIdAndUpdate(req.body.ice_id , {$push: {rejections: req.body.user_id}});
+      });
+
+router.post('/icebreaker/accept',
+      async (req, res) => {
+            const icebreaker = await IceBreaker.findByIdAndUpdate(req.body.ice_id , {$push: {replies: req.body.user_id}});
+      });
 
 //CATEGORIES
 router.post('/category/new',

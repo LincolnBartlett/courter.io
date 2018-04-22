@@ -1,6 +1,15 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { fetchCategories, fetchTopics, newIceBreaker,fetchIceBreakersByCat, startChat, fetchChatList } from "../../actions/index";
+import {
+  fetchCategories,
+  fetchTopics,
+  newIceBreaker,
+  fetchIceBreakersByCat,
+  startChat,
+  fetchChatList,
+  rejectIceBreaker,
+  acceptIceBreaker
+} from "../../actions/index";
 import { bindActionCreators } from "redux";
 import ChatList from "../chat/ChatList";
 import "../../style/court.css";
@@ -9,10 +18,9 @@ import Moment from "react-moment";
 class Court extends Component {
   constructor(props) {
     super(props);
-    this.listenIncrement = this.listenIncrement.bind(this);
-    this.listenDecrement = this.listenDecrement.bind(this);
+
     this.state = {
-    category:"",
+      category: "",
       topic: "select a category....",
       message: "",
       topic_id: "",
@@ -20,10 +28,44 @@ class Court extends Component {
       category_id: "",
       listenstate: 0
     };
+
+    this.onReplyEnterPress = ev => {
+      if (ev.keyCode === 13 && ev.shiftKey === false) {
+        this.replyIceBreaker(this.state.message, ev);
+      }
+    };
+
+    this.onSendEnterPress = ev => {
+      if (ev.keyCode === 13 && ev.shiftKey === false) {
+        this.newIceBreaker(this.state.message, ev);
+      }
+    };
+
+    this.handlePass = (ice_id) => {
+      let newstate = this.state.listenstate;
+      newstate = newstate + 1;
+      this.props.rejectIceBreaker(this.props.auth._id, ice_id);
+      if (newstate === this.props.icebreakers.length) {
+        this.setState({ listenstate: 0, message: "" });
+        this.props.fetchIceBreakersByCat(this.state.category_id, this.props.auth._id);
+      } else {
+        this.setState({ listenstate: newstate, message: "" });
+      }
+    };
+    this.listenIncrement = () => {
+      let newstate = this.state.listenstate;
+      newstate = newstate + 1;
+      if (newstate === this.props.icebreakers.length) {
+        this.setState({ listenstate: 0, message: "" });
+        this.props.fetchIceBreakersByCat(this.state.category_id, this.props.auth._id);
+      } else {
+        this.setState({ listenstate: newstate, message: "" });
+      }
+    };
   }
 
+  //COMPONENT NAVIGATION
   renderCategories() {
-    //refactor onClick
     switch (this.props.categories) {
       case null:
         return <div />;
@@ -31,30 +73,43 @@ class Court extends Component {
         return <div />;
       default:
         return (
-          <nav>
-            <ul className="navbar-nav">
+          
+            <div className="form-row">
               {this.props.categories.map(category => {
                 return (
-                  <li key={category._id} className="nav-item">
+                  <div key={category._id} className="">
                     <button
-                      className="btn btn-lg btn-link"
-                      onClick={() => {this.props.fetchTopics(category._id);this.props.fetchIceBreakersByCat(category._id);this.setState({ category: category.title, category_id : category._id, message: "",listenstate: 0})}}
+                      className="btn btn-secondary"
+                      onClick={() =>
+                        this.handleCategoryClick(category._id, category.title)
+                      }
                     >
                       {category.title}
                     </button>
-                  </li>
+                  </div>
                 );
               })}
-            </ul>
-          </nav>
+            </div>
+          
         );
     }
+  }
+
+  handleCategoryClick(category_id, category_title) {
+    this.props.fetchTopics(category_id);
+    this.props.fetchIceBreakersByCat(category_id, this.props.auth._id);
+    this.setState({
+      category: category_title,
+      category_id: category_id,
+      message: "",
+      listenstate: 0
+    });
   }
 
   renderTopics() {
     switch (this.props.topics) {
       case null:
-        return (<div/>);
+        return <div />;
       case false:
         return <div />;
       default:
@@ -67,7 +122,12 @@ class Court extends Component {
                     className="list-group-item list-group-item-action"
                     key={topic._id}
                     onClick={ev =>
-                      this.setState({ topic_id: topic._id, topic: topic.title, listenstate: 0 , message: ""})
+                      this.setState({
+                        topic_id: topic._id,
+                        topic: topic.title,
+                        listenstate: 0,
+                        message: ""
+                      })
                     }
                   >
                     {topic.title}
@@ -80,6 +140,32 @@ class Court extends Component {
     }
   }
 
+  renderCourt() {
+    switch (this.state.courtstate) {
+      case "listen":
+        return <div>{this.renderListen()}</div>;
+      case "compose":
+        return <div>{this.renderCompose()}</div>;
+      default:
+        return <div />;
+    }
+  }
+
+  //ICE BREAKER WRITE
+  renderCompose() {
+    return (
+      <div>
+        <div className="topic-text">
+          <h1 className="display-5 text-right">{this.state.topic}</h1>
+        </div>
+        <div className="row card-body">
+          <div className="col-md-6">{this.renderTopics()}</div>
+          <div className="col-md-6">{this.renderIceBreakerForm()}</div>
+        </div>
+      </div>
+    );
+  }
+
   renderIceBreakerForm() {
     switch (this.state.topic_id) {
       case null:
@@ -89,40 +175,27 @@ class Court extends Component {
       default:
         return (
           <form onSubmit={ev => this.newIceBreaker(this.state.message, ev)}>
-          <div className="form-group">
-            <textarea
-              type="text"
-              className="form-control"
-              value={this.state.message}
-              onKeyDown={this.onSendEnterPress}
-              onChange={ev => this.setState({ message: ev.target.value })}
-              rows="5"
-              required
-            />
-            <button type="submit" className="btn btn-primary form-control bump">
-              Compose Ice Breaker
-            </button>
+            <div className="form-group">
+              <textarea
+                type="text"
+                className="form-control"
+                value={this.state.message}
+                onKeyDown={this.onSendEnterPress}
+                onChange={ev => this.setState({ message: ev.target.value })}
+                rows="5"
+                required
+              />
+              <button
+                type="submit"
+                className="btn btn-primary form-control bump"
+              >
+                Compose Ice Breaker
+              </button>
             </div>
           </form>
         );
     }
   }
-
-  onSendEnterPress(ev){
-    if (ev.keyCode === 13 && ev.shiftKey === false) {
-
-        this.newIceBreaker(this.state.message, ev);
-  
-    }
-  };
-
-  onReplyEnterPress(ev){
-    if (ev.keyCode === 13 && ev.shiftKey === false) {
-
-        this.replyIceBreaker(this.state.message, ev);
-    
-    }
-  };
 
   newIceBreaker(icebreaker, ev) {
     ev.preventDefault();
@@ -135,6 +208,104 @@ class Court extends Component {
     this.props.newIceBreaker(icebreakerdata);
   }
 
+  //ICE BREAKER REPLY
+  renderListen() {
+    switch (this.props.icebreakers) {
+      case null:
+        return <h1 className="text-right display-5">select a category....</h1>;
+      default:
+      console.log(this.props.icebreakers);
+      console.log(this.props.icebreakers.length);
+      if (this.props.icebreakers.length === 0){
+        return <div>Sorry. There are currently no icebreakers for this category</div>
+      }
+        return (
+          <div>
+
+            <h1 className="text-right display-5">
+              {this.props.icebreakers[this.state.listenstate].topic.title}
+            </h1>
+            <div className="form-row">
+              <div className="col-md-6">
+              <h3>
+              {this.props.icebreakers[this.state.listenstate].author.givenName}
+            </h3>
+              </div>
+              <div className="col-md-3">
+                <button
+                  className="form-control btn btn-primary"
+                  onClick={ev => this.handlePass(this.props.icebreakers[this.state.listenstate]._id)}
+                >
+                 Hard Pass
+                </button>
+              </div>
+              <div className="col-md-3">
+              <button
+                  className="form-control btn btn-info"
+                  onClick={ev => this.listenIncrement()}
+                >
+                  Maybe Later
+                </button>
+              </div>
+            </div>
+            <hr />
+            <div className="float-left text-left w-75">
+              <div className="alert alert-success">
+                <p>
+                  {this.props.icebreakers[this.state.listenstate].topic.title}{" "}
+                  {this.props.icebreakers[this.state.listenstate].message}
+                </p>
+                <p className="text-left small mb-0">
+                  <Moment format="MMM DD, YYYY hh:mma">
+                    {this.props.icebreakers[this.state.listenstate].timeStamp}
+                  </Moment>
+                </p>
+              </div>
+            </div>
+            {this.renderIceBreakerReplyMessage()}
+            <form onSubmit={ev => this.replyIceBreaker(this.state.message, ev)}>
+              <div className="form-group">
+                <textarea
+                  type="text"
+                  className="form-control"
+                  value={this.state.message}
+                  onKeyDown={this.onReplyEnterPress}
+                  onChange={ev => this.setState({ message: ev.target.value })}
+                  rows="5"
+                  required
+                />
+
+                <button
+                  type="submit"
+                  className="btn btn-primary form-control bump"
+                >
+                  Reply Ice Breaker
+                </button>
+              </div>
+            </form>
+          </div>
+        );
+    }
+  }
+
+  renderIceBreakerReplyMessage() {
+    switch (this.state.message) {
+      case "":
+        return <div />;
+      default:
+        return (
+          <div className="float-right text-right  w-75">
+            <div className="alert alert-info">
+              <p>{this.state.message}</p>
+              <p className="text-right small mb-0">
+                <Moment format="MMM DD, YYYY hh:mma">{Date.now()}</Moment>
+              </p>
+            </div>
+          </div>
+        );
+    }
+  }
+
   replyIceBreaker(reply, ev) {
     ev.preventDefault();
     const replydata = {
@@ -143,155 +314,50 @@ class Court extends Component {
       recipient_id: this.props.icebreakers[this.state.listenstate].author._id,
       topic_id: this.props.icebreakers[this.state.listenstate].topic._id,
       category_id: this.state.category_id,
-      icebreaker_id:this.props.icebreakers[this.state.listenstate]._id
+      icebreaker_id: this.props.icebreakers[this.state.listenstate]._id
     };
     this.props.startChat(replydata);
-    this.props.fetchChatList(this.props.auth._id);
-
+    this.props.acceptIceBreaker(this.props.auth._id, this.props.icebreakers[this.state.listenstate]._id);
+    this.listenIncrement();
   }
 
-  renderCompose(){
-      return(<div>
-        <div className="topic-text">
-        <h1 className="display-4 text-right">{this.state.topic}</h1>
-        </div>
-        <div className="row card-body">
-          <div className="col-md-6">
-            {this.renderTopics()}
-          </div>
-          <div className="col-md-6">
-            {this.renderIceBreakerForm()}
-          </div>
-        </div>
-      </div>);
-  }
-
-  listenIncrement(){
-    let newstate = this.state.listenstate;
-    newstate = newstate + 1;
-    if(newstate === this.props.icebreakers.length){
-      this.setState({listenstate : 0, message: ""});
-    }else{
-      this.setState({listenstate : newstate, message: ""});
-    }
-    
-  }
-
-  listenDecrement(){
-    let newstate = this.state.listenstate;
-    newstate = newstate - 1;
-    if (newstate === -1){
-      this.setState({listenstate : this.props.icebreakers.length - 1, message: ""});
-    }else{
-      this.setState({listenstate : newstate, message: ""});
-    }
-
-  }
-
-  renderIceBreakerReplyMessage(){
-    switch(this.state.message){
-      case "":
-        return <div/>;
-      default:
-        return (<div className="float-right text-right  w-75">
-                  <div className="alert alert-primary">
-                    <p>{this.state.message}</p>
-                    <p className="text-right small mb-0">
-                    <Moment format="MMM DD, YYYY hh:mma">{Date.now()}</Moment>
-                    </p>
-                  </div>
-                </div>);
-    }
-  }
-  renderListen(){
-      switch(this.props.icebreakers){
-          case null:
-          return  <h1 className="text-right display-4">select a category....</h1>;
-          default:
-          return(<div>
-                    <div className="form-row">
-                      <div className="col-md-6">
-                        <button className="form-control btn btn-danger" onClick={ev=>this.listenDecrement()}>Last</button>
-                      </div>
-                      <div className="col-md-6">  
-                        <button className="form-control btn btn-danger" onClick={ev=>this.listenIncrement()}>Next</button>
-                      </div>
-                    </div>
-                      <h1 className="text-right display-4">{this.props.icebreakers[this.state.listenstate].topic.title}</h1>
-                      <h3>{this.props.icebreakers[this.state.listenstate].author.givenName}</h3>
-                      <hr/>
-                    <div className="float-left text-left w-75">
-                      <div className="alert alert-success">
-                        <p>{this.props.icebreakers[this.state.listenstate].topic.title} {this.props.icebreakers[this.state.listenstate].message}</p>
-                        <p className="text-left small mb-0">
-                        <Moment format="MMM DD, YYYY hh:mma">{this.props.icebreakers[this.state.listenstate].timeStamp}</Moment>
-                        </p>
-                      </div>
-                    </div>
-                    {this.renderIceBreakerReplyMessage()}
-                    <form onSubmit={ev => this.replyIceBreaker(this.state.message, ev)}>
-                      <div className="form-group">
-                        <textarea
-                        type="text"
-                        className="form-control"
-                        value={this.state.message}
-                        onKeyDown={this.onReplyEnterPress}
-                        onChange={ev => this.setState({ message: ev.target.value })}
-                        rows="5"
-                        required
-                        />
-
-                        <button type="submit" className="btn btn-primary form-control bump">
-                        Reply Ice Breaker
-                        </button>
-                      </div>
-                    </form>
-               </div>);
-      }
-
-    }
 
 
-    renderCourt(){
-        switch(this.state.courtstate){
-            case "listen":
-                return(<div>{this.renderListen()}</div>);
-            case "compose":
-                return(<div>{this.renderCompose()}</div>);
-            default:
-                return<div/>;
-        }
-    }
-
-  
-    render() {
+  render() {
     return (
       <div className="container">
         <div className="row">
           <div className="col-md-8">
-          <div className="card">
-        <div className="card-body">
-        <div className="form-row">
-            <div className="col-md-4 offset-4">
+            <div className="card">
+              <div className="card-body">
+                <div className="form-row">
+                  <div className="col-md-4 offset-4">
                     <button
-                        className="btn btn-primary form-control"
-                        onClick={(ev)=>{this.setState({courtstate: "listen", message: ""})}}
-                    >Read Ice Breakers</button>
-            </div>
-            <div className="col-md-4">
+                      className="btn btn-outline-primary form-control"
+                      onClick={ev => {
+                        this.setState({ courtstate: "listen", message: "" });
+                      }}
+                    >
+                      Read Ice Breakers
+                    </button>
+                  </div>
+                  <div className="col-md-4">
                     <button
-                        className="btn btn-primary form-control"
-                        onClick={(ev)=>{this.setState({courtstate: "compose", message: ""})}}
-                    >Create Ice Breakers</button>
-            </div>
-        </div>
-        <hr/>
-        <nav className="navbar navbar-expand">
-          {this.renderCategories()}
-        </nav>
-        {this.renderCourt()}
-        </div>
-            
+                      className="btn btn-outline-primary form-control"
+                      onClick={ev => {
+                        this.setState({ courtstate: "compose", message: "" });
+                      }}
+                    >
+                      Create Ice Breakers
+                    </button>
+                  </div>
+                </div>
+                <hr />
+                <nav className="navbar navbar-expand">
+                  {this.renderCategories()}
+                </nav>
+                {this.renderCourt()}
+              </div>
             </div>
           </div>
           <div className="col-md-4">
@@ -319,8 +385,10 @@ function mapDispatchToProps(dispatch) {
       fetchTopics: fetchTopics,
       newIceBreaker: newIceBreaker,
       fetchIceBreakersByCat: fetchIceBreakersByCat,
-      startChat : startChat,
-      fetchChatList :fetchChatList
+      startChat: startChat,
+      fetchChatList: fetchChatList,
+      rejectIceBreaker: rejectIceBreaker,
+      acceptIceBreaker: acceptIceBreaker
     },
     dispatch
   );

@@ -9,6 +9,7 @@ import { bindActionCreators } from "redux";
 import { setViewState } from "../../actions/index";
 
 class Chat extends Component {
+  //Handle Socket Change on Props Change
   componentWillReceiveProps(nextProps) {
     this.setState({ messages: [] });
     switch (this.props.chatData) {
@@ -32,6 +33,7 @@ class Chat extends Component {
       messages: []
     };
 
+    //SOCKET.io
     this.socket = io.connect();
     this.socket.on("RECEIVE_MESSAGE", function(data) {
       addMessage(data);
@@ -80,33 +82,40 @@ class Chat extends Component {
       maxScrollTop > 0 ? maxScrollTop : 0;
   };
 
+  //CHAT WINDOW
   renderChat() {
     switch (this.props.chat) {
       case null:
-        return (<div className="card">
-                  <div className="card-body">
-                  <button 
-              className="float-right btn btn-danger"
-              onClick={()=> this.props.setViewState('court')}>Back to Ice Breakers</button>
-                    <div className="container-fluid chat-window" ref="messageList">
-                     <h3>courter.io</h3>
-                     <hr/>
-                     
-                    </div>
-                  </div>
-               
-                </div>);
+        return (
+          <div className="card">
+            <div className="card-body">
+              <button
+                className="float-right btn btn-outline-primary"
+                onClick={() => this.props.setViewState("court")}
+              >
+                Back to Ice Breakers
+              </button>
+              <div className="container-fluid chat-window" ref="messageList">
+                <h3>courter.io</h3>
+                <hr />
+              </div>
+            </div>
+          </div>
+        );
       case false:
         return <p>Error</p>;
       default:
         return (
           <div className="card">
             <div className="card-body">
-              <button 
-              className="float-right btn btn-danger"
-              onClick={()=> this.props.setViewState('court')}>Back to Ice Breakers</button>
-            <h3>{this.props.chatData.givenName}</h3>
-            <hr/>
+              <button
+                className="float-right btn btn-outline-primary"
+                onClick={() => this.props.setViewState("court")}
+              >
+                Back to Ice Breakers
+              </button>
+              <h3>{this.props.chatData.givenName}</h3>
+              <hr />
               <div className="container-fluid chat-window" ref="messageList">
                 {this.renderHistory()}
                 {this.renderSocket()}
@@ -117,33 +126,12 @@ class Chat extends Component {
         );
     }
   }
-  renderInput() {
-    return (
-      <div className="container-fluid card-footer">
-        <form onSubmit={this.sendMessage}>
-          <textarea
-            type="text"
-            className="form-control"
-            value={this.state.message}
-            onKeyDown={this.onEnterPress}
-            onChange={ev => this.setState({ message: ev.target.value })}
-          />
-          <button
-            type="submit"
-            className="btn btn-sm btn-primary float-right bump"
-          >
-            Send
-          </button>
-        </form>
-      </div>
-    );
-  }
 
   renderMessageRight(message) {
-    if(message.topic){
+    if (message.topic) {
       return (
         <div key={message._id} className="float-right text-right  w-75">
-          <div className="alert alert-primary">
+          <div className="alert alert-info">
             <p>{message.topic.title}</p>
             <p>{message.message}</p>
             <p className="text-right small mb-0">
@@ -155,7 +143,7 @@ class Chat extends Component {
     }
     return (
       <div key={message._id} className="float-right text-right  w-75">
-        <div className="alert alert-primary">
+        <div className="alert alert-info">
           <p>{message.message}</p>
           <p className="text-right small mb-0">
             <Moment format="MMM DD, YYYY hh:mma">{message.timeStamp}</Moment>
@@ -166,19 +154,19 @@ class Chat extends Component {
   }
 
   renderMessageLeft(message) {
-  if(message.topic){
-    return (
-      <div key={message._id} className="float-left text-left w-75">
-        <div className="alert alert-success">
-          <p>{message.topic.title}</p>
-          <p>{message.message}</p>
-          <p className="text-left small mb-0">
-            <Moment format="MMM DD, YYYY hh:mma">{message.timeStamp}</Moment>
-          </p>
+    if (message.topic) {
+      return (
+        <div key={message._id} className="float-left text-left w-75">
+          <div className="alert alert-success">
+            <p>{message.topic.title}</p>
+            <p>{message.message}</p>
+            <p className="text-left small mb-0">
+              <Moment format="MMM DD, YYYY hh:mma">{message.timeStamp}</Moment>
+            </p>
+          </div>
         </div>
-      </div>
-    );
-  }
+      );
+    }
     return (
       <div key={message._id} className="float-left text-left w-75">
         <div className="alert alert-success">
@@ -224,17 +212,39 @@ class Chat extends Component {
     );
   }
 
+  renderInput() {
+    return (
+ 
+        <form onSubmit={this.sendMessage}>
+          <textarea
+            type="text"
+            className="form-control"
+            value={this.state.message}
+            onKeyDown={this.onEnterPress}
+            onChange={ev => this.setState({ message: ev.target.value })}
+          />
+          <button
+            type="submit"
+            className="btn btn-sm btn-primary float-right bump"
+          >
+            Send
+          </button>
+        </form>
+      
+    );
+  }
+
   render() {
-    return (<div className="container"> 
-              <div className="row">
-                <div className="col-md-8">
-                  {this.renderChat()}
-                </div>
-                <div className="col-md-4">
-                  <ChatList/>
-                </div>
-              </div>
-            </div>);
+    return (
+      <div className="container">
+        <div className="row">
+          <div className="col-md-8">{this.renderChat()}</div>
+          <div className="col-md-4">
+            <ChatList />
+          </div>
+        </div>
+      </div>
+    );
   }
 }
 

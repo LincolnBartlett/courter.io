@@ -11,9 +11,9 @@ router.post('/load/:room',
             res.send(messages);
       });
 
-router.post('/chatlist/:id',
+router.post('/chatlist',
       async (req, res) => {
-            const userChats = await Chat.find({ recipients: req.params.id }).populate('recipients');
+            const userChats = await Chat.find({ recipients: req.body.user_id }).populate('recipients');
             res.send(userChats);
       });
 
