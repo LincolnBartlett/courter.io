@@ -1,16 +1,19 @@
 import React, { Component } from "react";
 import { connect } from "react-redux";
-import { fetchChat, setChatData, fetchChatList,setViewState } from "../../actions/index";
+import {
+  fetchChat,
+  setChatData,
+  fetchChatList,
+  setViewState,
+  fetchOneUser
+} from "../../actions/index";
 import { bindActionCreators } from "redux";
-import { Link } from 'react-router-dom';
 
 class ChatList extends Component {
-
-
-  updateChat(room, name) {
-    this.props.fetchChat(room);
-    this.props.setChatData(room, name);
-    this.props.setViewState('chat');
+  updateChat(data) {
+    this.props.fetchChat(data.id);
+    this.props.setChatData(data.id, data.givenName, data.user_id);
+    this.props.setViewState("chat");
   }
 
   renderChatList() {
@@ -27,20 +30,24 @@ class ChatList extends Component {
         return (
           <div>
             {this.props.chatList.map(chat => {
-             let name
+              let data = {};
+              data.id = chat._id;
               return (
                 <a
                   key={chat._id}
                   className="list-group-item list-group-item-action"
-                  onClick={() => this.updateChat(chat._id, name)}
+                  onClick={() => this.updateChat(data)}
                 >
                   {chat.recipients.map(recipient => {
                     if (recipient._id !== this.props.auth._id) {
-                        name = recipient.givenName;
-                        return recipient.givenName;
+                      data.givenName = recipient.givenName;
+                      data.user_id = recipient._id;
+                      return <div>{recipient.givenName}</div>;
                     }
                     return null;
                   })}
+
+
                 </a>
               );
             })}
@@ -51,13 +58,13 @@ class ChatList extends Component {
 
   render() {
     return (
-        <div className="card">
-          <div className="card-body">
+      <div className="card">
+        <div className="card-body">
           <h3>Chat List</h3>
-          <hr/>
-            <div className="list-group">{this.renderChatList()}</div>
-          </div>
+          <hr />
+          <div className="list-group">{this.renderChatList()}</div>
         </div>
+      </div>
     );
   }
 }
@@ -75,7 +82,8 @@ function mapDispatchToProps(dispatch) {
       fetchChat: fetchChat,
       fetchChatList: fetchChatList,
       setChatData: setChatData,
-      setViewState: setViewState
+      setViewState: setViewState,
+      fetchOneUser: fetchOneUser
     },
     dispatch
   );

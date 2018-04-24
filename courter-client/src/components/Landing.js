@@ -4,6 +4,7 @@ import { fetchChat, setChatData, fetchChatList } from "../actions/index";
 import { bindActionCreators } from "redux";
 import Court from "./court/Court";
 import Chat from "./chat/Chat";
+import Profile from "./user/Profile";
 
 class Landing extends Component {
   constructor(props) {
@@ -14,17 +15,15 @@ class Landing extends Component {
   }
 
   mainView(){
-    console.log('called');
-    console.log(this.props.viewState);
     switch(this.props.viewState){
       case "court":
-      return <Court/>;
+        return <Court/>;
       case "chat":
-      return <Chat/>;
+        return <Chat/>;
+      case "profile":
+        return <Profile/>;
       default:
-      return <Court/>;
-
-        
+        return <Court/>;
     }
   }
   renderLanding() {

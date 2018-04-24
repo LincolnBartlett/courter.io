@@ -5,6 +5,7 @@ import {
   fetchTopics,
   newIceBreaker,
   fetchIceBreakersByCat,
+  fetchIceBreakersByUser,
   startChat,
   fetchChatList,
   rejectIceBreaker,
@@ -24,9 +25,9 @@ class Court extends Component {
       topic: "select a category....",
       message: "",
       topic_id: "",
-      courtstate: "listen",
+      courtstate: "read",
       category_id: "",
-      listenstate: 0
+      readstate: 0
     };
 
     this.onReplyEnterPress = ev => {
@@ -42,24 +43,24 @@ class Court extends Component {
     };
 
     this.handlePass = (ice_id) => {
-      let newstate = this.state.listenstate;
+      let newstate = this.state.readstate;
       newstate = newstate + 1;
       this.props.rejectIceBreaker(this.props.auth._id, ice_id);
       if (newstate === this.props.icebreakers.length) {
-        this.setState({ listenstate: 0, message: "" });
+        this.setState({ readstate: 0, message: "" });
         this.props.fetchIceBreakersByCat(this.state.category_id, this.props.auth._id);
       } else {
-        this.setState({ listenstate: newstate, message: "" });
+        this.setState({ readstate: newstate, message: "" });
       }
     };
-    this.listenIncrement = () => {
-      let newstate = this.state.listenstate;
+    this.readIncrement = () => {
+      let newstate = this.state.readstate;
       newstate = newstate + 1;
       if (newstate === this.props.icebreakers.length) {
-        this.setState({ listenstate: 0, message: "" });
+        this.setState({ readstate: 0, message: "" });
         this.props.fetchIceBreakersByCat(this.state.category_id, this.props.auth._id);
       } else {
-        this.setState({ listenstate: newstate, message: "" });
+        this.setState({ readstate: newstate, message: "" });
       }
     };
   }
@@ -72,26 +73,26 @@ class Court extends Component {
       case false:
         return <div />;
       default:
-        return (
-          
-            <div className="form-row">
-              {this.props.categories.map(category => {
-                return (
-                  <div key={category._id} className="">
-                    <button
-                      className="btn btn-secondary"
-                      onClick={() =>
-                        this.handleCategoryClick(category._id, category.title)
-                      }
-                    >
-                      {category.title}
-                    </button>
-                  </div>
-                );
-              })}
-            </div>
-          
-        );
+        switch(this.state.courtstate){
+          case "review":
+            return <div/>
+          default:
+            return (
+              <ul className="nav nav-tabs">
+                {this.props.categories.map(category => {
+                  return (
+                    <li key={category._id} className="nav-item"
+                        onClick={() =>
+                          this.handleCategoryClick(category._id, category.title)
+                        }
+                      >
+                       <a className="nav-link"> {category.title}</a>
+                     </li>
+                  );
+                })}
+              </ul>
+          );
+        }
     }
   }
 
@@ -102,7 +103,7 @@ class Court extends Component {
       category: category_title,
       category_id: category_id,
       message: "",
-      listenstate: 0
+      readstate: 0
     });
   }
 
@@ -125,7 +126,7 @@ class Court extends Component {
                       this.setState({
                         topic_id: topic._id,
                         topic: topic.title,
-                        listenstate: 0,
+                        readstate: 0,
                         message: ""
                       })
                     }
@@ -142,17 +143,19 @@ class Court extends Component {
 
   renderCourt() {
     switch (this.state.courtstate) {
-      case "listen":
-        return <div>{this.renderListen()}</div>;
-      case "compose":
-        return <div>{this.renderCompose()}</div>;
+      case "read":
+        return <div>{this.renderRead()}</div>;
+      case "write":
+        return <div>{this.renderWrite()}</div>;
+      case "review":
+        return <div>{this.renderReview()}</div>;
       default:
         return <div />;
     }
   }
 
   //ICE BREAKER WRITE
-  renderCompose() {
+  renderWrite() {
     return (
       <div>
         <div className="topic-text">
@@ -189,7 +192,7 @@ class Court extends Component {
                 type="submit"
                 className="btn btn-primary form-control bump"
               >
-                Compose Ice Breaker
+                write Ice Breaker
               </button>
             </div>
           </form>
@@ -208,8 +211,8 @@ class Court extends Component {
     this.props.newIceBreaker(icebreakerdata);
   }
 
-  //ICE BREAKER REPLY
-  renderListen() {
+  //ICE BREAKER READ
+  renderRead() {
     switch (this.props.icebreakers) {
       case null:
         return <h1 className="text-right display-5">select a category....</h1>;
@@ -223,26 +226,26 @@ class Court extends Component {
           <div>
 
             <h1 className="text-right display-5">
-              {this.props.icebreakers[this.state.listenstate].topic.title}
+              {this.props.icebreakers[this.state.readstate].topic.title}
             </h1>
             <div className="form-row">
               <div className="col-md-6">
               <h3>
-              {this.props.icebreakers[this.state.listenstate].author.givenName}
+              {this.props.icebreakers[this.state.readstate].author.givenName}
             </h3>
               </div>
               <div className="col-md-3">
                 <button
-                  className="form-control btn btn-primary"
-                  onClick={ev => this.handlePass(this.props.icebreakers[this.state.listenstate]._id)}
+                  className="form-control btn btn-outline-danger"
+                  onClick={ev => this.handlePass(this.props.icebreakers[this.state.readstate]._id)}
                 >
                  Hard Pass
                 </button>
               </div>
               <div className="col-md-3">
               <button
-                  className="form-control btn btn-info"
-                  onClick={ev => this.listenIncrement()}
+                  className="form-control btn btn-outline-primary"
+                  onClick={ev => this.readIncrement()}
                 >
                   Maybe Later
                 </button>
@@ -250,14 +253,14 @@ class Court extends Component {
             </div>
             <hr />
             <div className="float-left text-left w-75">
-              <div className="alert alert-success">
+              <div className="alert alert-light">
                 <p>
-                  {this.props.icebreakers[this.state.listenstate].topic.title}{" "}
-                  {this.props.icebreakers[this.state.listenstate].message}
+                  {this.props.icebreakers[this.state.readstate].topic.title}{" "}
+                  {this.props.icebreakers[this.state.readstate].message}
                 </p>
                 <p className="text-left small mb-0">
                   <Moment format="MMM DD, YYYY hh:mma">
-                    {this.props.icebreakers[this.state.listenstate].timeStamp}
+                    {this.props.icebreakers[this.state.readstate].timeStamp}
                   </Moment>
                 </p>
               </div>
@@ -295,7 +298,7 @@ class Court extends Component {
       default:
         return (
           <div className="float-right text-right  w-75">
-            <div className="alert alert-info">
+            <div className="alert alert-primary">
               <p>{this.state.message}</p>
               <p className="text-right small mb-0">
                 <Moment format="MMM DD, YYYY hh:mma">{Date.now()}</Moment>
@@ -311,17 +314,38 @@ class Court extends Component {
     const replydata = {
       message: reply,
       user_id: this.props.auth._id,
-      recipient_id: this.props.icebreakers[this.state.listenstate].author._id,
-      topic_id: this.props.icebreakers[this.state.listenstate].topic._id,
+      recipient_id: this.props.icebreakers[this.state.readstate].author._id,
+      topic_id: this.props.icebreakers[this.state.readstate].topic._id,
       category_id: this.state.category_id,
-      icebreaker_id: this.props.icebreakers[this.state.listenstate]._id
+      icebreaker_id: this.props.icebreakers[this.state.readstate]._id
     };
     this.props.startChat(replydata);
-    this.props.acceptIceBreaker(this.props.auth._id, this.props.icebreakers[this.state.listenstate]._id);
-    this.listenIncrement();
+    this.props.acceptIceBreaker(this.props.auth._id, this.props.icebreakers[this.state.readstate]._id);
+    
+ 
+    setTimeout(function(){
+        this.props.fetchChatList(this.props.auth._id);
+      }.bind(this),1500);
+    
+    this.readIncrement();
   }
 
-
+  //ICE BREAKER REVIEW
+  renderReview() {
+    switch(this.props.usericebreakers){
+      case null:
+      this.props.fetchIceBreakersByUser(this.props.auth._id);
+        return <div>null</div>;
+        default:
+          return (<ul className="list-group">
+            {this.props.usericebreakers.map(icebreaker => {
+              return (<li className="list-group-item" key={icebreaker._id}>
+                   {icebreaker.topic.title} {icebreaker.message}
+                </li>);
+            })}
+          </ul> );
+    }
+  }
 
   render() {
     return (
@@ -331,11 +355,21 @@ class Court extends Component {
             <div className="card">
               <div className="card-body">
                 <div className="form-row">
-                  <div className="col-md-4 offset-4">
+                <div className="col-md-4">
                     <button
-                      className="btn btn-outline-primary form-control"
+                      className="btn btn-primary form-control"
                       onClick={ev => {
-                        this.setState({ courtstate: "listen", message: "" });
+                        this.setState({ courtstate: "review", message: "" });
+                      }}
+                    >
+                      Review Ice Breakers
+                    </button>
+                  </div>
+                  <div className="col-md-4">
+                    <button
+                      className="btn btn-primary form-control"
+                      onClick={ev => {
+                        this.setState({ courtstate: "read", message: "" });
                       }}
                     >
                       Read Ice Breakers
@@ -343,9 +377,9 @@ class Court extends Component {
                   </div>
                   <div className="col-md-4">
                     <button
-                      className="btn btn-outline-primary form-control"
+                      className="btn btn-primary form-control"
                       onClick={ev => {
-                        this.setState({ courtstate: "compose", message: "" });
+                        this.setState({ courtstate: "write", message: "" });
                       }}
                     >
                       Create Ice Breakers
@@ -353,9 +387,9 @@ class Court extends Component {
                   </div>
                 </div>
                 <hr />
-                <nav className="navbar navbar-expand">
+              
                   {this.renderCategories()}
-                </nav>
+               
                 {this.renderCourt()}
               </div>
             </div>
@@ -374,7 +408,8 @@ function mapStateToProps(state) {
     categories: state.categories,
     topics: state.topics,
     auth: state.auth,
-    icebreakers: state.icebreakers
+    icebreakers: state.icebreakers,
+    usericebreakers: state.usericebreakers
   };
 }
 
@@ -385,6 +420,7 @@ function mapDispatchToProps(dispatch) {
       fetchTopics: fetchTopics,
       newIceBreaker: newIceBreaker,
       fetchIceBreakersByCat: fetchIceBreakersByCat,
+      fetchIceBreakersByUser: fetchIceBreakersByUser,
       startChat: startChat,
       fetchChatList: fetchChatList,
       rejectIceBreaker: rejectIceBreaker,

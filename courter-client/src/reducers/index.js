@@ -12,6 +12,8 @@ import iceBreakerCatFetchReducer from './iceBreakerCatFetchReducer';
 import viewReducer from './viewReducer';
 import rejectIceBreaker from './rejectIceBreakerReducer';
 import acceptIceBreaker from './acceptIceBreakerReducer';
+import iceBreakerUserFetchReducer from './iceBreakerUserFetchReducer';
+import fetchOneUserReducer from './fetchOneUserReducer';
 
 export default combineReducers({
     auth: authReducer,
@@ -24,7 +26,9 @@ export default combineReducers({
     topics: topicReducer,
     icebreaker: iceBreakerReducer,
     icebreakers: iceBreakerCatFetchReducer,
+    usericebreakers: iceBreakerUserFetchReducer,
     viewState : viewReducer,
     rejectIceBreaker : rejectIceBreaker,
-    acceptIceBreaker : acceptIceBreaker
+    acceptIceBreaker : acceptIceBreaker,
+    profileuser: fetchOneUserReducer
 });

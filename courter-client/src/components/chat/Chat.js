@@ -6,7 +6,8 @@ import Moment from "react-moment";
 import "../../style/chat.css";
 import ChatList from "./ChatList";
 import { bindActionCreators } from "redux";
-import { setViewState } from "../../actions/index";
+import { setViewState,fetchOneUser,
+  fetchIceBreakersByUser } from "../../actions/index";
 
 class Chat extends Component {
   //Handle Socket Change on Props Change
@@ -82,6 +83,11 @@ class Chat extends Component {
       maxScrollTop > 0 ? maxScrollTop : 0;
   };
 
+  handleProfileClick(user_id){
+    this.props.fetchOneUser(user_id);
+    this.props.fetchIceBreakersByUser(user_id);
+    this.props.setViewState('profile');
+  }
   //CHAT WINDOW
   renderChat() {
     switch (this.props.chat) {
@@ -89,12 +95,16 @@ class Chat extends Component {
         return (
           <div className="card">
             <div className="card-body">
-              <button
-                className="float-right btn btn-outline-primary"
-                onClick={() => this.props.setViewState("court")}
-              >
-                Back to Ice Breakers
-              </button>
+              <div className="form-row">
+                <div className="col-md-2 offset-9">
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => this.props.setViewState("court")}
+                  >
+                    Back to Ice Breakers
+                  </button>
+                </div>
+              </div>
               <div className="container-fluid chat-window" ref="messageList">
                 <h3>courter.io</h3>
                 <hr />
@@ -108,13 +118,25 @@ class Chat extends Component {
         return (
           <div className="card">
             <div className="card-body">
+              <div className="form-row">
+              <div className="col-md-3 offset-9">
+                  <button
+                    className="form-control btn btn-outline-primary"
+                    onClick={() => this.props.setViewState("court")}
+                  >
+                    Court
+                  </button>
+                </div>
+              </div>
+              <h3>
+                {this.props.chatData.givenName}
+              </h3>
               <button
-                className="float-right btn btn-outline-primary"
-                onClick={() => this.props.setViewState("court")}
-              >
-                Back to Ice Breakers
-              </button>
-              <h3>{this.props.chatData.givenName}</h3>
+                  class="btn btn-sm btn-outline-primary"
+                  onClick={() => {this.handleProfileClick(this.props.chatData.user_id)}}
+                >
+                  Profile
+                </button>
               <hr />
               <div className="container-fluid chat-window" ref="messageList">
                 {this.renderHistory()}
@@ -131,7 +153,7 @@ class Chat extends Component {
     if (message.topic) {
       return (
         <div key={message._id} className="float-right text-right  w-75">
-          <div className="alert alert-info">
+          <div className="alert alert-primary">
             <p>{message.topic.title}</p>
             <p>{message.message}</p>
             <p className="text-right small mb-0">
@@ -143,7 +165,7 @@ class Chat extends Component {
     }
     return (
       <div key={message._id} className="float-right text-right  w-75">
-        <div className="alert alert-info">
+        <div className="alert alert-primary">
           <p>{message.message}</p>
           <p className="text-right small mb-0">
             <Moment format="MMM DD, YYYY hh:mma">{message.timeStamp}</Moment>
@@ -157,7 +179,7 @@ class Chat extends Component {
     if (message.topic) {
       return (
         <div key={message._id} className="float-left text-left w-75">
-          <div className="alert alert-success">
+          <div className="alert alert-light">
             <p>{message.topic.title}</p>
             <p>{message.message}</p>
             <p className="text-left small mb-0">
@@ -169,7 +191,7 @@ class Chat extends Component {
     }
     return (
       <div key={message._id} className="float-left text-left w-75">
-        <div className="alert alert-success">
+        <div className="alert alert-light">
           <p>{message.message}</p>
           <p className="text-left small mb-0">
             <Moment format="MMM DD, YYYY hh:mma">{message.timeStamp}</Moment>
@@ -214,23 +236,21 @@ class Chat extends Component {
 
   renderInput() {
     return (
- 
-        <form onSubmit={this.sendMessage}>
-          <textarea
-            type="text"
-            className="form-control"
-            value={this.state.message}
-            onKeyDown={this.onEnterPress}
-            onChange={ev => this.setState({ message: ev.target.value })}
-          />
-          <button
-            type="submit"
-            className="btn btn-sm btn-primary float-right bump"
-          >
-            Send
-          </button>
-        </form>
-      
+      <form onSubmit={this.sendMessage}>
+        <textarea
+          type="text"
+          className="form-control"
+          value={this.state.message}
+          onKeyDown={this.onEnterPress}
+          onChange={ev => this.setState({ message: ev.target.value })}
+        />
+        <button
+          type="submit"
+          className="btn btn-sm btn-primary float-right bump"
+        >
+          Send
+        </button>
+      </form>
     );
   }
 
@@ -255,7 +275,9 @@ function mapStateToProps(state) {
 function mapDispatchToProps(dispatch) {
   return bindActionCreators(
     {
-      setViewState: setViewState
+      setViewState: setViewState,
+      fetchOneUser: fetchOneUser,
+      fetchIceBreakersByUser: fetchIceBreakersByUser
     },
     dispatch
   );

@@ -20,4 +20,10 @@ router.post('/all',
                   res.send(users);      
       });
   
+router.post('/one',
+      async (req, res)=>{
+            console.log(req.body);
+            const user = await User.findById(req.body.user_id);
+                        res.send(user);      
+      });      
 module.exports = router;

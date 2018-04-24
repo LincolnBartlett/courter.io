@@ -1,6 +1,7 @@
 export const FETCH_USER = 'fetch_user';
 export const FETCH_CHAT = 'fetch_chat';
 export const FETCH_ALL_USERS = 'fetch_all_users';
+export const FETCH_ONE_USER = 'fetch_one_user';
 export const FETCH_CHAT_LIST = 'fetch_chat_list';
 export const SET_CHAT = 'set_chat';
 export const START_CHAT = 'start_chat';
@@ -9,6 +10,7 @@ export const FETCH_TOPICS = 'fetch_topics';
 export const FETCH_ITEMS = 'fetch_items';
 export const NEW_ICE_BREAKER = 'new_ice_breaker';
 export const FETCH_IB_CAT = 'fetch_ib_cat';
+export const FETCH_IB_USER = 'fetch_ib_user';
 export const SET_VIEW = 'set_view';
 export const REJECT_ICE_BREAKER = 'reject_ice_breaker';
 export const ACCEPT_ICE_BREAKER = 'accept_ice_breaker';

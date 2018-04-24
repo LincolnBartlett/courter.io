@@ -11,7 +11,6 @@ const express = require('express'),
 //ICE BREAKERS
 router.post('/icebreaker/new',
       (req, res) => {
-          console.log(req.body); 
          new IceBreaker({ 
              author: req.body.author_id,
              topic: req.body.topic_id,
@@ -32,6 +31,15 @@ router.post('/icebreaker/getbycategory',
                   .where('replies').nin([req.body.user_id])
                   .populate('author')
                   .populate('topic');        
+            res.send(icebreakers);
+      });
+
+router.post('/icebreaker/getbyuser',
+      async (req, res) => {
+            const icebreakers = await IceBreaker.find()
+                  .where('author').equals(req.body.user_id)
+                  .populate('author')
+                  .populate('topic');  
             res.send(icebreakers);
       });
 
