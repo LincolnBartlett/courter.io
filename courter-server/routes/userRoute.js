@@ -22,7 +22,6 @@ router.post('/all',
   
 router.post('/one',
       async (req, res)=>{
-            console.log(req.body);
             const user = await User.findById(req.body.user_id);
                         res.send(user);      
       });      

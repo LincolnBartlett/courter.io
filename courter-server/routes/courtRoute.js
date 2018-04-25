@@ -20,6 +20,16 @@ router.post('/icebreaker/new',
          res.send('success');
       });
 
+router.post('/icebreaker/getall',
+      async (req, res) => { 
+            const icebreakers = await IceBreaker.find()
+                  .where('author').ne(req.body.user_id)
+                  .where('rejections').nin([req.body.user_id])
+                  .where('replies').nin([req.body.user_id])
+                  .populate('author')
+                  .populate('topic');     
+            res.send(icebreakers);
+      });
 
 router.post('/icebreaker/getbycategory',
       async (req, res) => {

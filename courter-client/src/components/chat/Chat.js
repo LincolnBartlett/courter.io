@@ -6,8 +6,11 @@ import Moment from "react-moment";
 import "../../style/chat.css";
 import ChatList from "./ChatList";
 import { bindActionCreators } from "redux";
-import { setViewState,fetchOneUser,
-  fetchIceBreakersByUser } from "../../actions/index";
+import {
+  setViewState,
+  fetchOneUser,
+  fetchIceBreakersByUser
+} from "../../actions/index";
 
 class Chat extends Component {
   //Handle Socket Change on Props Change
@@ -83,31 +86,40 @@ class Chat extends Component {
       maxScrollTop > 0 ? maxScrollTop : 0;
   };
 
-  handleProfileClick(user_id){
+  handleProfileClick(user_id) {
     this.props.fetchOneUser(user_id);
     this.props.fetchIceBreakersByUser(user_id);
-    this.props.setViewState('profile');
+    this.props.setViewState("profile");
   }
   //CHAT WINDOW
   renderChat() {
     switch (this.props.chat) {
       case null:
         return (
-          <div className="card">
-            <div className="card-body">
-              <div className="form-row">
-                <div className="col-md-2 offset-9">
-                  <button
-                    className="btn btn-primary"
-                    onClick={() => this.props.setViewState("court")}
-                  >
-                    Back to Ice Breakers
-                  </button>
-                </div>
+          <div>
+            <div className="form-row">
+              <div className="col-md-9">
+                <h2>courter.io</h2>
               </div>
-              <div className="container-fluid chat-window" ref="messageList">
-                <h3>courter.io</h3>
+              <div className="col-md-3">
+                <button
+                  className="form-control btn btn-outline-primary"
+                  onClick={() => this.props.setViewState("court")}
+                >
+                  Court
+                </button>
+              </div>
+            </div>
+            <hr />
+            <div className="card">
+              <div className="card-body">
+                <h3>Select a Chat</h3>
+
                 <hr />
+                <div
+                  className="container-fluid chat-window-empty"
+                  ref="messageList"
+                />
               </div>
             </div>
           </div>
@@ -116,34 +128,44 @@ class Chat extends Component {
         return <p>Error</p>;
       default:
         return (
-          <div className="card">
-            <div className="card-body">
-              <div className="form-row">
-              <div className="col-md-3 offset-9">
-                  <button
-                    className="form-control btn btn-outline-primary"
-                    onClick={() => this.props.setViewState("court")}
-                  >
-                    Court
-                  </button>
-                </div>
+          <div>
+            <div className="form-row">
+              <div className="col-md-9">
+                <h2>courter.io</h2>
               </div>
-              <h3>
-                {this.props.chatData.givenName}
-              </h3>
-              <button
+              <div className="col-md-3">
+                <button
+                  className="form-control btn btn-outline-primary"
+                  onClick={() => this.props.setViewState("court")}
+                >
+                  Court
+                </button>
+              </div>
+            </div>
+            <hr />
+            <div className="card">
+              <div className="card-body">
+                <h3>{this.props.chatData.givenName}</h3>
+                <button
                   class="btn btn-sm btn-outline-primary"
-                  onClick={() => {this.handleProfileClick(this.props.chatData.user_id)}}
+                  onClick={() => {
+                    this.handleProfileClick(this.props.chatData.user_id);
+                  }}
                 >
                   Profile
                 </button>
-              <hr />
-              <div className="container-fluid chat-window" ref="messageList">
-                {this.renderHistory()}
-                {this.renderSocket()}
+                <hr />
+                <div
+                  className="border jumbotron container-fluid chat-window"
+                  ref="messageList"
+                >
+                  {this.renderHistory()}
+                  {this.renderSocket()}
+                </div>
+
+                {this.renderInput()}
               </div>
             </div>
-            {this.renderInput()}
           </div>
         );
     }
@@ -180,8 +202,7 @@ class Chat extends Component {
       return (
         <div key={message._id} className="float-left text-left w-75">
           <div className="alert alert-light">
-            <p>{message.topic.title}</p>
-            <p>{message.message}</p>
+            <p>{message.topic.title} {message.message}</p>
             <p className="text-left small mb-0">
               <Moment format="MMM DD, YYYY hh:mma">{message.timeStamp}</Moment>
             </p>

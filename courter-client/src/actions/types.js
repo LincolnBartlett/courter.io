@@ -11,6 +11,7 @@ export const FETCH_ITEMS = 'fetch_items';
 export const NEW_ICE_BREAKER = 'new_ice_breaker';
 export const FETCH_IB_CAT = 'fetch_ib_cat';
 export const FETCH_IB_USER = 'fetch_ib_user';
+export const FETCH_IB_ALL = 'fetch_ib_all';
 export const SET_VIEW = 'set_view';
 export const REJECT_ICE_BREAKER = 'reject_ice_breaker';
 export const ACCEPT_ICE_BREAKER = 'accept_ice_breaker';

@@ -42,7 +42,7 @@ class ChatList extends Component {
                     if (recipient._id !== this.props.auth._id) {
                       data.givenName = recipient.givenName;
                       data.user_id = recipient._id;
-                      return <div>{recipient.givenName}</div>;
+                      return <div key={chat._id}>{recipient.givenName}</div>;
                     }
                     return null;
                   })}

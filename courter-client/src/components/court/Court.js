@@ -6,10 +6,12 @@ import {
   newIceBreaker,
   fetchIceBreakersByCat,
   fetchIceBreakersByUser,
+  fetchIceBreakersByAll,
   startChat,
   fetchChatList,
   rejectIceBreaker,
-  acceptIceBreaker
+  acceptIceBreaker,
+  setViewState
 } from "../../actions/index";
 import { bindActionCreators } from "redux";
 import ChatList from "../chat/ChatList";
@@ -27,7 +29,8 @@ class Court extends Component {
       topic_id: "",
       courtstate: "read",
       category_id: "",
-      readstate: 0
+      readcount: 0,
+      replystate: false
     };
 
     this.onReplyEnterPress = ev => {
@@ -42,25 +45,39 @@ class Court extends Component {
       }
     };
 
-    this.handlePass = (ice_id) => {
-      let newstate = this.state.readstate;
+    this.handlePass = ice_id => {
+      let newstate = this.state.readcount;
       newstate = newstate + 1;
       this.props.rejectIceBreaker(this.props.auth._id, ice_id);
       if (newstate === this.props.icebreakers.length) {
-        this.setState({ readstate: 0, message: "" });
-        this.props.fetchIceBreakersByCat(this.state.category_id, this.props.auth._id);
+        this.setState({ readcount: 0, message: "" });
+        if (this.state.category_id.length === 0) {
+          this.props.fetchIceBreakersByAll(this.props.auth._id);
+        } else {
+          this.props.fetchIceBreakersByCat(
+            this.state.category_id,
+            this.props.auth._id
+          );
+        }
       } else {
-        this.setState({ readstate: newstate, message: "" });
+        this.setState({ readcount: newstate, message: "" });
       }
     };
     this.readIncrement = () => {
-      let newstate = this.state.readstate;
+      let newstate = this.state.readcount;
       newstate = newstate + 1;
       if (newstate === this.props.icebreakers.length) {
-        this.setState({ readstate: 0, message: "" });
-        this.props.fetchIceBreakersByCat(this.state.category_id, this.props.auth._id);
+        this.setState({ readcount: 0, message: "" });
+        if (this.state.category_id.length === 0) {
+          this.props.fetchIceBreakersByAll(this.props.auth._id);
+        } else {
+          this.props.fetchIceBreakersByCat(
+            this.state.category_id,
+            this.props.auth._id
+          );
+        }
       } else {
-        this.setState({ readstate: newstate, message: "" });
+        this.setState({ readcount: newstate, message: "" });
       }
     };
   }
@@ -73,25 +90,27 @@ class Court extends Component {
       case false:
         return <div />;
       default:
-        switch(this.state.courtstate){
+        switch (this.state.courtstate) {
           case "review":
-            return <div/>
+            return <div />;
           default:
             return (
-              <ul className="nav nav-tabs">
+              <div className="form-row">
                 {this.props.categories.map(category => {
                   return (
-                    <li key={category._id} className="nav-item"
-                        onClick={() =>
-                          this.handleCategoryClick(category._id, category.title)
-                        }
-                      >
-                       <a className="nav-link"> {category.title}</a>
-                     </li>
+                    <button
+                      key={category._id}
+                      className="form-control col btn btn-outline-primary"
+                      onClick={() =>
+                        this.handleCategoryClick(category._id, category.title)
+                      }
+                    >
+                      {category.title}
+                    </button>
                   );
                 })}
-              </ul>
-          );
+              </div>
+            );
         }
     }
   }
@@ -103,7 +122,7 @@ class Court extends Component {
       category: category_title,
       category_id: category_id,
       message: "",
-      readstate: 0
+      readcount: 0
     });
   }
 
@@ -126,7 +145,7 @@ class Court extends Component {
                       this.setState({
                         topic_id: topic._id,
                         topic: topic.title,
-                        readstate: 0,
+                        readcount: 0,
                         message: ""
                       })
                     }
@@ -211,83 +230,131 @@ class Court extends Component {
     this.props.newIceBreaker(icebreakerdata);
   }
 
-  //ICE BREAKER READ
+  //ICE BREAKER READ & REPLY
   renderRead() {
     switch (this.props.icebreakers) {
       case null:
-        return <h1 className="text-right display-5">select a category....</h1>;
+        this.props.fetchIceBreakersByAll(this.props.auth._id);
+        return <h1 className="text-right display-5">loading....</h1>;
       default:
-      console.log(this.props.icebreakers);
-      console.log(this.props.icebreakers.length);
-      if (this.props.icebreakers.length === 0){
-        return <div>Sorry. There are currently no icebreakers for this category</div>
-      }
+        if (this.props.icebreakers.length === 0) {
+          return (
+            <div>
+              Sorry. There are currently no icebreakers for this category
+            </div>
+          );
+        }
         return (
           <div>
+            <br />
+         
+             
+                <h3>
+                  {
+                    this.props.icebreakers[this.state.readcount].author
+                      .givenName
+                  }
+                </h3>
+                <p>
+                  Profile Info: <br /> goes right here
+                </p>
+             
 
-            <h1 className="text-right display-5">
-              {this.props.icebreakers[this.state.readstate].topic.title}
-            </h1>
-            <div className="form-row">
-              <div className="col-md-6">
-              <h3>
-              {this.props.icebreakers[this.state.readstate].author.givenName}
-            </h3>
-              </div>
-              <div className="col-md-3">
-                <button
-                  className="form-control btn btn-outline-danger"
-                  onClick={ev => this.handlePass(this.props.icebreakers[this.state.readstate]._id)}
-                >
-                 Hard Pass
-                </button>
-              </div>
-              <div className="col-md-3">
-              <button
-                  className="form-control btn btn-outline-primary"
-                  onClick={ev => this.readIncrement()}
-                >
-                  Maybe Later
-                </button>
-              </div>
-            </div>
+                {this.renderChoiceButtons()}
+        
             <hr />
+            {this.replyAlert()}
+            <div className="border jumbotron reply-window">
             <div className="float-left text-left w-75">
               <div className="alert alert-light">
                 <p>
-                  {this.props.icebreakers[this.state.readstate].topic.title}{" "}
-                  {this.props.icebreakers[this.state.readstate].message}
+                  {this.props.icebreakers[this.state.readcount].topic.title}{" "}
+                  {this.props.icebreakers[this.state.readcount].message}
                 </p>
                 <p className="text-left small mb-0">
                   <Moment format="MMM DD, YYYY hh:mma">
-                    {this.props.icebreakers[this.state.readstate].timeStamp}
+                    {this.props.icebreakers[this.state.readcount].timeStamp}
                   </Moment>
                 </p>
               </div>
             </div>
-            {this.renderIceBreakerReplyMessage()}
-            <form onSubmit={ev => this.replyIceBreaker(this.state.message, ev)}>
-              <div className="form-group">
-                <textarea
-                  type="text"
-                  className="form-control"
-                  value={this.state.message}
-                  onKeyDown={this.onReplyEnterPress}
-                  onChange={ev => this.setState({ message: ev.target.value })}
-                  rows="5"
-                  required
-                />
 
-                <button
-                  type="submit"
-                  className="btn btn-primary form-control bump"
-                >
-                  Reply Ice Breaker
-                </button>
-              </div>
-            </form>
+            {this.renderIceBreakerReplyMessage()}
+
+            
+            </div>
+
+            {this.renderReplyForm()}
+           
           </div>
         );
+    }
+  }
+
+  renderChoiceButtons(){
+    switch (this.state.replystate) {
+      case false:
+        return (
+        <div className="form-row">
+          <div className="col">
+         <button
+           className="btn btn-lg btn-danger form-control"
+           onClick={ev =>
+             this.handlePass(
+               this.props.icebreakers[this.state.readcount]._id
+             )
+           }
+         >
+           Hard Pass
+         </button>
+  </div>
+  <div className="col">
+         <button
+           className="btn btn-lg btn-primary form-control"
+           onClick={ev => this.readIncrement()}
+         >
+           Maybe Later
+         </button>
+</div>
+       </div>
+        );
+
+      case true:
+        return <div />;
+      default:
+        return <div />;
+      }
+  }
+  renderReplyForm() {
+    switch (this.state.replystate) {
+      case false:
+        return (
+          <form onSubmit={ev => this.replyIceBreaker(this.state.message, ev)}>
+            <div className="form-group">
+              <textarea
+                type="text"
+                className="form-control"
+                value={this.state.message}
+                onKeyDown={this.onReplyEnterPress}
+                onChange={ev => this.setState({ message: ev.target.value })}
+                rows="5"
+                required
+              />
+
+              <button
+                type="submit"
+                className="btn btn-primary form-control bump"
+              >
+                Reply Ice Breaker
+              </button>
+            </div>
+          </form>
+        );
+
+      case true:
+        return <div />;
+      default:
+        return <div />;
     }
   }
 
@@ -314,36 +381,72 @@ class Court extends Component {
     const replydata = {
       message: reply,
       user_id: this.props.auth._id,
-      recipient_id: this.props.icebreakers[this.state.readstate].author._id,
-      topic_id: this.props.icebreakers[this.state.readstate].topic._id,
+      recipient_id: this.props.icebreakers[this.state.readcount].author._id,
+      topic_id: this.props.icebreakers[this.state.readcount].topic._id,
       category_id: this.state.category_id,
-      icebreaker_id: this.props.icebreakers[this.state.readstate]._id
+      icebreaker_id: this.props.icebreakers[this.state.readcount]._id
     };
     this.props.startChat(replydata);
-    this.props.acceptIceBreaker(this.props.auth._id, this.props.icebreakers[this.state.readstate]._id);
-    
- 
-    setTimeout(function(){
+    this.props.acceptIceBreaker(
+      this.props.auth._id,
+      this.props.icebreakers[this.state.readcount]._id
+    );
+    this.setState({ replystate: true });
+
+    setTimeout(
+      function() {
         this.props.fetchChatList(this.props.auth._id);
-      }.bind(this),1500);
-    
-    this.readIncrement();
+      }.bind(this),
+      1500
+    );
   }
 
+  handleReplyClose() {
+    this.setState({ replystate: false });
+    this.readIncrement();
+  }
+  replyAlert() {
+    switch (this.state.replystate) {
+      case false:
+        return <div />;
+
+      case true:
+        return (
+          <div class="alert alert-success reply-alert">
+            <div className="container-fluid">
+              <strong>Reply sent!</strong>
+              <button
+                type="button"
+                className="close"
+                onClick={() => this.handleReplyClose()}
+              >
+                &times;
+              </button>
+            </div>
+          </div>
+        );
+      default:
+        return <div />;
+    }
+  }
   //ICE BREAKER REVIEW
   renderReview() {
-    switch(this.props.usericebreakers){
+    switch (this.props.usericebreakers) {
       case null:
-      this.props.fetchIceBreakersByUser(this.props.auth._id);
+        this.props.fetchIceBreakersByUser(this.props.auth._id);
         return <div>null</div>;
-        default:
-          return (<ul className="list-group">
+      default:
+        return (
+          <ul className="list-group">
             {this.props.usericebreakers.map(icebreaker => {
-              return (<li className="list-group-item" key={icebreaker._id}>
-                   {icebreaker.topic.title} {icebreaker.message}
-                </li>);
+              return (
+                <li className="list-group-item" key={icebreaker._id}>
+                  {icebreaker.topic.title} {icebreaker.message}
+                </li>
+              );
             })}
-          </ul> );
+          </ul>
+        );
     }
   }
 
@@ -352,44 +455,57 @@ class Court extends Component {
       <div className="container">
         <div className="row">
           <div className="col-md-8">
+            <div className="form-row">
+              <div className="col-md-9">
+                <h2>courter.io</h2>
+              </div>
+              <div className="col-md-3">
+                <button
+                  className="form-control btn btn-outline-primary"
+                  onClick={() => this.props.setViewState("chat")}
+                >
+                  Chat
+                </button>
+              </div>
+            </div>
+            <hr />
+            <div className="form-row">
+              <div className="col-md-4">
+                <button
+                  className="btn btn-info form-control"
+                  onClick={ev => {
+                    this.setState({ courtstate: "review", message: "" });
+                  }}
+                >
+                  Review Ice Breakers
+                </button>
+              </div>
+              <div className="col-md-4">
+                <button
+                  className="btn btn-info form-control"
+                  onClick={ev => {
+                    this.setState({ courtstate: "read", message: "" });
+                  }}
+                >
+                  Read Ice Breakers
+                </button>
+              </div>
+              <div className="col-md-4">
+                <button
+                  className="btn btn-info form-control"
+                  onClick={ev => {
+                    this.setState({ courtstate: "write", message: "" });
+                  }}
+                >
+                  Create Ice Breakers
+                </button>
+              </div>
+            </div>
+            <br />
             <div className="card">
               <div className="card-body">
-                <div className="form-row">
-                <div className="col-md-4">
-                    <button
-                      className="btn btn-primary form-control"
-                      onClick={ev => {
-                        this.setState({ courtstate: "review", message: "" });
-                      }}
-                    >
-                      Review Ice Breakers
-                    </button>
-                  </div>
-                  <div className="col-md-4">
-                    <button
-                      className="btn btn-primary form-control"
-                      onClick={ev => {
-                        this.setState({ courtstate: "read", message: "" });
-                      }}
-                    >
-                      Read Ice Breakers
-                    </button>
-                  </div>
-                  <div className="col-md-4">
-                    <button
-                      className="btn btn-primary form-control"
-                      onClick={ev => {
-                        this.setState({ courtstate: "write", message: "" });
-                      }}
-                    >
-                      Create Ice Breakers
-                    </button>
-                  </div>
-                </div>
+                {this.renderCategories()}
                 <hr />
-              
-                  {this.renderCategories()}
-               
                 {this.renderCourt()}
               </div>
             </div>
@@ -421,10 +537,12 @@ function mapDispatchToProps(dispatch) {
       newIceBreaker: newIceBreaker,
       fetchIceBreakersByCat: fetchIceBreakersByCat,
       fetchIceBreakersByUser: fetchIceBreakersByUser,
+      fetchIceBreakersByAll: fetchIceBreakersByAll,
       startChat: startChat,
       fetchChatList: fetchChatList,
       rejectIceBreaker: rejectIceBreaker,
-      acceptIceBreaker: acceptIceBreaker
+      acceptIceBreaker: acceptIceBreaker,
+      setViewState: setViewState
     },
     dispatch
   );

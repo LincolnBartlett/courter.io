@@ -8,3 +8,13 @@
 .topic-text{
     height: 50px;
 }
+.reply-window{
+    height: 40vh;
+    overflow-x: hidden;
+    overflow-y: scroll;
+}
+.reply-alert{
+    display: flex;
+    height: 100%;
+    width: 100%;
+}

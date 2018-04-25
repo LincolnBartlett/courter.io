@@ -3,6 +3,9 @@
     overflow-x: hidden;
     overflow-y: scroll;
 }
+.chat-window-empty{
+    height: 50vh;
+}
 .message{
     width: 40%;
 }
