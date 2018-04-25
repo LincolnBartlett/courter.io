@@ -5,8 +5,7 @@ const express = require('express'),
       Chat = require('../models/chatSchema'),
       IceBreaker = require('../models/iceBreakerSchema'),
       Category = require('../models/categorySchema'),
-      Topic = require('../models/topicSchema'),
-      Item = require('../models/itemSchema');
+      Topic = require('../models/topicSchema');
 
 //ICE BREAKERS
 router.post('/icebreaker/new',

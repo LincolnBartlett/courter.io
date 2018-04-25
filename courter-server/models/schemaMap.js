@@ -4,4 +4,3 @@ module.exports  = require('./messageSchema');
 module.exports  = require('./topicSchema');
 module.exports  = require('./categorySchema');
 module.exports  = require('./iceBreakerSchema');
-module.exports  = require('./itemSchema');

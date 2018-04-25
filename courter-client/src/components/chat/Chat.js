@@ -147,7 +147,7 @@ class Chat extends Component {
               <div className="card-body">
                 <h3>{this.props.chatData.givenName}</h3>
                 <button
-                  class="btn btn-sm btn-outline-primary"
+                  className="btn btn-sm btn-outline-primary"
                   onClick={() => {
                     this.handleProfileClick(this.props.chatData.user_id);
                   }}
@@ -175,7 +175,7 @@ class Chat extends Component {
     if (message.topic) {
       return (
         <div key={message._id} className="float-right text-right  w-75">
-          <div className="alert alert-primary">
+          <div className="alert border  alert-primary">
             <p>{message.topic.title}</p>
             <p>{message.message}</p>
             <p className="text-right small mb-0">
@@ -187,7 +187,7 @@ class Chat extends Component {
     }
     return (
       <div key={message._id} className="float-right text-right  w-75">
-        <div className="alert alert-primary">
+        <div className="alert border  alert-primary">
           <p>{message.message}</p>
           <p className="text-right small mb-0">
             <Moment format="MMM DD, YYYY hh:mma">{message.timeStamp}</Moment>
@@ -201,7 +201,7 @@ class Chat extends Component {
     if (message.topic) {
       return (
         <div key={message._id} className="float-left text-left w-75">
-          <div className="alert alert-light">
+          <div className="alert border border-primary alert-light">
             <p>{message.topic.title} {message.message}</p>
             <p className="text-left small mb-0">
               <Moment format="MMM DD, YYYY hh:mma">{message.timeStamp}</Moment>
@@ -212,7 +212,7 @@ class Chat extends Component {
     }
     return (
       <div key={message._id} className="float-left text-left w-75">
-        <div className="alert alert-light">
+        <div className="alert border border-primary alert-light">
           <p>{message.message}</p>
           <p className="text-left small mb-0">
             <Moment format="MMM DD, YYYY hh:mma">{message.timeStamp}</Moment>

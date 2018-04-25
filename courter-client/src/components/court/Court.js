@@ -82,6 +82,19 @@ class Court extends Component {
     };
   }
 
+  renderCourt() {
+    switch (this.state.courtstate) {
+      case "read":
+        return <div>{this.renderRead()}</div>;
+      case "write":
+        return <div>{this.renderWrite()}</div>;
+      case "review":
+        return <div>{this.renderReview()}</div>;
+      default:
+        return <div />;
+    }
+  }
+
   //COMPONENT NAVIGATION
   renderCategories() {
     switch (this.props.categories) {
@@ -160,19 +173,6 @@ class Court extends Component {
     }
   }
 
-  renderCourt() {
-    switch (this.state.courtstate) {
-      case "read":
-        return <div>{this.renderRead()}</div>;
-      case "write":
-        return <div>{this.renderWrite()}</div>;
-      case "review":
-        return <div>{this.renderReview()}</div>;
-      default:
-        return <div />;
-    }
-  }
-
   //ICE BREAKER WRITE
   renderWrite() {
     return (
@@ -247,84 +247,77 @@ class Court extends Component {
         return (
           <div>
             <br />
-         
-             
-                <h3>
-                  {
-                    this.props.icebreakers[this.state.readcount].author
-                      .givenName
-                  }
-                </h3>
-                <p>
-                  Profile Info: <br /> goes right here
-                </p>
-             
 
-                {this.renderChoiceButtons()}
-        
+            <h3>
+              {this.props.icebreakers[this.state.readcount].author.givenName}
+            </h3>
+            <p>
+              Profile Info: <br /> goes right here
+            </p>
+
+            {this.renderChoiceButtons()}
+
             <hr />
             {this.replyAlert()}
             <div className="border jumbotron reply-window">
-            <div className="float-left text-left w-75">
-              <div className="alert alert-light">
-                <p>
-                  {this.props.icebreakers[this.state.readcount].topic.title}{" "}
-                  {this.props.icebreakers[this.state.readcount].message}
-                </p>
-                <p className="text-left small mb-0">
-                  <Moment format="MMM DD, YYYY hh:mma">
-                    {this.props.icebreakers[this.state.readcount].timeStamp}
-                  </Moment>
-                </p>
+              <div className="float-left text-left w-75">
+                <div className="alert border border-primary alert-light">
+                  <p>
+                    {this.props.icebreakers[this.state.readcount].topic.title}{" "}
+                    {this.props.icebreakers[this.state.readcount].message}
+                  </p>
+                  <p className="text-left small mb-0">
+                    <Moment format="MMM DD, YYYY hh:mma">
+                      {this.props.icebreakers[this.state.readcount].timeStamp}
+                    </Moment>
+                  </p>
+                </div>
               </div>
-            </div>
 
-            {this.renderIceBreakerReplyMessage()}
-
-            
+              {this.renderIceBreakerReplyMessage()}
             </div>
 
             {this.renderReplyForm()}
-           
           </div>
         );
     }
   }
 
-  renderChoiceButtons(){
+  renderChoiceButtons() {
     switch (this.state.replystate) {
       case false:
         return (
-        <div className="form-row">
-          <div className="col">
-         <button
-           className="btn btn-lg btn-danger form-control"
-           onClick={ev =>
-             this.handlePass(
-               this.props.icebreakers[this.state.readcount]._id
-             )
-           }
-         >
-           Hard Pass
-         </button>
-  </div>
-  <div className="col">
-         <button
-           className="btn btn-lg btn-primary form-control"
-           onClick={ev => this.readIncrement()}
-         >
-           Maybe Later
-         </button>
-</div>
-       </div>
+          <div className="form-row">
+            <div className="col">
+              <button
+                className="btn btn-lg btn-danger form-control"
+                onClick={ev =>
+                  this.handlePass(
+                    this.props.icebreakers[this.state.readcount]._id
+                  )
+                }
+              >
+                Hard Pass
+              </button>
+            </div>
+            <div className="col">
+              <button
+                className="btn btn-lg btn-primary form-control"
+                onClick={ev => this.readIncrement()}
+              >
+                Maybe Later
+              </button>
+            </div>
+          </div>
         );
 
       case true:
         return <div />;
       default:
         return <div />;
-      }
+    }
   }
+
   renderReplyForm() {
     switch (this.state.replystate) {
       case false:
@@ -405,6 +398,7 @@ class Court extends Component {
     this.setState({ replystate: false });
     this.readIncrement();
   }
+
   replyAlert() {
     switch (this.state.replystate) {
       case false:
@@ -429,6 +423,7 @@ class Court extends Component {
         return <div />;
     }
   }
+  
   //ICE BREAKER REVIEW
   renderReview() {
     switch (this.props.usericebreakers) {

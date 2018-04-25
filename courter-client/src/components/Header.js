@@ -57,7 +57,7 @@ class Header extends Component {
               className="nav-link btn btn-outline-secondary"
               onClick={() => this.handleUserProfileClick()}
             >
-              View Profile
+              My Profile
             </a>
           </li>
         );
