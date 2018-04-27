@@ -5,6 +5,7 @@ import { bindActionCreators } from "redux";
 import Court from "./court/Court";
 import Chat from "./chat/Chat";
 import Profile from "./user/Profile";
+import Settings from "./user/Settings";
 
 class Landing extends Component {
   constructor(props) {
@@ -22,6 +23,8 @@ class Landing extends Component {
         return <Chat/>;
       case "profile":
         return <Profile/>;
+        case "settings":
+        return <Settings/>;
       default:
         return <Court/>;
     }
@@ -77,16 +80,12 @@ class Landing extends Component {
                   </div>
                 </div>);
       default:
-        return (<div>{this.mainView()}</div>);
+        return this.mainView();
     }
   }
 
   render() {
-    return (
-      <div>
-      {this.renderLanding()}
-      </div>
-    );
+    return this.renderLanding();
   }
 }
 

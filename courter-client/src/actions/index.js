@@ -15,7 +15,10 @@ import {
   SET_VIEW,
   REJECT_ICE_BREAKER,
   ACCEPT_ICE_BREAKER,
-  FETCH_IB_ALL
+  FETCH_IB_ALL,
+  SET_ALL_USER_IB_PREFS,
+  SET_USER_LOCATION,
+  SET_ALL_USER_INFO
 } from "./types";
 
 //NAVIGATION
@@ -37,6 +40,21 @@ export const fetchAllUsers = () => async dispatch => {
 export const fetchOneUser = user_id => async dispatch => {
   const res = await axios.post("/api/user/one", { user_id: user_id });
   dispatch({ type: FETCH_ONE_USER, payload: res.data });
+};
+
+export const setDistanceAndAge = settingData => async dispatch => {
+  const res = await axios.post("/api/user/setdistanceandage", settingData);
+  dispatch({ type: SET_ALL_USER_IB_PREFS, payload: res.data });
+};
+
+export const setAllUserInfo = settingData => async dispatch => {
+  const res = await axios.post("/api/user/setalluserinfo", settingData);
+  dispatch({ type: SET_ALL_USER_INFO, payload: res.data });
+};
+
+export const setUserLocation = settingData => async dispatch => {
+  const res = await axios.post("/api/user/setlocation", settingData);
+  dispatch({ type: SET_USER_LOCATION, payload: res.data });
 };
 
 //CHAT
@@ -96,8 +114,6 @@ export const newIceBreaker = icebreaker => async dispatch => {
   const res = await axios.post(`/api/court/icebreaker/new`, icebreaker);
   dispatch({ type: NEW_ICE_BREAKER, payload: res.data });
 };
-
-
 
 export const rejectIceBreaker = (user_id, ice_id) => async dispatch => {
   const res = await axios.post(`/api/court/icebreaker/reject`, {

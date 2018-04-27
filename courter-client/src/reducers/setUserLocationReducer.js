@@ -1,9 +1,9 @@
-import { SET_ALL_USER_IB_PREFS} from '../actions/types';
+import { SET_USER_LOCATION} from '../actions/types';
 
 export default function(state = null, action){
 
     switch (action.type){
-        case SET_ALL_USER_IB_PREFS:
+        case SET_USER_LOCATION:
             return action.payload || false;
         default: 
             return state;

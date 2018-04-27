@@ -92,24 +92,30 @@ class Chat extends Component {
     this.props.setViewState("profile");
   }
   //CHAT WINDOW
+  renderComponentNav() {
+    return (
+      <div className="form-row">
+      <div className="col-md-9">
+        <h2>courter.io</h2>
+      </div>
+      <div className="col-md-3">
+        <button
+          className="form-control btn btn-outline-primary"
+          onClick={() => this.props.setViewState("court")}
+        >
+          Court
+        </button>
+      </div>
+    </div>
+    );
+  }
+
   renderChat() {
     switch (this.props.chat) {
       case null:
         return (
           <div>
-            <div className="form-row">
-              <div className="col-md-9">
-                <h2>courter.io</h2>
-              </div>
-              <div className="col-md-3">
-                <button
-                  className="form-control btn btn-outline-primary"
-                  onClick={() => this.props.setViewState("court")}
-                >
-                  Court
-                </button>
-              </div>
-            </div>
+            {this.renderComponentNav()}
             <hr />
             <div className="card">
               <div className="card-body">
@@ -175,7 +181,7 @@ class Chat extends Component {
     if (message.topic) {
       return (
         <div key={message._id} className="float-right text-right  w-75">
-          <div className="alert border  alert-primary">
+          <div className="alert alert-primary">
             <p>{message.topic.title}</p>
             <p>{message.message}</p>
             <p className="text-right small mb-0">
@@ -187,7 +193,7 @@ class Chat extends Component {
     }
     return (
       <div key={message._id} className="float-right text-right  w-75">
-        <div className="alert border  alert-primary">
+        <div className="alert alert-primary">
           <p>{message.message}</p>
           <p className="text-right small mb-0">
             <Moment format="MMM DD, YYYY hh:mma">{message.timeStamp}</Moment>
@@ -201,7 +207,7 @@ class Chat extends Component {
     if (message.topic) {
       return (
         <div key={message._id} className="float-left text-left w-75">
-          <div className="alert border border-primary alert-light">
+          <div className="alert alert-light">
             <p>{message.topic.title} {message.message}</p>
             <p className="text-left small mb-0">
               <Moment format="MMM DD, YYYY hh:mma">{message.timeStamp}</Moment>
@@ -212,7 +218,7 @@ class Chat extends Component {
     }
     return (
       <div key={message._id} className="float-left text-left w-75">
-        <div className="alert border border-primary alert-light">
+        <div className="alert alert-light">
           <p>{message.message}</p>
           <p className="text-left small mb-0">
             <Moment format="MMM DD, YYYY hh:mma">{message.timeStamp}</Moment>

@@ -252,7 +252,9 @@ class Court extends Component {
               {this.props.icebreakers[this.state.readcount].author.givenName}
             </h3>
             <p>
-              Profile Info: <br /> goes right here
+              Age: {this.props.icebreakers[this.state.readcount].author.age}
+             <br/>
+             {this.props.icebreakers[this.state.readcount].author.sex}
             </p>
 
             {this.renderChoiceButtons()}
@@ -261,7 +263,7 @@ class Court extends Component {
             {this.replyAlert()}
             <div className="border jumbotron reply-window">
               <div className="float-left text-left w-75">
-                <div className="alert border border-primary alert-light">
+                <div className="alert alert-light">
                   <p>
                     {this.props.icebreakers[this.state.readcount].topic.title}{" "}
                     {this.props.icebreakers[this.state.readcount].message}
@@ -290,6 +292,14 @@ class Court extends Component {
           <div className="form-row">
             <div className="col">
               <button
+                className="btn btn-lg btn-primary form-control"
+                onClick={ev => this.readIncrement()}
+              >
+                Maybe Later
+              </button>
+            </div>
+            <div className="col">
+              <button
                 className="btn btn-lg btn-danger form-control"
                 onClick={ev =>
                   this.handlePass(
@@ -298,14 +308,6 @@ class Court extends Component {
                 }
               >
                 Hard Pass
-              </button>
-            </div>
-            <div className="col">
-              <button
-                className="btn btn-lg btn-primary form-control"
-                onClick={ev => this.readIncrement()}
-              >
-                Maybe Later
               </button>
             </div>
           </div>
@@ -423,7 +425,7 @@ class Court extends Component {
         return <div />;
     }
   }
-  
+
   //ICE BREAKER REVIEW
   renderReview() {
     switch (this.props.usericebreakers) {
@@ -444,58 +446,64 @@ class Court extends Component {
         );
     }
   }
-
+  renderComponentNav() {
+    return (
+      <div>
+        <div className="form-row">
+          <div className="col-md-9">
+            <h2>courter.io</h2>
+          </div>
+          <div className="col-md-3">
+            <button
+              className="form-control btn btn-outline-primary"
+              onClick={() => this.props.setViewState("chat")}
+            >
+              Chat
+            </button>
+          </div>
+        </div>
+        <hr />
+        <div className="form-row">
+          <div className="col-md-4">
+            <button
+              className="btn btn-info form-control"
+              onClick={ev => {
+                this.setState({ courtstate: "review", message: "" });
+              }}
+            >
+              Review Ice Breakers
+            </button>
+          </div>
+          <div className="col-md-4">
+            <button
+              className="btn btn-info form-control"
+              onClick={ev => {
+                this.setState({ courtstate: "read", message: "" });
+              }}
+            >
+              Read Ice Breakers
+            </button>
+          </div>
+          <div className="col-md-4">
+            <button
+              className="btn btn-info form-control"
+              onClick={ev => {
+                this.setState({ courtstate: "write", message: "" });
+              }}
+            >
+              Create Ice Breakers
+            </button>
+          </div>
+        </div>
+      </div>
+    );
+  }
   render() {
     return (
       <div className="container">
         <div className="row">
           <div className="col-md-8">
-            <div className="form-row">
-              <div className="col-md-9">
-                <h2>courter.io</h2>
-              </div>
-              <div className="col-md-3">
-                <button
-                  className="form-control btn btn-outline-primary"
-                  onClick={() => this.props.setViewState("chat")}
-                >
-                  Chat
-                </button>
-              </div>
-            </div>
-            <hr />
-            <div className="form-row">
-              <div className="col-md-4">
-                <button
-                  className="btn btn-info form-control"
-                  onClick={ev => {
-                    this.setState({ courtstate: "review", message: "" });
-                  }}
-                >
-                  Review Ice Breakers
-                </button>
-              </div>
-              <div className="col-md-4">
-                <button
-                  className="btn btn-info form-control"
-                  onClick={ev => {
-                    this.setState({ courtstate: "read", message: "" });
-                  }}
-                >
-                  Read Ice Breakers
-                </button>
-              </div>
-              <div className="col-md-4">
-                <button
-                  className="btn btn-info form-control"
-                  onClick={ev => {
-                    this.setState({ courtstate: "write", message: "" });
-                  }}
-                >
-                  Create Ice Breakers
-                </button>
-              </div>
-            </div>
+            {this.renderComponentNav()}
             <br />
             <div className="card">
               <div className="card-body">
@@ -520,7 +528,8 @@ function mapStateToProps(state) {
     topics: state.topics,
     auth: state.auth,
     icebreakers: state.icebreakers,
-    usericebreakers: state.usericebreakers
+    usericebreakers: state.usericebreakers,
+    geolocation: state.geolocation
   };
 }
 

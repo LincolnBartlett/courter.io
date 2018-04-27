@@ -1,28 +1,60 @@
-const express = require('express'),
-      router = express.Router(),
-      User = require('../models/userSchema');
+const express = require("express"),
+  router = express.Router(),
+  User = require("../models/userSchema");
 
-router.get( '/', 
-    (req, res)=> {
-      res.render(`./user/userPage`);
-    }
-);
 
-router.get('/current_user' ,
-    (req, res) =>{
-     res.send(req.user);   
-    }
-);
+router.get("/current_user", (req, res) => {
+  res.send(req.user);
+});
 
-router.post('/all',
-      async (req, res)=>{
-           const users = await User.find({});
-                  res.send(users);      
-      });
-  
-router.post('/one',
-      async (req, res)=>{
-            const user = await User.findById(req.body.user_id);
-                        res.send(user);      
-      });      
+
+/*------------
+GETTING USER DATA
+-------------*/
+router.post("/all", async (req, res) => {
+  const users = await User.find({});
+  res.send(users);
+});
+
+router.post("/one", async (req, res) => {
+  const user = await User.findById(req.body.user_id);
+  res.send(user);
+});
+
+
+/*------------
+USER SETTINGS
+-------------*/
+//LOCATION
+router.post("/setlocation", async (req, res) => {
+      const user = await User.findById(req.body.user_id);
+      user.location.latitude = req.body.latitude;
+      user.location.longitude = req.body.longitude;
+      user.save();
+      res.send(user);
+});
+
+router.post("/setalluserinfo", async (req, res) => {
+      console.log(req.body);
+      const user = await User.findById(req.body.user_id);
+      user.age = req.body.age;
+      user.sex = req.body.sex;
+      user.location.latitude = req.body.latitude;
+      user.location.longitude = req.body.longitude;
+      user.save();
+      res.send(user);
+    });
+
+//IB SEARCH PARAMS
+router.post("/setdistanceandage", async (req, res) => {   
+      const user = await User.findById(req.body.user_id);
+      user.settings.distance = req.body.distance;
+      user.settings.agemax = req.body.agemax;
+      user.settings.agemin = req.body.agemin;
+      user.save();
+      res.send(user);
+});
+
+
+
 module.exports = router;

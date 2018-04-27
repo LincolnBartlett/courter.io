@@ -15,3 +15,6 @@ export const FETCH_IB_ALL = 'fetch_ib_all';
 export const SET_VIEW = 'set_view';
 export const REJECT_ICE_BREAKER = 'reject_ice_breaker';
 export const ACCEPT_ICE_BREAKER = 'accept_ice_breaker';
+export const SET_ALL_USER_IB_PREFS = 'set_all_user_ib_prefs';
+export const SET_USER_LOCATION = 'set_user_location';
+export const SET_ALL_USER_INFO = 'set_all_user_info';

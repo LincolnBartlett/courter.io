@@ -13,7 +13,10 @@ class Header extends Component {
     this.props.fetchOneUser(this.props.auth._id);
     this.props.fetchIceBreakersByUser(this.props.auth._id);
   }
+  handleSettingsClick() {
+    this.props.setViewState("settings");
 
+  }
   renderHeader() {
     switch (this.props.auth) {
       case null:
@@ -73,7 +76,7 @@ class Header extends Component {
       default:
         return (
           <li className="nav-item">
-            <a className="nav-link btn btn-outline-warning" onClick={() => {}}>
+            <a className="nav-link btn btn-outline-warning" onClick={() => {this.handleSettingsClick()}}>
               Settings
             </a>
           </li>

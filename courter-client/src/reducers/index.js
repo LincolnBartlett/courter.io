@@ -14,6 +14,10 @@ import rejectIceBreaker from './rejectIceBreakerReducer';
 import acceptIceBreaker from './acceptIceBreakerReducer';
 import iceBreakerUserFetchReducer from './iceBreakerUserFetchReducer';
 import fetchOneUserReducer from './fetchOneUserReducer';
+import {reducer as geolocation} from 'react-redux-geolocation';
+import setUserIBPrefsReducer from './setUserIBPrefsReducer';
+import setUserLocationReducer from './setUserLocationReducer';
+import setAllUserInfoReducer from './setAllUserInfoReducer';
 
 export default combineReducers({
     auth: authReducer,
@@ -30,5 +34,9 @@ export default combineReducers({
     viewState : viewReducer,
     rejectIceBreaker : rejectIceBreaker,
     acceptIceBreaker : acceptIceBreaker,
-    profileuser: fetchOneUserReducer
+    profileuser: fetchOneUserReducer,
+    geolocation,
+    setDistanceAndAge: setUserIBPrefsReducer,
+    setUserLocation: setUserLocationReducer,
+    setAllUserInfo: setAllUserInfoReducer
 });

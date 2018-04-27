@@ -1,10 +1,9 @@
 import React, { Component } from "react";
-import { BrowserRouter, Route } from "react-router-dom";
 import { connect } from "react-redux";
 import * as actions from "../actions";
 import Header from "./Header";
 import Landing from "./Landing";
-
+import { GeoLocation } from 'react-redux-geolocation';
 class App extends Component {
   componentDidMount() {
     this.props.fetchUser();
@@ -15,13 +14,10 @@ class App extends Component {
   render() {
     return (
       <div>
-        <BrowserRouter>
-          <div>
-              <Header/>
-              <br/>
-              <Route path="/" component={Landing}/>
-          </div>
-        </BrowserRouter>
+        <Header />
+        <br />
+        <GeoLocation/>
+        <Landing />
       </div>
     );
   }
