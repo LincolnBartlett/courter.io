@@ -132,9 +132,8 @@ class Settings extends Component {
                 <div className="card-body">
                   My location:
                   <br />
-                  Latitude: {this.props.auth.location.latitude}
-                  <br />
-                  Longitude: {this.props.auth.location.longitude}
+                  {this.props.auth.location.neighborhood}
+
                   <hr/>
                   <button
                     className="btn btn-primary form-control"

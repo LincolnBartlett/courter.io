@@ -75,7 +75,9 @@ class Profile extends Component {
       longitude: this.props.geolocation.longitude
     };
     this.props.setAllUserInfo(infoData);
+    this.setState({ editstate: false });
   }
+
   renderUserOptions() {
     switch (this.state.editstate) {
       case false:
@@ -85,9 +87,7 @@ class Profile extends Component {
             <br />
             Sex: {this.props.profileuser.sex}
             <br />
-            Latitude:{this.props.geolocation.latitude}
-            <br />
-            Longitude:{this.props.geolocation.longitude}
+            {this.props.profileuser.location.neighborhood}
           </div>
         );
       default:
@@ -108,19 +108,6 @@ class Profile extends Component {
                 <option>Male</option>
                 <option>Female</option>
               </select>
-              <br />
-              Latitude:<input
-                className="form-control"
-                type="text"
-                value={this.props.geolocation.latitude}
-                readonly
-              />
-              Longitude:<input
-                className="form-control"
-                type="text"
-                value={this.props.geolocation.longitude}
-                readonly
-              />
               <button
                 onClick={() => {
                   this.handleUserInfoSubmit();
@@ -144,6 +131,7 @@ class Profile extends Component {
         this.setState({ editstate: false });
     }
   }
+
   renderUserProfile() {
     switch (this.props.profileuser) {
       case null:
@@ -198,6 +186,7 @@ class Profile extends Component {
                     <br />
                     Sex: {this.props.profileuser.sex}
                     <br />
+                    {this.props.profileuser.location.neighborhood}
                   </div>
                   <div className="card-footer">
                     <button className="btn btn-sm btn-success">

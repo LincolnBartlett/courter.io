@@ -12,6 +12,7 @@ var userSchema = new Schema({
             longitude: Number,
             neighborhood: String
         },
+        geotag:{type: [Number]},
         settings: {
             agemax: Number,
             agemin: Number,
@@ -19,5 +20,6 @@ var userSchema = new Schema({
         } 
 });
 
+userSchema.index({geotag: '2dsphere'});
 
 module.exports = mongoose.model('users', userSchema);

@@ -76,8 +76,9 @@ export const startChat = message => async dispatch => {
   const res = await axios.post(`/api/chat/startchat`, message);
   dispatch({ type: START_CHAT, payload: res.data });
 };
-
-//ICE BREAKERS
+/*----------------
+   ICE BREAKERS
+----------------*/
 export const fetchCategories = () => async dispatch => {
   const res = await axios.post(`/api/court/category/getall`);
   dispatch({ type: FETCH_CATEGORIES, payload: res.data });
