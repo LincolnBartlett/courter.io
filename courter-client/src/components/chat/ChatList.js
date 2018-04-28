@@ -12,7 +12,7 @@ import { bindActionCreators } from "redux";
 class ChatList extends Component {
   updateChat(data) {
     this.props.fetchChat(data.id);
-    this.props.setChatData(data.id, data.givenName, data.user_id);
+    this.props.setChatData(data.id, data.nickname, data.user_id);
     this.props.setViewState("chat");
   }
 
@@ -40,9 +40,9 @@ class ChatList extends Component {
                 >
                   {chat.recipients.map(recipient => {
                     if (recipient._id !== this.props.auth._id) {
-                      data.givenName = recipient.givenName;
+                      data.nickname = recipient.nickname;
                       data.user_id = recipient._id;
-                      return <div key={chat._id}>{recipient.givenName}</div>;
+                      return <div key={chat._id}>{recipient.nickname}</div>;
                     }
                     return null;
                   })}

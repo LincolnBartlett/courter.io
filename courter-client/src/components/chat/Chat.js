@@ -49,7 +49,7 @@ class Chat extends Component {
           ...this.state.messages,
           {
             message: data.message,
-            user: data.givenName,
+            user: data.nickname,
             userId: data.user,
             _id: data._id,
             timeStamp: data.timeStamp,
@@ -70,7 +70,7 @@ class Chat extends Component {
       this.socket.emit("SEND_MESSAGE", {
         message: this.state.message,
         user: this.props.auth._id,
-        givenName: this.props.auth.givenName,
+        nickname: this.props.auth.nickname,
         chat: this.props.chatData.chat_id
       });
       this.setState({ message: "" });
@@ -151,7 +151,7 @@ class Chat extends Component {
             <hr />
             <div className="card">
               <div className="card-body">
-                <h3>{this.props.chatData.givenName}</h3>
+                <h3>{this.props.chatData.nickname}</h3>
                 <button
                   className="btn btn-sm btn-outline-primary"
                   onClick={() => {

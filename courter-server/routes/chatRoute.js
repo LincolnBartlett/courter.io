@@ -26,31 +26,29 @@ router.post('/startchat',
                         {recipients : {$eq: req.body.recipient_id}}
                   ]
             });
-            
-            if(chat.length === 0){
-           
+            const getChatList = async () => {
+                  const userChats =  await Chat.find({ recipients: req.body.user_id }).populate('recipients');
+                  res.send(userChats);
+            }            
+            if(chat.length === 0){         
                   new Chat({ recipients: [req.body.user_id, req.body.recipient_id] }).save(function(err, chatdata){
                         new Message({
                               author: req.body.recipient_id,
                               chat: chatdata._id,
                               message: iceBreaker.message,
-                              topic: req.body.topic_id
-            
-                        }).save();
-                       
-                        
-                        
-                        new Message({
-                              author: req.body.user_id,
-                              chat: chatdata._id,
-                              message: req.body.message
-                        }).save();
-                        res.send('success');
-                   
-                  });
-                  
+                              topic: req.body.topic_id          
+                        }).save(function(err){
+                              new Message({
+                                    author: req.body.user_id,
+                                    chat: chatdata._id,
+                                    message: req.body.message
+                              }).save(function(err){
+                                    
+                              });
+                        });                     
+                        getChatList();
+                  });                 
             }else{
-
                   new Message({
                         author: req.body.recipient_id,
                         chat: chat[0]._id,
@@ -65,11 +63,14 @@ router.post('/startchat',
                               message: req.body.message
             
                         }).save();
-
                   });
+                  getChatList();
 
-                  res.send('success');
             }
+
+
+
+
       });
 
 module.exports = router;

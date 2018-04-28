@@ -18,7 +18,8 @@ import {
   FETCH_IB_ALL,
   SET_ALL_USER_IB_PREFS,
   SET_USER_LOCATION,
-  SET_ALL_USER_INFO
+  SET_ALL_USER_INFO,
+  SET_TUTORIAL
 } from "./types";
 
 //NAVIGATION
@@ -26,7 +27,11 @@ export const setViewState = viewState => dispatch => {
   dispatch({ type: SET_VIEW, payload: viewState });
 };
 
-//USER
+/*----------------
+   USER
+----------------*/
+
+//FETCH
 export const fetchUser = () => async dispatch => {
   const res = await axios.get("/api/user/current_user");
   dispatch({ type: FETCH_USER, payload: res.data });
@@ -42,9 +47,15 @@ export const fetchOneUser = user_id => async dispatch => {
   dispatch({ type: FETCH_ONE_USER, payload: res.data });
 };
 
+//SET
 export const setDistanceAndAge = settingData => async dispatch => {
   const res = await axios.post("/api/user/setdistanceandage", settingData);
   dispatch({ type: SET_ALL_USER_IB_PREFS, payload: res.data });
+};
+
+export const setTutorial = settingData => async dispatch => {
+  const res = await axios.post("/api/user/settutorial", settingData);
+  dispatch({ type: SET_TUTORIAL, payload: res.data });
 };
 
 export const setAllUserInfo = settingData => async dispatch => {
@@ -57,14 +68,13 @@ export const setUserLocation = settingData => async dispatch => {
   dispatch({ type: SET_USER_LOCATION, payload: res.data });
 };
 
-//CHAT
+/*----------------
+  CHAT
+----------------*/
+//FETCH
 export const fetchChat = (chat_id = "") => async dispatch => {
   const res = await axios.post(`/api/chat/load/${chat_id}`);
   dispatch({ type: FETCH_CHAT, payload: res.data });
-};
-
-export const setChatData = (chat_id = "chat", givenName = "name",id  = "id") => dispatch => {
-  dispatch({type: SET_CHAT, payload: { chat_id: chat_id, givenName: givenName, user_id: id }});
 };
 
 export const fetchChatList = user_id => async dispatch => {
@@ -72,13 +82,19 @@ export const fetchChatList = user_id => async dispatch => {
   dispatch({ type: FETCH_CHAT_LIST, payload: res.data });
 };
 
+//SET
 export const startChat = message => async dispatch => {
   const res = await axios.post(`/api/chat/startchat`, message);
   dispatch({ type: START_CHAT, payload: res.data });
 };
+
+export const setChatData = (chat_id = "chat", nickname = "name",id  = "id") => dispatch => {
+  dispatch({type: SET_CHAT, payload: { chat_id: chat_id, nickname: nickname, user_id: id }});
+};
 /*----------------
    ICE BREAKERS
 ----------------*/
+//FETCH
 export const fetchCategories = () => async dispatch => {
   const res = await axios.post(`/api/court/category/getall`);
   dispatch({ type: FETCH_CATEGORIES, payload: res.data });
@@ -111,6 +127,7 @@ export const fetchIceBreakersByAll = user_id => async dispatch => {
   dispatch({ type: FETCH_IB_ALL, payload: res.data });
 };
 
+//SET
 export const newIceBreaker = icebreaker => async dispatch => {
   const res = await axios.post(`/api/court/icebreaker/new`, icebreaker);
   dispatch({ type: NEW_ICE_BREAKER, payload: res.data });

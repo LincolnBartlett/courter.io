@@ -26,6 +26,13 @@ router.post("/one", async (req, res) => {
 /*------------
 USER SETTINGS
 -------------*/
+router.post("/settutorial", async (req, res) => {
+  const user = await User.findById(req.body.user_id);
+  user.settings.tutorial = req.body.tutorial;
+  user.save();
+  res.send(user);
+});
+
 //LOCATION
 router.post("/setlocation", async (req, res) => {
   const user = await User.findById(req.body.user_id);
@@ -54,6 +61,7 @@ router.post("/setalluserinfo", async (req, res) => {
   const user = await User.findById(req.body.user_id);
   user.age = req.body.age;
   user.sex = req.body.sex;
+  user.nickname = req.body.nickname;
   user.save();
   res.send(user);
 });

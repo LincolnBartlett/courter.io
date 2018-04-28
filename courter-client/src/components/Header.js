@@ -29,7 +29,7 @@ class Header extends Component {
               href="/api/auth/google"
               method="POST"
             >
-              Sign In With Google{" "}
+              Sign In With Google
             </a>
           </li>
         );
@@ -40,7 +40,7 @@ class Header extends Component {
               className="nav-link btn btn-outline-secondary"
               href="/api/auth/logout"
             >
-              Logout{" "}
+              Logout
             </a>
           </li>
         );
@@ -87,6 +87,7 @@ class Header extends Component {
     return (
       <nav className="navbar navbar-light bg-light">
         <div className="container">
+        <small>0.0.1</small>
           <a className="navbar-brand">
             <img src="/favicon.ico" alt="" />
           </a>

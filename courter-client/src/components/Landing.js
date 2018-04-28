@@ -6,27 +6,33 @@ import Court from "./court/Court";
 import Chat from "./chat/Chat";
 import Profile from "./user/Profile";
 import Settings from "./user/Settings";
+import Tutorial from "./user/Tutorial";
 
 class Landing extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      viewState: ''
+      viewState: ""
     };
   }
 
-  mainView(){
-    switch(this.props.viewState){
-      case "court":
-        return <Court/>;
-      case "chat":
-        return <Chat/>;
-      case "profile":
-        return <Profile/>;
-        case "settings":
-        return <Settings/>;
+  mainView() {
+    switch (this.props.auth.settings.tutorial) {
+      case false:
+        return <Tutorial />;
       default:
-        return <Court/>;
+        switch (this.props.viewState) {
+          case "court":
+            return <Court />;
+          case "chat":
+            return <Chat />;
+          case "profile":
+            return <Profile />;
+          case "settings":
+            return <Settings />;
+          default:
+            return <Court />;
+        }
     }
   }
   renderLanding() {
@@ -34,51 +40,59 @@ class Landing extends Component {
       case null:
         return <div>Loading...</div>;
       case false:
-        return (<div className="container">
-                  <div className="col-md-8 offset-2">
-                  <br/>
-                  <div className="row">
-                        <div className="col-3">
-                          <img src="/images/crown_large.png" className="img-fluid" alt=""/>
-                        </div>
-                        <div className="col-6">
-                          <h1 className="text-right display-1">courter.io</h1>
-                          <h2 className="text-right">conversation is king</h2>
-                        </div>
-                      </div>
-                      <br/>
-                    <div className="card">
-                    <div className="card-body"> 
-                    <h3>Welcome to courter.io,</h3>           
-                      <p> 
-                        This isn't just another dating app. 
-                        With courter.io you judge people based on who they are, not what they are.
-                        First choose topics you like, then browse icebreakers from your matches. 
-                        Reply to wow them with your wit or fill out a few to show people how interesting you are.
-                      </p>
-                      <h5 className="text-center">Because you're a person, not a picture.</h5>
-                      <p>
-                        Once you've matched with someone you choose how much to share. At any point you can choose to share your real name, your pictures or ghost them for being too creepy. 
-                        You have full control on who you talk to and how much they know.
-                      </p>  
-                      <p>
-                        It's that simple! But first you'll need to create an account by <a href="/api/auth/google" method="POST">signing in with Google </a>
-                      </p>
-                    </div>
-                    </div>
+        return (
+          <div className="container">
+            <div className="col-md-8 offset-2">
+              <br />
+              <div className="row">
 
-                    <br/>
-                    <div className="card">
-                    <div className="card-body"> 
-         
-                      <p> 
-                        This project is currently in development and the site is a snapshot of the most recent development build. 
-                      </p>
+                <div className="col">
+                  <h1 className="text-center">courter.io</h1>
+                  <h5 className="text-center">conversation is king</h5>
+                </div>
+              </div>
+              <br />
+              <div className="card">
+                <div className="card-body">
+                  <h3>Welcome to courter.io,</h3>
+                  <p>
+                    This isn't just another dating app. With courter.io you
+                    judge people based on who they are, not what they are. First
+                    choose topics you like, then browse icebreakers from your
+                    matches. Reply to wow them with your wit or fill out a few
+                    to show people how interesting you are.
+                  </p>
+                  <h5 className="text-center">
+                    Because you're a person, not a picture.
+                  </h5>
+                  <p>
+                    Once you've matched with someone you choose how much to
+                    share. At any point you can choose to share your real name,
+                    your pictures or ghost them for being too creepy. You have
+                    full control on who you talk to and how much they know.
+                  </p>
+                  <p>
+                    It's that simple! But first you'll need to create an account
+                    by{" "}
+                    <a href="/api/auth/google" method="POST">
+                      signing in with Google{" "}
+                    </a>
+                  </p>
+                </div>
+              </div>
 
-                    </div>
-                    </div>
-                  </div>
-                </div>);
+              <br />
+              <div className="card">
+                <div className="card-body">
+                  <p>
+                    This project is currently in development and the site is a
+                    snapshot of the most recent development build.
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        );
       default:
         return this.mainView();
     }
@@ -92,7 +106,7 @@ class Landing extends Component {
 function mapStateToProps(state) {
   return {
     auth: state.auth,
-    viewState : state.viewState
+    viewState: state.viewState
   };
 }
 

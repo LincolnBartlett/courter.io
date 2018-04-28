@@ -5,6 +5,7 @@ var userSchema = new Schema({
         googleId: String,
         givenName: String,
         familyName: String,
+        nickname: String,
         age: Number,
         sex: String,
         location : {
@@ -16,7 +17,8 @@ var userSchema = new Schema({
         settings: {
             agemax: Number,
             agemin: Number,
-            distance: Number
+            distance: Number,
+            tutorial: Boolean
         } 
 });
 

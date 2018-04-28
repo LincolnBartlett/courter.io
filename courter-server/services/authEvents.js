@@ -1,9 +1,9 @@
 const mongoose = require("mongoose"),
-      User = mongoose.model("users"),
-      passport = require("passport"),
-      GoogleStrategy = require("passport-google-oauth20").Strategy,
-      config = require("../config"),
-      cookieSession = require("cookie-session");
+  User = mongoose.model("users"),
+  passport = require("passport"),
+  GoogleStrategy = require("passport-google-oauth20").Strategy,
+  config = require("../config"),
+  cookieSession = require("cookie-session");
 
 const authEvents = app => {
   app.use(
@@ -42,14 +42,16 @@ const authEvents = app => {
           const user = await new User({
             googleId: profile.id,
             givenName: profile.name.givenName,
-            familyName: profile.name.familyName
+            familyName: profile.name.familyName,
+            settings: {
+              tutorial: false
+            }
           }).save();
           done(null, user);
         }
       }
     )
   );
-
 };
 
 module.exports = authEvents;

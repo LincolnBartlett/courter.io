@@ -249,7 +249,7 @@ class Court extends Component {
             <br />
 
             <h3>
-              {this.props.icebreakers[this.state.readcount].author.givenName}
+              {this.props.icebreakers[this.state.readcount].author.nickname}
             </h3>
             <p>
               Age: {this.props.icebreakers[this.state.readcount].author.age}
@@ -387,13 +387,6 @@ class Court extends Component {
       this.props.icebreakers[this.state.readcount]._id
     );
     this.setState({ replystate: true });
-
-    setTimeout(
-      function() {
-        this.props.fetchChatList(this.props.auth._id);
-      }.bind(this),
-      1500
-    );
   }
 
   handleReplyClose() {

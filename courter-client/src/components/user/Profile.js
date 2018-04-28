@@ -146,7 +146,7 @@ class Profile extends Component {
                 <hr />
                 <div className="card">
                   <div className="card-header text-right">
-                    <h1>About {this.props.profileuser.givenName}</h1>
+                    <h1>About {this.props.profileuser.nickname}</h1>
                   </div>
                   {this.renderUserOptions()}
                   <div className="card-footer">
@@ -179,7 +179,7 @@ class Profile extends Component {
                 <hr />
                 <div className="card">
                   <div className="card-header text-right">
-                    <h1>About {this.props.profileuser.givenName}</h1>
+                    <h1>About {this.props.profileuser.nickname}</h1>
                   </div>
                   <div className="card-body">
                     Age: {this.props.profileuser.age}
