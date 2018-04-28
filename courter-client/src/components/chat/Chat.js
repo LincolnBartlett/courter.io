@@ -24,6 +24,9 @@ class Chat extends Component {
         return;
     }
   }
+  componentWillUnmount(){
+    this.socket.disconnect();
+  }
 
   componentDidUpdate() {
     this.scrollToBottom();
