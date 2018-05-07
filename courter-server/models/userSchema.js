@@ -9,8 +9,6 @@ var userSchema = new Schema({
         age: Number,
         sex: String,
         location : {
-            latitude: Number,
-            longitude: Number,
             neighborhood: String
         },
         geotag:{type: [Number]},
@@ -18,7 +16,8 @@ var userSchema = new Schema({
             agemax: Number,
             agemin: Number,
             distance: Number,
-            tutorial: Boolean
+            tutorial: Boolean,
+            preference: String
         } 
 });
 

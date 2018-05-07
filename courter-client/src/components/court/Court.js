@@ -88,8 +88,6 @@ class Court extends Component {
         return <div>{this.renderRead()}</div>;
       case "write":
         return <div>{this.renderWrite()}</div>;
-      case "review":
-        return <div>{this.renderReview()}</div>;
       default:
         return <div />;
     }
@@ -104,9 +102,34 @@ class Court extends Component {
         return <div />;
       default:
         switch (this.state.courtstate) {
-          case "review":
-            return <div />;
-          default:
+          case "read":
+            return (
+              <div className="form-row">
+              <button
+                      key="all"
+                      className="form-control col btn btn-outline-primary"
+                      onClick={() =>
+                        this.props.fetchIceBreakersByAll(this.props.auth._id)
+                      }
+                    >
+                      All
+                    </button>
+                {this.props.categories.map(category => {
+                  return (
+                    <button
+                      key={category._id}
+                      className="form-control col btn btn-outline-primary"
+                      onClick={() =>
+                        this.handleCategoryClick(category._id, category.title)
+                      }
+                    >
+                      {category.title}
+                    </button>
+                  );
+                })}
+              </div>
+            );
+            case "write":
             return (
               <div className="form-row">
                 {this.props.categories.map(category => {
@@ -124,6 +147,9 @@ class Court extends Component {
                 })}
               </div>
             );
+
+            default:
+            return <div/>;
         }
     }
   }
@@ -253,8 +279,8 @@ class Court extends Component {
             </h3>
             <p>
               Age: {this.props.icebreakers[this.state.readcount].author.age}
-             <br/>
-             {this.props.icebreakers[this.state.readcount].author.sex}
+              <br />
+              {this.props.icebreakers[this.state.readcount].author.sex}
             </p>
 
             {this.renderChoiceButtons()}
@@ -340,7 +366,7 @@ class Court extends Component {
                 type="submit"
                 className="btn btn-primary form-control bump"
               >
-                Reply Ice Breaker
+                 Reply to Ice Breaker
               </button>
             </div>
           </form>
@@ -419,26 +445,6 @@ class Court extends Component {
     }
   }
 
-  //ICE BREAKER REVIEW
-  renderReview() {
-    switch (this.props.usericebreakers) {
-      case null:
-        this.props.fetchIceBreakersByUser(this.props.auth._id);
-        return <div>null</div>;
-      default:
-        return (
-          <ul className="list-group">
-            {this.props.usericebreakers.map(icebreaker => {
-              return (
-                <li className="list-group-item" key={icebreaker._id}>
-                  {icebreaker.topic.title} {icebreaker.message}
-                </li>
-              );
-            })}
-          </ul>
-        );
-    }
-  }
   renderComponentNav() {
     return (
       <div>
@@ -456,41 +462,52 @@ class Court extends Component {
           </div>
         </div>
         <hr />
-        <div className="form-row">
-          <div className="col-md-4">
-            <button
-              className="btn btn-info form-control"
-              onClick={ev => {
-                this.setState({ courtstate: "review", message: "" });
-              }}
-            >
-              Review Ice Breakers
-            </button>
-          </div>
-          <div className="col-md-4">
-            <button
-              className="btn btn-info form-control"
-              onClick={ev => {
-                this.setState({ courtstate: "read", message: "" });
-              }}
-            >
-              Read Ice Breakers
-            </button>
-          </div>
-          <div className="col-md-4">
-            <button
-              className="btn btn-info form-control"
-              onClick={ev => {
-                this.setState({ courtstate: "write", message: "" });
-              }}
-            >
-              Create Ice Breakers
-            </button>
-          </div>
-        </div>
       </div>
     );
   }
+
+  renderReadWriteNav() {
+    switch (this.state.courtstate) {
+      case "read":
+        return (
+          <div className="row text-center">
+
+            <div className="col">
+              <h1>Currently reading Ice  Breakers</h1>
+              <button
+                className="btn btn-info form-control"
+                onClick={ev => {
+                  this.setState({ courtstate: "write", message: "" });
+                }}
+              >
+                Would you like to write a few?
+              </button>
+            </div>
+          </div>
+        );
+      case "write":
+        return (
+          <div className="row">
+
+            <div className="col">
+            <h1>Currently writing Ice Breakers</h1>
+              <button
+                className="btn btn-info form-control"
+                onClick={ev => {
+                  this.setState({ courtstate: "read", message: "" });
+                }}
+              >
+               Would you like to read a few?
+              </button>
+            </div>
+           
+          </div>
+        );
+      default:
+        return <div />;
+    }
+  }
+
   render() {
     return (
       <div className="container">
@@ -500,6 +517,8 @@ class Court extends Component {
             <br />
             <div className="card">
               <div className="card-body">
+                {this.renderReadWriteNav()}
+                <br/>
                 {this.renderCategories()}
                 <hr />
                 {this.renderCourt()}

@@ -67,22 +67,7 @@ class Header extends Component {
     }
   }
 
-  renderSettings() {
-    switch (this.props.auth) {
-      case null:
-        return;
-      case false:
-        return;
-      default:
-        return (
-          <li className="nav-item">
-            <a className="nav-link btn btn-outline-warning" onClick={() => {this.handleSettingsClick()}}>
-              Settings
-            </a>
-          </li>
-        );
-    }
-  }
+
   render() {
     return (
       <nav className="navbar navbar-light bg-light">
@@ -93,7 +78,7 @@ class Header extends Component {
           </a>
           <ul className="nav justify-content-end">
             {this.renderUser()}
-            {this.renderSettings()}
+    
             {this.renderHeader()}
           </ul>
         </div>

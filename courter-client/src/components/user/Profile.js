@@ -8,6 +8,7 @@ import {
 } from "../../actions/index";
 import { bindActionCreators } from "redux";
 import ChatList from "../chat/ChatList";
+import Settings from "./Settings";
 import "../../style/profile.css";
 
 class Profile extends Component {
@@ -17,7 +18,9 @@ class Profile extends Component {
       editstate: false,
       age: 0,
       sex: "",
-      location: ""
+      location: "",
+      preference: "",
+      nickname: ""
     };
   }
 
@@ -72,7 +75,9 @@ class Profile extends Component {
       age: this.state.age,
       sex: this.state.sex,
       latitude: this.props.geolocation.latitude,
-      longitude: this.props.geolocation.longitude
+      longitude: this.props.geolocation.longitude,
+      preference: this.state.preference,
+      nickname: this.state.nickname
     };
     this.props.setAllUserInfo(infoData);
     this.setState({ editstate: false });
@@ -87,6 +92,8 @@ class Profile extends Component {
             <br />
             Sex: {this.props.profileuser.sex}
             <br />
+            Preference: {this.props.profileuser.settings.preference}
+            <br />
             {this.props.profileuser.location.neighborhood}
           </div>
         );
@@ -94,6 +101,13 @@ class Profile extends Component {
         return (
           <div className="card-body">
             <div className="form-group">
+              Nickname:
+              <input
+                className="form-control"
+                value={this.state.nickname}
+                onChange={ev => this.setState({ nickname: ev.target.value })}
+              />
+              <br />
               Age:
               <input
                 className="form-control"
@@ -101,12 +115,27 @@ class Profile extends Component {
                 onChange={ev => this.setState({ age: ev.target.value })}
               />
               <br />
-              Sex:            
-              <select id="inputState" className="form-control" value={this.state.sex}
-                onChange={ev => this.setState({ sex: ev.target.value })}>
+              Sex:
+              <select
+                className="form-control"
+                value={this.state.sex}
+                onChange={ev => this.setState({ sex: ev.target.value })}
+              >
                 <option selected>Choose...</option>
-                <option>Male</option>
-                <option>Female</option>
+                <option>man</option>
+                <option>woman</option>
+              </select>
+              <br />
+              Preference:
+              <select
+                className="form-control"
+                value={this.state.preference}
+                onChange={ev => this.setState({ preference: ev.target.value })}
+              >
+                <option selected>Choose...</option>
+                <option>man</option>
+                <option>woman</option>
+                <option>both</option>
               </select>
               <button
                 onClick={() => {
@@ -125,7 +154,13 @@ class Profile extends Component {
   handleUserEditButton() {
     switch (this.state.editstate) {
       case false:
-        this.setState({ editstate: true });
+        this.setState({
+          editstate: true,
+          sex: this.props.auth.sex,
+          age: this.props.auth.age,
+          preference: this.props.auth.settings.preference,
+          nickname: this.props.auth.nickname
+        });
         break;
       default:
         this.setState({ editstate: false });
@@ -159,7 +194,8 @@ class Profile extends Component {
                   </div>
                 </div>
                 <br />
-
+                <Settings />
+                <br />
                 <div className="card">
                   <div className="card-header text-right">
                     <h1>IceBreakers</h1>

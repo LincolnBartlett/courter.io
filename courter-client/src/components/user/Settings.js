@@ -13,9 +13,9 @@ class Settings extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      agemax: 27,
-      agemin: 18,
-      distance: 100
+      agemax: this.props.auth.settings.agemax,
+      agemin: this.props.auth.settings.agemin,
+      distance: this.props.auth.settings.distance
     };
   }
 
@@ -40,31 +40,7 @@ class Settings extends Component {
     };
     this.props.setDistanceAndAge(settingData);
   }
-  renderComponentNav() {
-    return (
-      <div className="form-row">
-        <div className="col-md-6">
-          <h2>courter.io</h2>
-        </div>
-        <div className="col-md-3">
-          <button
-            className="form-control btn btn-outline-primary"
-            onClick={() => this.props.setViewState("court")}
-          >
-            Court
-          </button>
-        </div>
-        <div className="col-md-3">
-          <button
-            className="form-control btn btn-outline-primary"
-            onClick={() => this.props.setViewState("chat")}
-          >
-            Chat
-          </button>
-        </div>
-      </div>
-    );
-  }
+
 
   handleLocationUpdate() {
     const locationData = {
@@ -152,20 +128,7 @@ class Settings extends Component {
     );
   }
   render() {
-    return (
-      <div className="container">
-        <div className="row">
-          <div className="col-md-8">
-            {this.renderComponentNav()}
-            <hr />
-            {this.renderIceBreakerSettings()}
-          </div>
-          <div className="col-md-4">
-            <ChatList />
-          </div>
-        </div>
-      </div>
-    );
+    return this.renderIceBreakerSettings();
   }
 }
 

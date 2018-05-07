@@ -16,6 +16,7 @@ class Tutorial extends Component {
       step: "location",
       age: 18,
       sex: "",
+      preference: "",
       nickname: "",
       agemax: 90,
       agemin: 18,
@@ -81,7 +82,8 @@ class Tutorial extends Component {
       user_id: this.props.auth._id,
       age: this.state.age,
       sex: this.state.sex,
-      nickname: this.state.nickname
+      nickname: this.state.nickname,
+      preference: this.state.preference
     };
     this.props.setAllUserInfo(personalData);
     this.setState({ step: "interests" });
@@ -118,14 +120,22 @@ class Tutorial extends Component {
             />
             <br />
             What is your gender?:
-            <small>(will be fully inclusive at launch)</small>
             <select className="form-control" value={this.state.sex}
                 onChange={ev => this.setState({ sex: ev.target.value })}>
                 <option selected>Choose...</option>
-                <option>Male</option>
-                <option>Female</option>
+                <option>man</option>
+                <option>woman</option>
               </select>
             <br/>
+            <br/>
+              Preference:            
+              <select  className="form-control" value={this.state.preference}
+                onChange={ev => this.setState({ preference: ev.target.value })}>
+                <option selected>Choose...</option>
+                <option>man</option>
+                <option>woman</option>
+                <option>both</option>
+              </select>
             <button
               onClick={() => {
                 this.handlePersonalInfoClick();
@@ -259,7 +269,7 @@ class Tutorial extends Component {
     return (
       <div className="container">
         <div className="row">
-          <div className="col-md-8">
+          <div className="col-md-8 offset-2">
             <div className="form-row">
               <div className="col-md-9">
                 <h2>courter.io</h2>
@@ -269,7 +279,6 @@ class Tutorial extends Component {
             <hr />
             {this.renderTutorial()}
           </div>
-          <div className="col-md-4" />
         </div>
       </div>
     );
