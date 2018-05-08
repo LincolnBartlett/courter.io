@@ -180,17 +180,18 @@ class Profile extends Component {
                 {this.renderComponentNav()}
                 <hr />
                 <div className="card">
-                  <div className="card-header text-right">
-                    <h1>About {this.props.profileuser.nickname}</h1>
-                  </div>
+                <div className="card-body">
+                    <h4>About {this.props.profileuser.nickname}: </h4>
+
                   {this.renderUserOptions()}
-                  <div className="card-footer">
-                    <button
-                      className="btn btn-sm btn-primary"
+                  <hr />
+                <button
+                      className="btn btn-sm btn-primary float-right"
                       onClick={() => this.handleUserEditButton()}
                     >
                       Edit
                     </button>
+
                   </div>
                 </div>
                 <br />
@@ -214,17 +215,16 @@ class Profile extends Component {
                 {this.renderComponentNav()}
                 <hr />
                 <div className="card">
-                  <div className="card-header text-right">
-                    <h1>About {this.props.profileuser.nickname}</h1>
-                  </div>
                   <div className="card-body">
+                    <h5>{this.props.profileuser.nickname}</h5>
+            
+                  
                     Age: {this.props.profileuser.age}
                     <br />
                     Sex: {this.props.profileuser.sex}
                     <br />
                     {this.props.profileuser.location.neighborhood}
-                  </div>
-                  <div className="card-footer">
+
                     <button className="btn btn-sm btn-success">
                       Set Interest
                     </button>

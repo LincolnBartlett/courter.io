@@ -6,7 +6,6 @@ import {
   setUserLocation
 } from "../../actions/index";
 import { bindActionCreators } from "redux";
-import ChatList from "../chat/ChatList";
 import "../../style/profile.css";
 
 class Settings extends Component {
@@ -53,10 +52,9 @@ class Settings extends Component {
   renderIceBreakerSettings() {
     return (
       <div className="card">
-        <div className="card-header">
-          <h5 className="text-center">Ice Breaker Search Settings</h5>
-        </div>
         <div className="card-body">
+        <h5 className="text-center">Ice Breaker Search Settings</h5>
+        <hr/>
           <div className="form-row">
             <div className="col-md-8">
               <div className="card">

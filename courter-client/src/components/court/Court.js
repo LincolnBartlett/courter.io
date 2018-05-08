@@ -15,6 +15,7 @@ import {
 } from "../../actions/index";
 import { bindActionCreators } from "redux";
 import ChatList from "../chat/ChatList";
+import Settings from "../user/Settings";
 import "../../style/court.css";
 import Moment from "react-moment";
 
@@ -30,7 +31,8 @@ class Court extends Component {
       courtstate: "read",
       category_id: "",
       readcount: 0,
-      replystate: false
+      replystate: false,
+      settingState: false
     };
 
     this.onReplyEnterPress = ev => {
@@ -105,15 +107,18 @@ class Court extends Component {
           case "read":
             return (
               <div className="form-row">
-              <button
-                      key="all"
-                      className="form-control col btn btn-outline-primary"
-                      onClick={() =>
-                        this.props.fetchIceBreakersByAll(this.props.auth._id)
-                      }
-                    >
-                      All
-                    </button>
+                <button
+                  key="all"
+                  className="form-control col btn btn-outline-primary"
+                  onClick={() => {
+                    this.props.fetchIceBreakersByAll(this.props.auth._id);
+                    this.setState({
+                      settingState: false
+                    });
+                  }}
+                >
+                  All
+                </button>
                 {this.props.categories.map(category => {
                   return (
                     <button
@@ -129,7 +134,7 @@ class Court extends Component {
                 })}
               </div>
             );
-            case "write":
+          case "write":
             return (
               <div className="form-row">
                 {this.props.categories.map(category => {
@@ -148,8 +153,8 @@ class Court extends Component {
               </div>
             );
 
-            default:
-            return <div/>;
+          default:
+            return <div />;
         }
     }
   }
@@ -161,7 +166,8 @@ class Court extends Component {
       category: category_title,
       category_id: category_id,
       message: "",
-      readcount: 0
+      readcount: 0,
+      settingState: false
     });
   }
 
@@ -266,12 +272,14 @@ class Court extends Component {
         if (this.props.icebreakers.length === 0) {
           return (
             <div>
+              {this.renderSettings()}
               Sorry. There are currently no icebreakers for this category
             </div>
           );
         }
         return (
           <div>
+            {this.renderSettings()}
             <br />
 
             <h3>
@@ -291,7 +299,7 @@ class Court extends Component {
               <div className="float-left text-left w-75">
                 <div className="alert alert-light">
                   <p>
-                    {this.props.icebreakers[this.state.readcount].topic.title}{" "}
+                    {this.props.icebreakers[this.state.readcount].topic.title}
                     {this.props.icebreakers[this.state.readcount].message}
                   </p>
                   <p className="text-left small mb-0">
@@ -306,6 +314,33 @@ class Court extends Component {
             </div>
 
             {this.renderReplyForm()}
+          </div>
+        );
+    }
+  }
+
+  renderSettings() {
+    switch (this.state.settingState) {
+      case false:
+        return (
+          <button
+            className="btn btn-sm btn-warning float-right"
+            onClick={() => this.setState({ settingState: true })}
+          >
+            Settings
+          </button>
+        );
+      default:
+        return (
+          <div>
+            {" "}
+            <button
+              className="btn btn-sm btn-outline-warning float-right"
+              onClick={() => this.setState({ settingState: false })}
+            >
+              Settings
+            </button>
+            <Settings />
           </div>
         );
     }
@@ -366,7 +401,7 @@ class Court extends Component {
                 type="submit"
                 className="btn btn-primary form-control bump"
               >
-                 Reply to Ice Breaker
+                Reply to Ice Breaker
               </button>
             </div>
           </form>
@@ -471,9 +506,8 @@ class Court extends Component {
       case "read":
         return (
           <div className="row text-center">
-
             <div className="col">
-              <h1>Currently reading Ice  Breakers</h1>
+              <h1>Currently reading Ice Breakers</h1>
               <button
                 className="btn btn-info form-control"
                 onClick={ev => {
@@ -487,20 +521,18 @@ class Court extends Component {
         );
       case "write":
         return (
-          <div className="row">
-
+          <div className="row text-center">
             <div className="col">
-            <h1>Currently writing Ice Breakers</h1>
+              <h1>Currently writing Ice Breakers</h1>
               <button
                 className="btn btn-info form-control"
                 onClick={ev => {
                   this.setState({ courtstate: "read", message: "" });
                 }}
               >
-               Would you like to read a few?
+                Would you like to read a few?
               </button>
             </div>
-           
           </div>
         );
       default:
@@ -518,7 +550,7 @@ class Court extends Component {
             <div className="card">
               <div className="card-body">
                 {this.renderReadWriteNav()}
-                <br/>
+                <br />
                 {this.renderCategories()}
                 <hr />
                 {this.renderCourt()}
