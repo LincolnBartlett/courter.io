@@ -323,22 +323,30 @@ class Court extends Component {
     switch (this.state.settingState) {
       case false:
         return (
-          <button
-            className="btn btn-sm btn-warning float-right"
-            onClick={() => this.setState({ settingState: true })}
-          >
-            Settings
-          </button>
+          <div>
+            <small>
+              Searching for a {this.props.auth.settings.preference} between{" "}
+              {this.props.auth.settings.agemin} and{" "}
+              {this.props.auth.settings.agemax} years old within{" "}
+              {this.props.auth.settings.distance} miles of{" "}
+              {this.props.auth.location.neighborhood}
+            </small>
+            <button
+              className="btn btn-sm btn-outline-warning float-right"
+              onClick={() => this.setState({ settingState: true })}
+            >
+              Edit
+            </button>
+          </div>
         );
       default:
         return (
           <div>
-            {" "}
             <button
               className="btn btn-sm btn-outline-warning float-right"
               onClick={() => this.setState({ settingState: false })}
             >
-              Settings
+              Edit
             </button>
             <Settings />
           </div>
@@ -509,7 +517,7 @@ class Court extends Component {
             <div className="col">
               <h1>Currently reading Ice Breakers</h1>
               <button
-                className="btn btn-info form-control"
+                className="btn btn-outline-info form-control"
                 onClick={ev => {
                   this.setState({ courtstate: "write", message: "" });
                 }}
@@ -525,7 +533,7 @@ class Court extends Component {
             <div className="col">
               <h1>Currently writing Ice Breakers</h1>
               <button
-                className="btn btn-info form-control"
+                className="btn btn-outline-info form-control"
                 onClick={ev => {
                   this.setState({ courtstate: "read", message: "" });
                 }}

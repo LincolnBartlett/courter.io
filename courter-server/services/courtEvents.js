@@ -77,6 +77,30 @@ courtEvents.getIceBreakersByUser = async (req) => {
     return icebreakers;
 }
 
+courtEvents.acceptIceBreaker = async (req) => {
+    const icebreaker = await IceBreaker.findByIdAndUpdate(req.body.ice_id, {
+        $push: { replies: req.body.user_id }
+        });
 
+    return icebreaker;
+}
+
+courtEvents.rejectIceBreaker = async (req) => {
+    const icebreaker = await IceBreaker.findByIdAndUpdate(req.body.ice_id, {
+        $push: { rejections: req.body.user_id }
+        });
+
+    return icebreaker;
+}
+
+courtEvents.editIceBreaker = async (req, callback) => {
+    const icebreaker = await IceBreaker.findById(req.body.ice_id);
+    icebreaker.edits.push({date: icebreaker.timeStamp, message: icebreaker.message});
+    icebreaker.message = req.body.message;
+    icebreaker.timeStamp = Date.now();
+    icebreaker.save().then(()=>{
+        callback();
+    });
+}
 
 module.exports = courtEvents;

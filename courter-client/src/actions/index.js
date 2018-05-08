@@ -10,6 +10,7 @@ import {
   FETCH_CATEGORIES,
   FETCH_TOPICS,
   NEW_ICE_BREAKER,
+  EDIT_ICE_BREAKER,
   FETCH_IB_CAT,
   FETCH_IB_USER,
   SET_VIEW,
@@ -88,8 +89,15 @@ export const startChat = message => async dispatch => {
   dispatch({ type: START_CHAT, payload: res.data });
 };
 
-export const setChatData = (chat_id = "chat", nickname = "name",id  = "id") => dispatch => {
-  dispatch({type: SET_CHAT, payload: { chat_id: chat_id, nickname: nickname, user_id: id }});
+export const setChatData = (
+  chat_id = "chat",
+  nickname = "name",
+  id = "id"
+) => dispatch => {
+  dispatch({
+    type: SET_CHAT,
+    payload: { chat_id: chat_id, nickname: nickname, user_id: id }
+  });
 };
 /*----------------
    ICE BREAKERS
@@ -105,7 +113,10 @@ export const fetchTopics = category_id => async dispatch => {
   dispatch({ type: FETCH_TOPICS, payload: res.data });
 };
 
-export const fetchIceBreakersByCat = (category_id,user_id) => async dispatch => {
+export const fetchIceBreakersByCat = (
+  category_id,
+  user_id
+) => async dispatch => {
   const res = await axios.post(`/api/court/icebreaker/getbycategory`, {
     category_id: category_id,
     user_id: user_id
@@ -147,4 +158,9 @@ export const acceptIceBreaker = (user_id, ice_id) => async dispatch => {
     ice_id: ice_id
   });
   dispatch({ type: ACCEPT_ICE_BREAKER, payload: res.data });
+};
+
+export const editIceBreaker = (replyData) => async dispatch => {
+  const res = await axios.post(`/api/court/icebreaker/edit`, replyData);
+  dispatch({ type: EDIT_ICE_BREAKER, payload: res.data });
 };

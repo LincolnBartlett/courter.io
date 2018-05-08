@@ -4,12 +4,13 @@ import {
   fetchOneUser,
   setViewState,
   fetchIceBreakersByUser,
-  setAllUserInfo
+  setAllUserInfo,
+  editIceBreaker
 } from "../../actions/index";
 import { bindActionCreators } from "redux";
 import ChatList from "../chat/ChatList";
-import Settings from "./Settings";
 import "../../style/profile.css";
+import Moment from "react-moment";
 
 class Profile extends Component {
   constructor(props) {
@@ -20,8 +21,80 @@ class Profile extends Component {
       sex: "",
       location: "",
       preference: "",
-      nickname: ""
+      nickname: "",
+      IBeditstate: "",
+      IBmessage: "",
+      IBtitle: "",
+      IB_id: ""
     };
+
+    this.onIBEditEnterPress = ev => {
+      if (ev.keyCode === 13 && ev.shiftKey === false) {
+        this.updateIceBreaker(ev);
+      }
+    };
+  }
+
+  updateIceBreaker(ev) {
+    ev.preventDefault();
+    const replyData = {
+      message: this.state.IBmessage,
+      user_id: this.props.auth._id,
+      ice_id: this.state.IB_id
+    };
+    this.props.editIceBreaker(replyData);
+    this.setState({ IBeditstate: "" });
+  }
+
+  renderOtherUserIceBreakers() {
+    switch (this.props.usericebreakers) {
+      case null:
+        return <div>Null</div>;
+      default:
+        return (
+          <div>
+            {this.props.usericebreakers.map(icebreaker => {
+              return (
+                <div key={icebreaker._id}>
+                  <div className="card">
+                    <div className="card-body">
+                      <div className="row">
+                        <div className="col">
+                          <h4> {icebreaker.topic.title} </h4>
+                        </div>
+                        <div className="col">
+                          <p className="text-right">
+                            <small>
+                              Replies: {icebreaker.replies.length}
+                              <br />
+                              Rejections: {icebreaker.rejections.length}
+                              <br />
+                              Edits: {icebreaker.edits.length}
+                            </small>
+                          </p>
+                        </div>
+                      </div>
+                      <div className="alert alert-light text-left">
+                        <p>
+                          {icebreaker.title}
+                          {icebreaker.message}
+                        </p>
+                        <p className="text-left small mb-0">
+                          <Moment format="MMM DD, YYYY hh:mma">
+                            {icebreaker.timeStamp}
+                          </Moment>
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                  <br />
+                </div>
+              );
+            })}
+            <br />
+          </div>
+        );
+    }
   }
 
   renderUserIceBreakers() {
@@ -30,17 +103,111 @@ class Profile extends Component {
         return <div>Null</div>;
       default:
         return (
-          <ul className="list-group">
+          <div>
             {this.props.usericebreakers.map(icebreaker => {
               return (
-                <li className="list-group-item" key={icebreaker._id}>
-                  {icebreaker.topic.title} {icebreaker.message}
-                </li>
+                <div key={icebreaker._id}>
+                  <div className="card">
+                    {this.renderIBEditForm(icebreaker)}
+                  </div>
+                  <br />
+                </div>
               );
             })}
-          </ul>
+            <br />
+          </div>
         );
     }
+  }
+  renderIBEditForm(icebreaker) {
+    switch (this.state.IBeditstate) {
+      default:
+        return (
+          <div className="card-body">
+            <div className="row">
+              <div className="col">
+                <h4> {icebreaker.topic.title} </h4>
+                <button
+                  className="btn btn-sm btn-outline-info"
+                  onClick={() => this.handleIceBreakerEditClick(icebreaker)}
+                >
+                  Edit
+                </button>
+              </div>
+              <div className="col">
+                <p className="text-right">
+                  <small>
+                    Replies: {icebreaker.replies.length}
+                    <br />
+                    Rejections: {icebreaker.rejections.length}
+                    <br />
+                    Edits: {icebreaker.edits.length}
+                  </small>
+                </p>
+              </div>
+            </div>
+            <div className="alert alert-light text-left">
+              <p>
+                {icebreaker.title}
+                {icebreaker.message}
+              </p>
+              <p className="text-left small mb-0">
+                <Moment format="MMM DD, YYYY hh:mma">
+                  {icebreaker.timeStamp}
+                </Moment>
+              </p>
+            </div>
+          </div>
+        );
+      case icebreaker._id:
+        return (
+          <div className="card-body">
+            <div className="row">
+              <div className="col">
+                <h4> {icebreaker.topic.title} </h4>
+              </div>
+              <div className="col">
+                <p className="text-right">
+                  <small>
+                    Replies: {icebreaker.replies.length}
+                    <br />
+                    Rejections: {icebreaker.rejections.length}
+                    <br />
+                    Edits: {icebreaker.edits.length}
+                  </small>
+                </p>
+              </div>
+            </div>
+            <div className="form-group">
+              <textarea
+                type="text"
+                className="form-control"
+                value={this.state.IBmessage}
+                onKeyDown={this.onIBEditEnterPress}
+                onChange={ev => this.setState({ IBmessage: ev.target.value })}
+                rows="5"
+                required
+              />
+            </div>
+            <button
+              type="submit"
+              className="btn btn-outline-info form-control"
+              onClick={ev => this.updateIceBreaker(ev)}
+            >
+              Update
+            </button>
+          </div>
+        );
+    }
+  }
+
+  handleIceBreakerEditClick(icebreaker) {
+    this.setState({
+      IBeditstate: icebreaker._id,
+      IBmessage: icebreaker.message,
+      IB_id: icebreaker._id,
+      IBtitle: icebreaker.title
+    });
   }
 
   renderComponentNav() {
@@ -180,31 +347,24 @@ class Profile extends Component {
                 {this.renderComponentNav()}
                 <hr />
                 <div className="card">
-                <div className="card-body">
+                  <div className="card-body">
                     <h4>About {this.props.profileuser.nickname}: </h4>
 
-                  {this.renderUserOptions()}
-                  <hr />
-                <button
-                      className="btn btn-sm btn-primary float-right"
+                    {this.renderUserOptions()}
+                    <hr />
+                    <button
+                      className="btn btn-sm btn-outline-warning float-right"
                       onClick={() => this.handleUserEditButton()}
                     >
                       Edit
                     </button>
+                  </div>
+                </div>
+                <br />
 
-                  </div>
-                </div>
-                <br />
-                <Settings />
-                <br />
-                <div className="card">
-                  <div className="card-header text-right">
-                    <h1>IceBreakers</h1>
-                  </div>
-                  <div className="card-body ice-breaker-list">
-                    {this.renderUserIceBreakers()}
-                  </div>
-                </div>
+                <h1>IceBreakers</h1>
+                <hr />
+                {this.renderUserIceBreakers()}
               </div>
             );
 
@@ -217,14 +377,12 @@ class Profile extends Component {
                 <div className="card">
                   <div className="card-body">
                     <h5>{this.props.profileuser.nickname}</h5>
-            
-                  
                     Age: {this.props.profileuser.age}
                     <br />
                     Sex: {this.props.profileuser.sex}
                     <br />
                     {this.props.profileuser.location.neighborhood}
-
+                    <br />
                     <button className="btn btn-sm btn-success">
                       Set Interest
                     </button>
@@ -232,14 +390,10 @@ class Profile extends Component {
                   </div>
                 </div>
                 <br />
-                <div className="card">
-                  <div className="card-header text-right">
-                    <h1>IceBreakers</h1>
-                  </div>
-                  <div className="card-body ice-breaker-list">
-                    {this.renderUserIceBreakers()}
-                  </div>
-                </div>
+
+                <h1>IceBreakers</h1>
+                <hr />
+                {this.renderOtherUserIceBreakers()}
               </div>
             );
         }
@@ -277,7 +431,8 @@ function mapDispatchToProps(dispatch) {
       fetchOneUser: fetchOneUser,
       setViewState: setViewState,
       fetchIceBreakersByUser: fetchIceBreakersByUser,
-      setAllUserInfo: setAllUserInfo
+      setAllUserInfo: setAllUserInfo,
+      editIceBreaker: editIceBreaker
     },
     dispatch
   );

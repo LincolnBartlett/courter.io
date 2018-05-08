@@ -9,6 +9,7 @@ var iceBreakerSchema = new Schema({
     rejections:[{type: Schema.Types.ObjectId, ref :'users'}],
     replies:[{type: Schema.Types.ObjectId, ref :'users'}],
     message: String,
+    edits: [{date: String, message: String}],
     timeStamp: { type : Date, default: Date.now }
 });
 

@@ -40,7 +40,6 @@ class Settings extends Component {
     this.props.setDistanceAndAge(settingData);
   }
 
-
   handleLocationUpdate() {
     const locationData = {
       user_id: this.props.auth._id,
@@ -51,73 +50,70 @@ class Settings extends Component {
   }
   renderIceBreakerSettings() {
     return (
-      <div className="card">
-        <div className="card-body">
+      <div>
         <h5 className="text-center">Ice Breaker Search Settings</h5>
-        <hr/>
-          <div className="form-row">
-            <div className="col-md-8">
-              <div className="card">
-                <div className="card-body">
-                  Max Age: {this.state.agemax}
-                  <input
-                    className="form-control"
-                    max="80"
-                    min="18"
-                    step="1"
-                    type="range"
-                    value={this.state.agemax}
-                    onChange={ev => this.handleMaxAgeSlider(ev)}
-                  />
-                  Min Age: {this.state.agemin}
-                  <input
-                    className="form-control"
-                    max="80"
-                    min="18"
-                    step="1"
-                    type="range"
-                    value={this.state.agemin}
-                    onChange={ev => this.handleMinAgeSlider(ev)}
-                  />
-                  Distance: {this.state.distance}mi.
-                  <input
-                    className="form-control"
-                    max="200"
-                    min="20"
-                    step="5"
-                    type="range"
-                    value={this.state.distance}
-                    onChange={ev => this.handleDistanceSlider(ev)}
-                  />
-                  <hr />
-                  <button
-                    className="form-control btn btn-primary"
-                    onClick={() => {
-                      this.handleIceBreakerButtonClick();
-                    }}
-                  >
-                    Update
-                  </button>
-                </div>
+        <hr />
+        <div className="form-row">
+          <div className="col-md-8">
+            <div className="card">
+              <div className="card-body">
+                Max Age: {this.state.agemax}
+                <input
+                  className="form-control"
+                  max="80"
+                  min="18"
+                  step="1"
+                  type="range"
+                  value={this.state.agemax}
+                  onChange={ev => this.handleMaxAgeSlider(ev)}
+                />
+                Min Age: {this.state.agemin}
+                <input
+                  className="form-control"
+                  max="80"
+                  min="18"
+                  step="1"
+                  type="range"
+                  value={this.state.agemin}
+                  onChange={ev => this.handleMinAgeSlider(ev)}
+                />
+                Distance: {this.state.distance}mi.
+                <input
+                  className="form-control"
+                  max="200"
+                  min="20"
+                  step="5"
+                  type="range"
+                  value={this.state.distance}
+                  onChange={ev => this.handleDistanceSlider(ev)}
+                />
+                <hr />
+                <button
+                  className="form-control btn btn-primary"
+                  onClick={() => {
+                    this.handleIceBreakerButtonClick();
+                  }}
+                >
+                  Update
+                </button>
               </div>
             </div>
-            <div className="col-md-4">
-              <div className="card">
-                <div className="card-body">
-                  My location:
-                  <br />
-                  {this.props.auth.location.neighborhood}
-
-                  <hr/>
-                  <button
-                    className="btn btn-primary form-control"
-                    onClick={() => {
-                      this.handleLocationUpdate();
-                    }}
-                  >
-                    Update
-                  </button>
-                </div>
+          </div>
+          <div className="col-md-4">
+            <div className="card">
+              <div className="card-body">
+                My location:
+                <br />
+                {this.props.auth.location.neighborhood}
+                <hr />
+                <button
+                  className="btn btn-primary form-control"
+                  onClick={() => {
+                    this.handleLocationUpdate();
+                  }}
+                >
+                  Update
+                </button>
               </div>
             </div>
           </div>

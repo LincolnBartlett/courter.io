@@ -9,7 +9,6 @@ const express = require("express"),
   courtEvents = require("../services/courtEvents");
 
 //ICE BREAKERS
-//
 router.post("/icebreaker/new", (req, res) => {
       new IceBreaker({
       author: req.body.author_id,
@@ -36,15 +35,22 @@ router.post("/icebreaker/getbyuser", async (req, res) => {
 });
 
 router.post("/icebreaker/reject", async (req, res) => {
-      const icebreaker = await IceBreaker.findByIdAndUpdate(req.body.ice_id, {
-      $push: { rejections: req.body.user_id }
-      });
+      const icebreaker = await courtEvents.rejectIceBreaker(req);
+      res.send(icebreaker);
 });
 
 router.post("/icebreaker/accept", async (req, res) => {
-      const icebreaker = await IceBreaker.findByIdAndUpdate(req.body.ice_id, {
-      $push: { replies: req.body.user_id }
-      });
+      const icebreaker = await courtEvents.acceptIceBreaker(req);
+      res.send(icebreaker);
+});
+
+router.post("/icebreaker/edit", async (req, res) => {
+      const getUpdatedIceBreakers = async () =>{
+            const icebreakers = await courtEvents.getIceBreakersByUser(req);
+            res.send(icebreakers);
+      }
+      const icebreaker = await courtEvents.editIceBreaker(req, getUpdatedIceBreakers);
+
 });
 
 //CATEGORIES
