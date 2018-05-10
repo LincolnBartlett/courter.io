@@ -4,6 +4,7 @@ import { fetchChat, setChatData, fetchChatList } from "../actions/index";
 import { bindActionCreators } from "redux";
 import Court from "./court/Court";
 import Chat from "./chat/Chat";
+import ChatList from "./chat/ChatList";
 import Profile from "./user/Profile";
 import Settings from "./user/Settings";
 import Tutorial from "./user/Tutorial";
@@ -45,7 +46,6 @@ class Landing extends Component {
             <div className="col-md-8 offset-2">
               <br />
               <div className="row">
-
                 <div className="col">
                   <h1 className="text-center">courter.io</h1>
                   <h5 className="text-center">conversation is king</h5>
@@ -97,9 +97,25 @@ class Landing extends Component {
         return this.mainView();
     }
   }
-
+  renderChatList() {
+    switch (this.props.auth) {
+      case null:
+        return <div/>;
+      case false:
+        return <div/>;
+      default:
+        return <ChatList/>;
+    }
+  }
   render() {
-    return this.renderLanding();
+    return (
+      <div>
+        {this.renderLanding()}
+        <div className="col-md-4 offset-md-8 fixed-bottom">
+          {this.renderChatList()}
+        </div>
+      </div>
+    );
   }
 }
 

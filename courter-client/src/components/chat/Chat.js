@@ -4,7 +4,6 @@ import * as ReactDOM from "react-dom";
 import io from "socket.io-client";
 import Moment from "react-moment";
 import "../../style/chat.css";
-import ChatList from "./ChatList";
 import { bindActionCreators } from "redux";
 import {
   setViewState,
@@ -24,7 +23,7 @@ class Chat extends Component {
         return;
     }
   }
-  componentWillUnmount(){
+  componentWillUnmount() {
     this.socket.disconnect();
   }
 
@@ -98,18 +97,18 @@ class Chat extends Component {
   renderComponentNav() {
     return (
       <div className="form-row">
-      <div className="col-md-9">
-        <h2>courter.io</h2>
+        <div className="col-md-9">
+          <h2>courter.io</h2>
+        </div>
+        <div className="col-md-3">
+          <button
+            className="form-control btn btn-outline-primary"
+            onClick={() => this.props.setViewState("court")}
+          >
+            Court
+          </button>
+        </div>
       </div>
-      <div className="col-md-3">
-        <button
-          className="form-control btn btn-outline-primary"
-          onClick={() => this.props.setViewState("court")}
-        >
-          Court
-        </button>
-      </div>
-    </div>
     );
   }
 
@@ -154,16 +153,24 @@ class Chat extends Component {
             <hr />
             <div className="card">
               <div className="card-body">
-                <h3>{this.props.chatData.nickname}</h3>
-                <button
-                  className="btn btn-sm btn-outline-primary"
-                  onClick={() => {
-                    this.handleProfileClick(this.props.chatData.user_id);
-                  }}
-                >
-                  Profile
-                </button>
+                <div className="row">
+                  <div className="col">
+                    <h3>{this.props.chatData.nickname}</h3>
+                  </div>
+                  <div className="col">
+                    <button
+                      className="btn btn-sm btn-outline-primary float-right"
+                      onClick={() => {
+                        this.handleProfileClick(this.props.chatData.user_id);
+                      }}
+                    >
+                      Profile
+                    </button>
+                  </div>
+                </div>
+
                 <hr />
+
                 <div
                   className="border jumbotron container-fluid chat-window"
                   ref="messageList"
@@ -211,7 +218,9 @@ class Chat extends Component {
       return (
         <div key={message._id} className="float-left text-left w-75">
           <div className="alert alert-light">
-            <p>{message.topic.title} {message.message}</p>
+            <p>
+              {message.topic.title} {message.message}
+            </p>
             <p className="text-left small mb-0">
               <Moment format="MMM DD, YYYY hh:mma">{message.timeStamp}</Moment>
             </p>
@@ -285,16 +294,13 @@ class Chat extends Component {
   }
 
   render() {
-    return (
-      <div className="container">
-        <div className="row">
-          <div className="col-md-8">{this.renderChat()}</div>
-          <div className="col-md-4">
-            <ChatList />
-          </div>
-        </div>
-      </div>
-    );
+    return <div className="container">
+    <div className="row">
+    <div className="col-md-8">
+    {this.renderChat()}
+    </div>
+    </div>
+    </div>;
   }
 }
 

@@ -8,8 +8,16 @@ import {
   fetchOneUser
 } from "../../actions/index";
 import { bindActionCreators } from "redux";
+import "../../style/chatList.css";
 
 class ChatList extends Component {
+  constructor(props) {
+    super(props);
+
+    this.state = {
+      chatHide: true
+    };
+  }
   updateChat(data) {
     this.props.fetchChat(data.id);
     this.props.setChatData(data.id, data.nickname, data.user_id);
@@ -27,45 +35,66 @@ class ChatList extends Component {
       case false:
         return;
       default:
-        return (
-          <div>
-            {this.props.chatList.map(chat => {
-              let data = {};
-              data.id = chat._id;
-              return (
-                <a
-                  key={chat._id}
-                  className="list-group-item list-group-item-action"
-                  onClick={() => this.updateChat(data)}
+        switch (this.state.chatHide) {
+          case false:
+            return (
+              <div className="card-body chatlist-expanded">
+                <button
+                  className="btn btn-sm btn-outline-primary float-right"
+                  onClick={() => {
+                    this.setState({ chatHide: true });
+                  }}
                 >
-                  {chat.recipients.map(recipient => {
-                    if (recipient._id !== this.props.auth._id) {
-                      data.nickname = recipient.nickname;
-                      data.user_id = recipient._id;
-                      return <div key={chat._id}>{recipient.nickname}</div>;
-                    }
-                    return null;
+                  Hide
+                </button>
+                <h3>Chat List</h3>
+                <hr />
+                <div className="list-group">
+                  {this.props.chatList.map(chat => {
+                    let data = {};
+                    data.id = chat._id;
+                    return (
+                      <a
+                        key={chat._id}
+                        className="list-group-item list-group-item-action"
+                        onClick={() => this.updateChat(data)}
+                      >
+                        {chat.recipients.map(recipient => {
+                          if (recipient._id !== this.props.auth._id) {
+                            data.nickname = recipient.nickname;
+                            data.user_id = recipient._id;
+                            return (
+                              <div key={chat._id}>{recipient.nickname}</div>
+                            );
+                          }
+                          return null;
+                        })}
+                      </a>
+                    );
                   })}
-
-
-                </a>
-              );
-            })}
-          </div>
-        );
+                </div>
+              </div>
+            );
+          default:
+            return (
+              <div className="card-body">
+                <button
+                  className="btn btn-outline-primary float-right"
+                  onClick={() => {
+                    this.setState({ chatHide: false });
+                  }}
+                >
+                  Show
+                </button>
+                <h3>Chat List</h3>
+              </div>
+            );
+        }
     }
   }
 
   render() {
-    return (
-      <div className="card">
-        <div className="card-body">
-          <h3>Chat List</h3>
-          <hr />
-          <div className="list-group">{this.renderChatList()}</div>
-        </div>
-      </div>
-    );
+    return <div className="card">{this.renderChatList()}</div>;
   }
 }
 

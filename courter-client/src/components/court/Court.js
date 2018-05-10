@@ -14,7 +14,6 @@ import {
   setViewState
 } from "../../actions/index";
 import { bindActionCreators } from "redux";
-import ChatList from "../chat/ChatList";
 import Settings from "../user/Settings";
 import "../../style/court.css";
 import Moment from "react-moment";
@@ -107,9 +106,9 @@ class Court extends Component {
           case "read":
             return (
               <div className="form-row">
-                <button
+                <a
                   key="all"
-                  className="form-control col btn btn-outline-primary"
+                  className="list-group-item list-group-item-action"
                   onClick={() => {
                     this.props.fetchIceBreakersByAll(this.props.auth._id);
                     this.setState({
@@ -118,18 +117,18 @@ class Court extends Component {
                   }}
                 >
                   All
-                </button>
+                </a>
                 {this.props.categories.map(category => {
                   return (
-                    <button
+                    <a
                       key={category._id}
-                      className="form-control col btn btn-outline-primary"
+                      className="list-group-item list-group-item-action"
                       onClick={() =>
                         this.handleCategoryClick(category._id, category.title)
                       }
                     >
                       {category.title}
-                    </button>
+                    </a>
                   );
                 })}
               </div>
@@ -139,15 +138,15 @@ class Court extends Component {
               <div className="form-row">
                 {this.props.categories.map(category => {
                   return (
-                    <button
+                    <a
                       key={category._id}
-                      className="form-control col btn btn-outline-primary"
+                      className="list-group-item list-group-item-action"
                       onClick={() =>
                         this.handleCategoryClick(category._id, category.title)
                       }
                     >
                       {category.title}
-                    </button>
+                    </a>
                   );
                 })}
               </div>
@@ -332,7 +331,7 @@ class Court extends Component {
               {this.props.auth.location.neighborhood}
             </small>
             <button
-              className="btn btn-sm btn-outline-warning float-right"
+              className="btn btn-sm btn-outline-primary float-right"
               onClick={() => this.setState({ settingState: true })}
             >
               Edit
@@ -343,7 +342,7 @@ class Court extends Component {
         return (
           <div>
             <button
-              className="btn btn-sm btn-outline-warning float-right"
+              className="btn btn-sm btn-outline-primary float-right"
               onClick={() => this.setState({ settingState: false })}
             >
               Edit
@@ -515,7 +514,7 @@ class Court extends Component {
         return (
           <div className="row text-center">
             <div className="col">
-              <h1>Currently reading Ice Breakers</h1>
+              <h1>Reading Ice Breakers</h1>
               <button
                 className="btn btn-outline-info form-control"
                 onClick={ev => {
@@ -531,7 +530,7 @@ class Court extends Component {
         return (
           <div className="row text-center">
             <div className="col">
-              <h1>Currently writing Ice Breakers</h1>
+              <h1>Writing Ice Breakers</h1>
               <button
                 className="btn btn-outline-info form-control"
                 onClick={ev => {
@@ -557,16 +556,19 @@ class Court extends Component {
             <br />
             <div className="card">
               <div className="card-body">
-                {this.renderReadWriteNav()}
-                <br />
-                {this.renderCategories()}
-                <hr />
                 {this.renderCourt()}
               </div>
             </div>
           </div>
           <div className="col-md-4">
-            <ChatList />
+            <div className="card">
+              <div className="card-body">
+                {this.renderReadWriteNav()}
+                <hr />
+                <h4>Categories:</h4>
+               <div className="list-group"> {this.renderCategories()}</div>
+              </div>
+            </div>
           </div>
         </div>
       </div>

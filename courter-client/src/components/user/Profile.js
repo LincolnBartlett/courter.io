@@ -5,10 +5,11 @@ import {
   setViewState,
   fetchIceBreakersByUser,
   setAllUserInfo,
-  editIceBreaker
+  editIceBreaker,
+  startChat,
+  acceptIceBreaker
 } from "../../actions/index";
 import { bindActionCreators } from "redux";
-import ChatList from "../chat/ChatList";
 import "../../style/profile.css";
 import Moment from "react-moment";
 
@@ -33,17 +34,82 @@ class Profile extends Component {
         this.updateIceBreaker(ev);
       }
     };
+
+    this.onIBReplyEnterPress = (ev, icebreaker) => {
+      if (ev.keyCode === 13 && ev.shiftKey === false) {
+        this.replyIceBreaker(ev, icebreaker);
+      }
+    };
   }
 
   updateIceBreaker(ev) {
     ev.preventDefault();
-    const replyData = {
+    const updateData = {
       message: this.state.IBmessage,
       user_id: this.props.auth._id,
       ice_id: this.state.IB_id
     };
-    this.props.editIceBreaker(replyData);
+    this.props.editIceBreaker(updateData);
     this.setState({ IBeditstate: "" });
+  }
+
+  replyIceBreaker(ev, icebreaker) {
+    ev.preventDefault();
+    const replydata = {
+      message: this.state.IBmessage,
+      user_id: this.props.auth._id,
+      recipient_id: icebreaker.author._id,
+      topic_id: icebreaker.topic._id,
+      category_id: icebreaker.category_id,
+      icebreaker_id: icebreaker._id
+    };
+    this.props.startChat(replydata);
+    this.props.acceptIceBreaker(this.props.auth._id, icebreaker._id);
+    this.setState({ IBeditstate: "" });
+  }
+
+  renderReplyForm(icebreaker) {
+    switch (this.state.IBeditstate) {
+      case icebreaker._id:
+        return (
+          <form onSubmit={ev => this.replyIceBreaker(ev, icebreaker)}>
+            <div className="form-group">
+              <textarea
+                type="text"
+                className="form-control"
+                value={this.state.IBmessage}
+                onKeyDown={ev => this.onIBReplyEnterPress(ev, icebreaker)}
+                onChange={ev => this.setState({ IBmessage: ev.target.value })}
+                rows="5"
+                required
+              />
+              <button
+                type="submit"
+                className="btn btn-sm btn-outline-primary float-right"
+              >
+                Reply to Ice Breaker
+              </button>
+              <button
+                className="btn btn-sm btn-outline-danger float-right"
+                onClick={() => this.setState({ IBeditstate: "" })}
+              >
+                Cancel
+              </button>
+            </div>
+          </form>
+        );
+      default:
+        return (
+          <div>
+            <button
+              className="btn btn-sm btn-outline-primary float-right"
+              onClick={() => this.setState({ IBeditstate: icebreaker._id })}
+            >
+              Reply
+            </button>
+          </div>
+        );
+    }
   }
 
   renderOtherUserIceBreakers() {
@@ -64,13 +130,7 @@ class Profile extends Component {
                         </div>
                         <div className="col">
                           <p className="text-right">
-                            <small>
-                              Replies: {icebreaker.replies.length}
-                              <br />
-                              Rejections: {icebreaker.rejections.length}
-                              <br />
-                              Edits: {icebreaker.edits.length}
-                            </small>
+                            <small>Edits: {icebreaker.edits.length}</small>
                           </p>
                         </div>
                       </div>
@@ -85,6 +145,7 @@ class Profile extends Component {
                           </Moment>
                         </p>
                       </div>
+                      {this.renderReplyForm(icebreaker)}
                     </div>
                   </div>
                   <br />
@@ -119,6 +180,7 @@ class Profile extends Component {
         );
     }
   }
+
   renderIBEditForm(icebreaker) {
     switch (this.state.IBeditstate) {
       default:
@@ -127,12 +189,6 @@ class Profile extends Component {
             <div className="row">
               <div className="col">
                 <h4> {icebreaker.topic.title} </h4>
-                <button
-                  className="btn btn-sm btn-outline-info"
-                  onClick={() => this.handleIceBreakerEditClick(icebreaker)}
-                >
-                  Edit
-                </button>
               </div>
               <div className="col">
                 <p className="text-right">
@@ -157,6 +213,12 @@ class Profile extends Component {
                 </Moment>
               </p>
             </div>
+            <button
+              className="btn btn-sm btn-outline-primary float-right"
+              onClick={() => this.handleIceBreakerEditClick(icebreaker)}
+            >
+              Edit
+            </button>
           </div>
         );
       case icebreaker._id:
@@ -185,16 +247,23 @@ class Profile extends Component {
                 value={this.state.IBmessage}
                 onKeyDown={this.onIBEditEnterPress}
                 onChange={ev => this.setState({ IBmessage: ev.target.value })}
-                rows="5"
+                rows="4"
                 required
               />
             </div>
+
             <button
               type="submit"
-              className="btn btn-outline-info form-control"
+              className="btn btn-sm btn-outline-primary float-right"
               onClick={ev => this.updateIceBreaker(ev)}
             >
               Update
+            </button>
+            <button
+              className="btn btn-sm btn-outline-danger float-right"
+              onClick={() => this.setState({ IBeditstate: "" })}
+            >
+              Cancel
             </button>
           </div>
         );
@@ -254,7 +323,7 @@ class Profile extends Component {
     switch (this.state.editstate) {
       case false:
         return (
-          <div className="card-body">
+          <div>
             Age: {this.props.profileuser.age}
             <br />
             Sex: {this.props.profileuser.sex}
@@ -304,11 +373,12 @@ class Profile extends Component {
                 <option>woman</option>
                 <option>both</option>
               </select>
+              <br/>
               <button
                 onClick={() => {
                   this.handleUserInfoSubmit();
                 }}
-                className="btn btn-primary mb-2"
+                className="btn btn-primary form-control"
               >
                 Submit
               </button>
@@ -348,12 +418,11 @@ class Profile extends Component {
                 <hr />
                 <div className="card">
                   <div className="card-body">
-                    <h4>About {this.props.profileuser.nickname}: </h4>
-
+                    <h5>{this.props.profileuser.nickname}</h5>
                     {this.renderUserOptions()}
                     <hr />
                     <button
-                      className="btn btn-sm btn-outline-warning float-right"
+                      className="btn btn-sm btn-outline-primary"
                       onClick={() => this.handleUserEditButton()}
                     >
                       Edit
@@ -383,6 +452,7 @@ class Profile extends Component {
                     <br />
                     {this.props.profileuser.location.neighborhood}
                     <br />
+                    <hr/>
                     <button className="btn btn-sm btn-success">
                       Set Interest
                     </button>
@@ -406,7 +476,7 @@ class Profile extends Component {
         <div className="row">
           <div className="col-md-8">{this.renderUserProfile()}</div>
           <div className="col-md-4">
-            <ChatList />
+          
           </div>
         </div>
       </div>
@@ -432,7 +502,9 @@ function mapDispatchToProps(dispatch) {
       setViewState: setViewState,
       fetchIceBreakersByUser: fetchIceBreakersByUser,
       setAllUserInfo: setAllUserInfo,
-      editIceBreaker: editIceBreaker
+      editIceBreaker: editIceBreaker,
+      acceptIceBreaker: acceptIceBreaker,
+      startChat: startChat
     },
     dispatch
   );
