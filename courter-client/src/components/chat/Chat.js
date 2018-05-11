@@ -94,35 +94,15 @@ class Chat extends Component {
     this.props.setViewState("profile");
   }
   //CHAT WINDOW
-  renderComponentNav() {
-    return (
-      <div className="form-row">
-        <div className="col-md-9">
-          <h2>courter.io</h2>
-        </div>
-        <div className="col-md-3">
-          <button
-            className="form-control btn btn-outline-primary"
-            onClick={() => this.props.setViewState("court")}
-          >
-            Court
-          </button>
-        </div>
-      </div>
-    );
-  }
 
   renderChat() {
     switch (this.props.chat) {
       case null:
         return (
           <div>
-            {this.renderComponentNav()}
-            <hr />
             <div className="card">
               <div className="card-body">
                 <h3>Select a Chat</h3>
-
                 <hr />
                 <div
                   className="container-fluid chat-window-empty"
@@ -137,20 +117,6 @@ class Chat extends Component {
       default:
         return (
           <div>
-            <div className="form-row">
-              <div className="col-md-9">
-                <h2>courter.io</h2>
-              </div>
-              <div className="col-md-3">
-                <button
-                  className="form-control btn btn-outline-primary"
-                  onClick={() => this.props.setViewState("court")}
-                >
-                  Court
-                </button>
-              </div>
-            </div>
-            <hr />
             <div className="card">
               <div className="card-body">
                 <div className="row">
@@ -178,7 +144,6 @@ class Chat extends Component {
                   {this.renderHistory()}
                   {this.renderSocket()}
                 </div>
-
                 {this.renderInput()}
               </div>
             </div>
@@ -294,13 +259,13 @@ class Chat extends Component {
   }
 
   render() {
-    return <div className="container">
-    <div className="row">
-    <div className="col-md-8">
-    {this.renderChat()}
-    </div>
-    </div>
-    </div>;
+    return (
+      <div className="container">
+        <div className="row">
+          <div className="col-md-8">{this.renderChat()}</div>
+        </div>
+      </div>
+    );
   }
 }
 

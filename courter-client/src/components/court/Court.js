@@ -278,9 +278,6 @@ class Court extends Component {
         }
         return (
           <div>
-            {this.renderSettings()}
-            <br />
-
             <h3>
               {this.props.icebreakers[this.state.readcount].author.nickname}
             </h3>
@@ -289,10 +286,11 @@ class Court extends Component {
               <br />
               {this.props.icebreakers[this.state.readcount].author.sex}
             </p>
-
             {this.renderChoiceButtons()}
-
-            <hr />
+            <hr/>
+            {this.renderSettings()}
+            <br />
+            <br/>
             {this.replyAlert()}
             <div className="border jumbotron reply-window">
               <div className="float-left text-left w-75">
@@ -308,10 +306,8 @@ class Court extends Component {
                   </p>
                 </div>
               </div>
-
               {this.renderIceBreakerReplyMessage()}
             </div>
-
             {this.renderReplyForm()}
           </div>
         );
@@ -323,18 +319,11 @@ class Court extends Component {
       case false:
         return (
           <div>
-            <small>
-              Searching for a {this.props.auth.settings.preference} between{" "}
-              {this.props.auth.settings.agemin} and{" "}
-              {this.props.auth.settings.agemax} years old within{" "}
-              {this.props.auth.settings.distance} miles of{" "}
-              {this.props.auth.location.neighborhood}
-            </small>
             <button
               className="btn btn-sm btn-outline-primary float-right"
               onClick={() => this.setState({ settingState: true })}
             >
-              Edit
+              Search Settings
             </button>
           </div>
         );
@@ -345,7 +334,7 @@ class Court extends Component {
               className="btn btn-sm btn-outline-primary float-right"
               onClick={() => this.setState({ settingState: false })}
             >
-              Edit
+              Back
             </button>
             <Settings />
           </div>
@@ -487,26 +476,7 @@ class Court extends Component {
     }
   }
 
-  renderComponentNav() {
-    return (
-      <div>
-        <div className="form-row">
-          <div className="col-md-9">
-            <h2>courter.io</h2>
-          </div>
-          <div className="col-md-3">
-            <button
-              className="form-control btn btn-outline-primary"
-              onClick={() => this.props.setViewState("chat")}
-            >
-              Chat
-            </button>
-          </div>
-        </div>
-        <hr />
-      </div>
-    );
-  }
+
 
   renderReadWriteNav() {
     switch (this.state.courtstate) {
@@ -552,12 +522,8 @@ class Court extends Component {
       <div className="container">
         <div className="row">
           <div className="col-md-8">
-            {this.renderComponentNav()}
-            <br />
             <div className="card">
-              <div className="card-body">
-                {this.renderCourt()}
-              </div>
+              <div className="card-body">{this.renderCourt()}</div>
             </div>
           </div>
           <div className="col-md-4">
@@ -566,7 +532,7 @@ class Court extends Component {
                 {this.renderReadWriteNav()}
                 <hr />
                 <h4>Categories:</h4>
-               <div className="list-group"> {this.renderCategories()}</div>
+                <div className="list-group"> {this.renderCategories()}</div>
               </div>
             </div>
           </div>

@@ -6,6 +6,7 @@ import {
   fetchIceBreakersByUser
 } from "../actions/index";
 import { bindActionCreators } from "redux";
+import '../style/header.css';
 
 class Header extends Component {
   handleUserProfileClick() {
@@ -13,10 +14,11 @@ class Header extends Component {
     this.props.fetchOneUser(this.props.auth._id);
     this.props.fetchIceBreakersByUser(this.props.auth._id);
   }
-  handleSettingsClick() {
-    this.props.setViewState("settings");
 
+  handleCourtClick() {
+    this.props.setViewState("court");
   }
+
   renderHeader() {
     switch (this.props.auth) {
       case null:
@@ -47,6 +49,26 @@ class Header extends Component {
     }
   }
 
+  renderCourt() {
+    switch (this.props.auth) {
+      case null:
+        return;
+      case false:
+        return;
+      default:
+        return (
+          <li className="nav-item">
+            <button
+              className="nav-link btn btn-primary"
+              onClick={() => this.handleCourtClick()}
+            >
+              Court
+            </button>
+          </li>
+        );
+    }
+  }
+
   renderUser() {
     switch (this.props.auth) {
       case null:
@@ -67,18 +89,17 @@ class Header extends Component {
     }
   }
 
-
   render() {
     return (
       <nav className="navbar navbar-light bg-light">
         <div className="container">
-        <small>0.0.1</small>
+          <small>0.0.1</small>
           <a className="navbar-brand">
-            <img src="/favicon.ico" alt="" />
+            <img className="logo" src="/images/logo_full.png" alt="" />
           </a>
           <ul className="nav justify-content-end">
+            {this.renderCourt()}
             {this.renderUser()}
-    
             {this.renderHeader()}
           </ul>
         </div>

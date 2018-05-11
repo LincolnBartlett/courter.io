@@ -51,9 +51,26 @@ class Settings extends Component {
   renderIceBreakerSettings() {
     return (
       <div>
-        <h5 className="text-center">Ice Breaker Search Settings</h5>
-        <hr />
         <div className="form-row">
+          <div className="col-md-4">
+            <div className="card">
+              <div className="card-body">
+                My location:
+                <br />
+                {this.props.auth.location.neighborhood}
+                <br />
+                <br />
+                <button
+                  className="btn btn-outline-primary form-control"
+                  onClick={() => {
+                    this.handleLocationUpdate();
+                  }}
+                >
+                  Update
+                </button>
+              </div>
+            </div>
+          </div>
           <div className="col-md-8">
             <div className="card">
               <div className="card-body">
@@ -87,29 +104,11 @@ class Settings extends Component {
                   value={this.state.distance}
                   onChange={ev => this.handleDistanceSlider(ev)}
                 />
-                <hr />
+                <br />
                 <button
-                  className="form-control btn btn-primary"
+                  className="form-control btn btn-outline-primary"
                   onClick={() => {
                     this.handleIceBreakerButtonClick();
-                  }}
-                >
-                  Update
-                </button>
-              </div>
-            </div>
-          </div>
-          <div className="col-md-4">
-            <div className="card">
-              <div className="card-body">
-                My location:
-                <br />
-                {this.props.auth.location.neighborhood}
-                <hr />
-                <button
-                  className="btn btn-primary form-control"
-                  onClick={() => {
-                    this.handleLocationUpdate();
                   }}
                 >
                   Update

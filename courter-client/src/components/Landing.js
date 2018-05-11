@@ -45,13 +45,6 @@ class Landing extends Component {
           <div className="container">
             <div className="col-md-8 offset-2">
               <br />
-              <div className="row">
-                <div className="col">
-                  <h1 className="text-center">courter.io</h1>
-                  <h5 className="text-center">conversation is king</h5>
-                </div>
-              </div>
-              <br />
               <div className="card">
                 <div className="card-body">
                   <h3>Welcome to courter.io,</h3>
@@ -100,20 +93,21 @@ class Landing extends Component {
   renderChatList() {
     switch (this.props.auth) {
       case null:
-        return <div/>;
+        return <div />;
       case false:
-        return <div/>;
+        return <div />;
       default:
-        return <ChatList/>;
+        return <ChatList />;
     }
   }
   render() {
     return (
       <div>
         {this.renderLanding()}
-        <div className="col-md-4 offset-md-8 fixed-bottom">
-          {this.renderChatList()}
-        </div>
+          <div className="col-md-4 offset-md-8 fixed-bottom">
+            {this.renderChatList()}
+          </div>
+      
       </div>
     );
   }

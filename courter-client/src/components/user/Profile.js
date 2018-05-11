@@ -279,31 +279,7 @@ class Profile extends Component {
     });
   }
 
-  renderComponentNav() {
-    return (
-      <div className="form-row">
-        <div className="col-md-6">
-          <h2>courter.io</h2>
-        </div>
-        <div className="col-md-3">
-          <button
-            className="form-control btn btn-outline-primary"
-            onClick={() => this.props.setViewState("court")}
-          >
-            Court
-          </button>
-        </div>
-        <div className="col-md-3">
-          <button
-            className="form-control btn btn-outline-primary"
-            onClick={() => this.props.setViewState("chat")}
-          >
-            Chat
-          </button>
-        </div>
-      </div>
-    );
-  }
+
 
   handleUserInfoSubmit() {
     const infoData = {
@@ -414,8 +390,6 @@ class Profile extends Component {
             //PROFILE IS USER
             return (
               <div>
-                {this.renderComponentNav()}
-                <hr />
                 <div className="card">
                   <div className="card-body">
                     <h5>{this.props.profileuser.nickname}</h5>
@@ -441,8 +415,6 @@ class Profile extends Component {
             //PROFILE IS ANOTHER USER
             return (
               <div>
-                {this.renderComponentNav()}
-                <hr />
                 <div className="card">
                   <div className="card-body">
                     <h5>{this.props.profileuser.nickname}</h5>
