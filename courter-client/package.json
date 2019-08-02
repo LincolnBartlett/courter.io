@@ -15,7 +15,7 @@
     "bootstrap": "^4.1.0",
     "moment": "^2.22.1",
     "react": "^16.3.2",
-    "react-dom": "^16.3.2",
+    "react-dom": "^16.3.3",
     "react-moment": "^0.7.0",
     "react-redux": "^5.0.7",
     "react-redux-geolocation": "^1.0.14",
